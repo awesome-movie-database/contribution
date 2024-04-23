@@ -38,7 +38,7 @@ class CreateMovie:
         duration: int,
         budget: Optional[Money],
         revenue: Optional[Money],
-    ) -> None:
+    ) -> Movie:
         self._validate_title(title)
         self._validate_duration(duration)
 
@@ -52,4 +52,6 @@ class CreateMovie:
             duration=duration,
             budget=budget,
             revenue=revenue,
+            rating=0,
+            ratings_count=0,
         )

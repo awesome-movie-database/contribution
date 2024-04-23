@@ -40,7 +40,7 @@ class UpdateMovie:
         revenue: Maybe[Optional[Money]],
     ) -> None:
         if title.is_set:
-            self._validate_title(title)
+            self._validate_title(title.value)
             movie.title = title.value
         if release_date.is_set:
             movie.release_date = release_date.value
@@ -55,5 +55,5 @@ class UpdateMovie:
         if revenue.is_set:
             movie.revenue = revenue.value
         if duration.is_set:
-            self._validate_duration(duration)
+            self._validate_duration(duration.value)
             movie.duration = duration.value

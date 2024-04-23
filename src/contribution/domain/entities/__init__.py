@@ -1,5 +1,3 @@
-__all__ = (
-    "Movie",
-)
+__all__ = ("Movie",)
 
 from .movie import Movie

@@ -1,11 +1,6 @@
-__all__ = (
-    "ValidateMovieTitle",
-    "ValidateMovieDuration",
-)
-
 from contribution.domain.exceptions import (
-    InvalidMovieTitle,
-    InvalidMovieDuration,
+    InvalidMovieTitleError,
+    InvalidMovieDurationError,
 )
 
 
@@ -23,10 +18,10 @@ class ValidateMovieTitle:
             title_length < MOVIE_TITLE_MIN_LENGTH
             or title_length > MOVIE_TITLE_MAX_LENGTH
         ):
-            raise InvalidMovieTitle()
+            raise InvalidMovieTitleError()
 
 
 class ValidateMovieDuration:
-    def __call__(self, duration: str) -> None:
+    def __call__(self, duration: int) -> None:
         if duration < MIN_MOVIE_DURATION:
-            raise InvalidMovieDuration()
+            raise InvalidMovieDurationError()

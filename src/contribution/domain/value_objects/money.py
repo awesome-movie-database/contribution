@@ -24,13 +24,13 @@ class Money:
         self._ensure_currency_match(other_money.currency)
         return self.amount <= other_money.amount
 
-    def __eq__(self, other_money: "Money") -> bool:
-        self._ensure_currency_match(other_money.currency)
-        return self.amount == other_money.amount
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Money):
+            return NotImplemented
+        return self.amount == other.amount
 
-    def __ne__(self, other_money: "Money") -> bool:
-        self._ensure_currency_match(other_money.currency)
-        return not self.amount == other_money.amount
+    def __ne__(self, other: object) -> bool:
+        return not self == other
 
     def __gt__(self, other_money: "Money") -> bool:
         self._ensure_currency_match(other_money.currency)
