@@ -1,0 +1,26 @@
+line-length = 79
+src = ["src"]
+include = ["src/**.py", "tests/**.py"]
+
+extend-select = [
+    "N",        # https://docs.astral.sh/ruff/settings/#pep8-naming
+    "EM",       # https://docs.astral.sh/ruff/settings/#flake8-errmsg
+    "ISC",      # https://docs.astral.sh/ruff/settings/#flake8-implicit-str-concat
+    "G",        # https://docs.astral.sh/ruff/rules/#flake8-logging-format-g
+    "Q",        # https://docs.astral.sh/ruff/rules/#flake8-pytest-style-pt
+]
+select = [
+    "F401",     # unused-import
+    "F406",     # undefined-local-with-nested-import-star-usage
+    "COM812",   # missing-trailing-comma
+    "DTZ003",   # call-datetime-utcnow
+    "EM102",    # f-string-in-exception
+    "INP001",   # implicit-namespace-package
+    "PIE794",   # duplicate-class-field-definition
+    "PIE796",   # non-unique-enums
+    "T201",     # print
+    "SLF001",   # private-member-access
+]
+
+[format]
+quote-style = "double"

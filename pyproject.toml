@@ -8,3 +8,10 @@ description = "Awesome Movie Database Contribution Service"
 version = "0.1.0"
 license = { file = "LICENSE" }
 requires-python = "==3.10.*"
+
+[project.optional-dependencies]
+dev = [
+    "mypy==1.8.*",
+    "ruff==0.1.*",
+    "pre-commit==3.5.*",
+]
