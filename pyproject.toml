@@ -1,0 +1,10 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "contribution"
+description = "Awesome Movie Database Contribution Service"
+version = "0.1.0"
+license = { file = "LICENSE" }
+requires-python = "==3.10.*"
