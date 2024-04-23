@@ -39,15 +39,16 @@ class Maybe(Generic[_T]):
         return Maybe(value)
 
     @property
+    def is_set(self) -> bool:
+        return not isinstance(self._value, _Unset)
+
+    @property
     def value(self) -> _T:
         """
         Returns value if value is set, otherwise
         raises ValueError.
         """
-        if not self.is_set():
+        if not self.is_set:
             message = "Value is unset"
             raise ValueError(message)
         return cast(_T, self.value)
-
-    def is_set(self) -> bool:
-        return not isinstance(self._value, _Unset)
