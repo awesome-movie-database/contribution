@@ -1,12 +1,9 @@
-__all__ = (
-    "InvalidMovieTitle",
-    "InvalidMovieDuration",
-)
+from .base import DomainError
 
 
-class InvalidMovieTitle(Exception):
+class InvalidMovieTitleError(DomainError):
     ...
 
 
-class InvalidMovieDuration(Exception):
+class InvalidMovieDurationError(DomainError):
     ...

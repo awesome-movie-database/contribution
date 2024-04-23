@@ -1,12 +1,8 @@
-__all__ = (
-    "MoneyCurrenciesDoesNotMatchError",
-    "MoneyAmountLessThanZeroError",
-)
-
 from contribution.domain.value_objects import Currency
+from .base import DomainError
 
 
-class MoneyCurrenciesDoesNotMatchError(Exception):
+class MoneyCurrenciesDoesNotMatchError(DomainError):
     def __init__(
         self,
         *,
@@ -23,5 +19,5 @@ class MoneyCurrenciesDoesNotMatchError(Exception):
         )
 
 
-class MoneyAmountLessThanZeroError(Exception):
+class MoneyAmountLessThanZeroError(DomainError):
     ...
