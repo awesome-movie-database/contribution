@@ -23,7 +23,7 @@ class Maybe(Generic[_T]):
         foo = Foo(1)
 
         def update_foo(bar: Maybe[Optional[int]]):
-            if bar.is_set():
+            if bar.is_set:
                 foo.bar = bar
     """
 
