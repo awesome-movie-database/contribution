@@ -7,6 +7,8 @@ __all__ = (
     "UpdatePerson",
     "CreateRole",
     "UpdateRole",
+    "CreateWriter",
+    "UpdateWriter",
 )
 
 from .create_movie import CreateMovie
@@ -17,3 +19,5 @@ from .create_person import CreatePerson
 from .update_person import UpdatePerson
 from .create_role import CreateRole
 from .update_role import UpdateRole
+from .create_writer import CreateWriter
+from .update_writer import UpdateWriter
