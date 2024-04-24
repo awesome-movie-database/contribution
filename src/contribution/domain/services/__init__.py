@@ -6,6 +6,7 @@ __all__ = (
     "CreatePerson",
     "UpdatePerson",
     "CreateRole",
+    "UpdateRole",
 )
 
 from .create_movie import CreateMovie
@@ -15,3 +16,4 @@ from .update_user import UpdateUser
 from .create_person import CreatePerson
 from .update_person import UpdatePerson
 from .create_role import CreateRole
+from .update_role import UpdateRole
