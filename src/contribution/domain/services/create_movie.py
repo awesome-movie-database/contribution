@@ -52,6 +52,4 @@ class CreateMovie:
             duration=duration,
             budget=budget,
             revenue=revenue,
-            rating=0,
-            ratings_count=0,
         )

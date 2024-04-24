@@ -24,5 +24,3 @@ class Movie:
     duration: int
     budget: Optional[Money]
     revenue: Optional[Money]
-    rating: float
-    ratings_count: float
