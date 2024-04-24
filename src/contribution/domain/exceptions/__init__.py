@@ -4,6 +4,7 @@ __all__ = (
     "MoneyCurrenciesDoesNotMatchError",
     "InvalidMovieTitleError",
     "InvalidMovieDurationError",
+    "InvalidUserNameError",
 )
 
 from .base import DomainError
@@ -15,3 +16,4 @@ from .movie import (
     InvalidMovieTitleError,
     InvalidMovieDurationError,
 )
+from .user import InvalidUserNameError
