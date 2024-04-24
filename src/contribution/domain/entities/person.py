@@ -8,7 +8,7 @@ from contribution.domain.value_objects import PersonId
 @dataclass(slots=True)
 class Person:
     id: PersonId
-    name: str
+    first_name: str
     last_name: str
     birth_date: date
     death_date: Optional[date]
