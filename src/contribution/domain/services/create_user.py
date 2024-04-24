@@ -1,4 +1,10 @@
-from contribution.domain.value_objects import UserId
+from typing import Optional
+
+from contribution.domain.value_objects import (
+    UserId,
+    Email,
+    Telegram,
+)
 from contribution.domain.validators import ValidateUserName
 from contribution.domain.entities import User
 
@@ -15,6 +21,8 @@ class CreateUser:
         *,
         id: UserId,
         name: str,
+        email: Optional[Email],
+        telegram: Optional[Telegram],
         is_active: bool,
     ) -> User:
         self._validate_user_name(name)
@@ -22,6 +30,8 @@ class CreateUser:
         return User(
             id=id,
             name=name,
+            email=email,
+            telegram=telegram,
             is_active=is_active,
             rating=0,
             contributions_count=0,
