@@ -10,6 +10,8 @@ __all__ = (
     "InvalidPersonFirstNameError",
     "InvalidPersonLastNameError",
     "InvalidPersonBirthOrDeathDateError",
+    "InvalidRoleCharacterError",
+    "InvalidRoleImportanceError",
 )
 
 from .base import DomainError
@@ -28,4 +30,8 @@ from .person import (
     InvalidPersonFirstNameError,
     InvalidPersonLastNameError,
     InvalidPersonBirthOrDeathDateError,
+)
+from .role import (
+    InvalidRoleCharacterError,
+    InvalidRoleImportanceError,
 )

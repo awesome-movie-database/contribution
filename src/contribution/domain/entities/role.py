@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 
 from contribution.domain.value_objects import (
+    RoleId,
     MovieId,
     PersonId,
-    RoleId,
 )
 
 
