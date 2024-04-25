@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from contribution.domain.value_objects import PersonId
+from .person_id import PersonId
 
 
 @dataclass(frozen=True, slots=True)

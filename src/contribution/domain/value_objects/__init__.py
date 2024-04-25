@@ -7,6 +7,7 @@ __all__ = (
     "CrewMemberId",
     "AddMovieContributionId",
     "EditMovieContributionId",
+    "AddPersonContributionId",
     "ContributionRole",
     "ContributionWriter",
     "ContributionCrewMember",
@@ -25,6 +26,7 @@ from .writer_id import WriterId
 from .crew_member_id import CrewMemberId
 from .add_movie_contribution_id import AddMovieContributionId
 from .edit_movie_contribution_id import EditMovieContributionId
+from .add_person_contribution_id import AddPersonContributionId
 from .contribution_role import ContributionRole
 from .contribution_writer import ContributionWriter
 from .contribution_crew_member import ContributionCrewMember
