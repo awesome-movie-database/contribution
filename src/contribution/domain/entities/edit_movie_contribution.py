@@ -1,11 +1,10 @@
 from typing import Optional, Sequence
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date
 
 from contribution.domain.constants import (
     Genre,
     MPAA,
-    ContributionStatus,
 )
 from contribution.domain.value_objects import (
     EditMovieContributionId,
@@ -21,10 +20,11 @@ from contribution.domain.value_objects import (
     Money,
 )
 from contribution.domain.maybe import Maybe
+from .contribution import Contribution
 
 
 @dataclass(slots=True)
-class EditMovieContribution:
+class EditMovieContribution(Contribution):
     id: EditMovieContributionId
     author_id: UserId
     movie_id: MovieId
@@ -45,7 +45,3 @@ class EditMovieContribution:
 
     add_crew: Sequence[ContributionCrewMember]
     remove_crew: Sequence[CrewMemberId]
-
-    status: ContributionStatus
-    created_at: datetime
-    updated_at: Optional[datetime]
