@@ -7,6 +7,9 @@ from contribution.domain.constants import (
 )
 from contribution.domain.value_objects import (
     AddMovieContributionId,
+    ContributionRole,
+    ContributionWriter,
+    ContributionCrewMember,
     Country,
     Money,
 )
@@ -42,6 +45,9 @@ class AddMovie:
         duration: int,
         budget: Optional[Money],
         revenue: Optional[Money],
+        roles: Sequence[ContributionRole],
+        writers: Sequence[ContributionWriter],
+        crew: Sequence[ContributionCrewMember],
     ) -> AddMovieContribution:
         self._validate_title(title)
         self._validate_duration(duration)
@@ -57,4 +63,7 @@ class AddMovie:
             duration=duration,
             budget=budget,
             revenue=revenue,
+            roles=roles,
+            writers=writers,
+            crew=crew,
         )

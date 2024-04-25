@@ -9,6 +9,9 @@ from contribution.domain.constants import (
 from contribution.domain.value_objects import (
     AddMovieContributionId,
     UserId,
+    ContributionRole,
+    ContributionWriter,
+    ContributionCrewMember,
     Country,
     Money,
 )
@@ -26,3 +29,6 @@ class AddMovieContribution:
     duration: int
     budget: Optional[Money]
     revenue: Optional[Money]
+    roles: Sequence[ContributionRole]
+    writers: Sequence[ContributionWriter]
+    crew: Sequence[ContributionCrewMember]

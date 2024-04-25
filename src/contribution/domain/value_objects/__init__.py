@@ -6,6 +6,9 @@ __all__ = (
     "WriterId",
     "CrewMemberId",
     "AddMovieContributionId",
+    "ContributionRole",
+    "ContributionWriter",
+    "ContributionCrewMember",
     "Currency",
     "Country",
     "Money",
@@ -20,6 +23,9 @@ from .role_id import RoleId
 from .writer_id import WriterId
 from .crew_member_id import CrewMemberId
 from .add_movie_contribution_id import AddMovieContributionId
+from .contribution_role import ContributionRole
+from .contribution_writer import ContributionWriter
+from .contribution_crew_member import ContributionCrewMember
 from .currency import Currency
 from .country import Country
 from .money import Money
