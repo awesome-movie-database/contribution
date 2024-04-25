@@ -5,6 +5,7 @@ __all__ = (
     "Role",
     "Writer",
     "CrewMember",
+    "AddMovieContribution",
 )
 
 from .movie import Movie
@@ -13,3 +14,4 @@ from .person import Person
 from .role import Role
 from .writer import Writer
 from .crew_member import CrewMember
+from .add_movie_contribution import AddMovieContribution
