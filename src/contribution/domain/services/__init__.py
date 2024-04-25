@@ -10,6 +10,7 @@ __all__ = (
     "CreateWriter",
     "UpdateWriter",
     "CreateCrewMember",
+    "AddMovie",
 )
 
 from .create_movie import CreateMovie
@@ -23,3 +24,4 @@ from .update_role import UpdateRole
 from .create_writer import CreateWriter
 from .update_writer import UpdateWriter
 from .create_crew_member import CreateCrewMember
+from .add_movie import AddMovie
