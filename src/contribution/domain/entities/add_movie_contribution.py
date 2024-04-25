@@ -5,6 +5,7 @@ from datetime import date
 from contribution.domain.constants import (
     Genre,
     MPAA,
+    ContributionStatus,
 )
 from contribution.domain.value_objects import (
     AddMovieContributionId,
@@ -32,3 +33,4 @@ class AddMovieContribution:
     roles: Sequence[ContributionRole]
     writers: Sequence[ContributionWriter]
     crew: Sequence[ContributionCrewMember]
+    status: ContributionStatus

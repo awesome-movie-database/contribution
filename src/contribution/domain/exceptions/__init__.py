@@ -7,6 +7,7 @@ __all__ = (
     "InvalidMovieTitleError",
     "InvalidMovieDurationError",
     "InvalidUserNameError",
+    "UserIsNotActiveError",
     "InvalidPersonFirstNameError",
     "InvalidPersonLastNameError",
     "InvalidPersonBirthOrDeathDateError",
@@ -25,7 +26,10 @@ from .movie import (
     InvalidMovieTitleError,
     InvalidMovieDurationError,
 )
-from .user import InvalidUserNameError
+from .user import (
+    InvalidUserNameError,
+    UserIsNotActiveError,
+)
 from .person import (
     InvalidPersonFirstNameError,
     InvalidPersonLastNameError,

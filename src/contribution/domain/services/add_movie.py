@@ -4,6 +4,7 @@ from datetime import date
 from contribution.domain.constants import (
     Genre,
     MPAA,
+    ContributionStatus,
 )
 from contribution.domain.value_objects import (
     AddMovieContributionId,
@@ -17,6 +18,7 @@ from contribution.domain.validators import (
     ValidateMovieTitle,
     ValidateMovieDuration,
 )
+from contribution.domain.exceptions import UserIsNotActiveError
 from contribution.domain.entities import (
     AddMovieContribution,
     User,
@@ -52,6 +54,9 @@ class AddMovie:
         self._validate_title(title)
         self._validate_duration(duration)
 
+        if not author.is_active:
+            raise UserIsNotActiveError()
+
         return AddMovieContribution(
             id=id,
             author_id=author.id,
@@ -66,4 +71,5 @@ class AddMovie:
             roles=roles,
             writers=writers,
             crew=crew,
+            status=ContributionStatus.PENDING,
         )

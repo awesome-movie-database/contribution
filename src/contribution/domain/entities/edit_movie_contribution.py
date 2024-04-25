@@ -5,6 +5,7 @@ from datetime import date
 from contribution.domain.constants import (
     Genre,
     MPAA,
+    ContributionStatus,
 )
 from contribution.domain.value_objects import (
     EditMovieContributionId,
@@ -44,3 +45,5 @@ class EditMovieContribution:
 
     add_crew: Sequence[ContributionCrewMember]
     remove_crew: Sequence[CrewMemberId]
+
+    status: ContributionStatus
