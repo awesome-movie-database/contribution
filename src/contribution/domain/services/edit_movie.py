@@ -72,7 +72,7 @@ class EditMovie:
         if duration.is_set:
             self._validate_duration(duration.value)
 
-        self._ensure_contribution_does_not_duplicate_movie(
+        self._ensure_contribution_does_not_duplicate_movie_fields_values(
             movie=movie,
             title=title,
             release_date=release_date,
@@ -107,7 +107,7 @@ class EditMovie:
             updated_at=None,
         )
 
-    def _ensure_contribution_does_not_duplicate_movie(
+    def _ensure_contribution_does_not_duplicate_movie_fields_values(
         self,
         *,
         movie: Movie,
