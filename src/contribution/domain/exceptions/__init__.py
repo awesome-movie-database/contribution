@@ -13,6 +13,7 @@ __all__ = (
     "InvalidPersonBirthOrDeathDateError",
     "InvalidRoleCharacterError",
     "InvalidRoleImportanceError",
+    "ContributionDataDuplicationError",
 )
 
 from .base import DomainError
@@ -39,3 +40,4 @@ from .role import (
     InvalidRoleCharacterError,
     InvalidRoleImportanceError,
 )
+from .contrubution import ContributionDataDuplicationError

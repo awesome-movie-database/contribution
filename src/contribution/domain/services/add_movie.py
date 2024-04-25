@@ -51,11 +51,11 @@ class AddMovie:
         writers: Sequence[ContributionWriter],
         crew: Sequence[ContributionCrewMember],
     ) -> AddMovieContribution:
-        self._validate_title(title)
-        self._validate_duration(duration)
-
         if not author.is_active:
             raise UserIsNotActiveError()
+
+        self._validate_title(title)
+        self._validate_duration(duration)
 
         return AddMovieContribution(
             id=id,
