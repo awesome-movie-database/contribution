@@ -4,6 +4,7 @@ __all__ = (
     "PersonId",
     "RoleId",
     "WriterId",
+    "CrewMemberId",
     "Currency",
     "Country",
     "Money",
@@ -16,6 +17,7 @@ from .user_id import UserId
 from .person_id import PersonId
 from .role_id import RoleId
 from .writer_id import WriterId
+from .crew_member_id import CrewMemberId
 from .currency import Currency
 from .country import Country
 from .money import Money
