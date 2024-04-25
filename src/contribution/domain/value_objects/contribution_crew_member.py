@@ -4,7 +4,7 @@ from contribution.domain.constants import CrewMembership
 from contribution.domain.value_objects import PersonId
 
 
-@dataclass(slots=True)
+@dataclass(frozen=True, slots=True)
 class ContributionCrewMember:
     person_id: PersonId
     membership: CrewMembership
