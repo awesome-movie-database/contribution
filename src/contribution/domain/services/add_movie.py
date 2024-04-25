@@ -1,5 +1,5 @@
 from typing import Sequence, Optional
-from datetime import date
+from datetime import date, datetime
 
 from contribution.domain.constants import (
     Genre,
@@ -50,6 +50,7 @@ class AddMovie:
         roles: Sequence[ContributionRole],
         writers: Sequence[ContributionWriter],
         crew: Sequence[ContributionCrewMember],
+        current_timestamp: datetime,
     ) -> AddMovieContribution:
         if not author.is_active:
             raise UserIsNotActiveError()
@@ -72,4 +73,6 @@ class AddMovie:
             writers=writers,
             crew=crew,
             status=ContributionStatus.PENDING,
+            created_at=current_timestamp,
+            updated_at=None,
         )

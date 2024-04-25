@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional
-from datetime import date
+from datetime import date, datetime
 
 from contribution.domain.constants import ContributionStatus
 from contribution.domain.value_objects import (
@@ -18,3 +18,5 @@ class AddPersonContribution:
     birth_date: date
     death_date: Optional[date]
     status: ContributionStatus
+    created_at: datetime
+    updated_at: Optional[datetime]

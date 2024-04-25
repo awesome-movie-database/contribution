@@ -1,6 +1,6 @@
 from typing import Optional, Sequence
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime
 
 from contribution.domain.constants import (
     Genre,
@@ -47,3 +47,5 @@ class EditMovieContribution:
     remove_crew: Sequence[CrewMemberId]
 
     status: ContributionStatus
+    created_at: datetime
+    updated_at: Optional[datetime]

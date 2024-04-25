@@ -1,5 +1,5 @@
 from typing import Sequence, Optional
-from datetime import date
+from datetime import date, datetime
 
 from contribution.domain.constants import (
     Genre,
@@ -62,6 +62,7 @@ class EditMovie:
         remove_writers: Sequence[WriterId],
         add_crew: Sequence[ContributionCrewMember],
         remove_crew: Sequence[CrewMemberId],
+        current_timestamp: datetime,
     ) -> EditMovieContribution:
         if not author.is_active:
             raise UserIsNotActiveError()
@@ -102,6 +103,8 @@ class EditMovie:
             add_crew=add_crew,
             remove_crew=remove_crew,
             status=ContributionStatus.PENDING,
+            created_at=current_timestamp,
+            updated_at=None,
         )
 
     def _ensure_contribution_does_not_duplicate_movie(

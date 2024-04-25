@@ -1,6 +1,6 @@
 from typing import Sequence, Optional
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime
 
 from contribution.domain.constants import (
     Genre,
@@ -34,3 +34,5 @@ class AddMovieContribution:
     writers: Sequence[ContributionWriter]
     crew: Sequence[ContributionCrewMember]
     status: ContributionStatus
+    created_at: datetime
+    updated_at: Optional[datetime]
