@@ -4,6 +4,7 @@ __all__ = (
     "UserNameIsAlreadyTakenError",
     "UserEmailIsAlreadyTakenError",
     "UserTelegramIsAlreadyTakenError",
+    "UserDoesNotExistError",
 )
 
 from .base import ApplicationError
@@ -12,4 +13,5 @@ from .user import (
     UserNameIsAlreadyTakenError,
     UserEmailIsAlreadyTakenError,
     UserTelegramIsAlreadyTakenError,
+    UserDoesNotExistError,
 )

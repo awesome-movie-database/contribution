@@ -6,12 +6,13 @@ from contribution.domain.value_objects import (
     Email,
     Telegram,
 )
+from contribution.domain.maybe import Maybe
 
 
 @dataclass(frozen=True, slots=True)
 class UpdateUserCommand:
     user_id: UserId
-    name: str
-    email: Optional[Email]
-    telegram: Optional[Telegram]
-    is_active: bool
+    name: Maybe[str]
+    email: Maybe[Optional[Email]]
+    telegram: Maybe[Optional[Telegram]]
+    is_active: Maybe[bool]

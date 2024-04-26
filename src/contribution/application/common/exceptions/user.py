@@ -15,3 +15,7 @@ class UserEmailIsAlreadyTakenError(ApplicationError):
 
 class UserTelegramIsAlreadyTakenError(ApplicationError):
     ...
+
+
+class UserDoesNotExistError(ApplicationError):
+    ...
