@@ -15,6 +15,7 @@ __all__ = (
     "AddPerson",
     "EditPerson",
     "AcceptContribution",
+    "RejectContribution",
 )
 
 from .create_movie import CreateMovie
@@ -33,3 +34,4 @@ from .edit_movie import EditMovie
 from .add_person import AddPerson
 from .edit_person import EditPerson
 from .accept_contribution import AcceptContribution
+from .reject_contribution import RejectContribution
