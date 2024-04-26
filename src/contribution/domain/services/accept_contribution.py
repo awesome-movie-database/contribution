@@ -22,4 +22,4 @@ class AcceptContribution:
         contribution.updated_at = current_timestamp
 
         author.rating += self._increase_rating_on
-        author.contributions_count += 1
+        author.accepted_contributions_count += 1

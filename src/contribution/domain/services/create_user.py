@@ -34,5 +34,6 @@ class CreateUser:
             telegram=telegram,
             is_active=is_active,
             rating=0,
-            contributions_count=0,
+            accepted_contributions_count=0,
+            rejected_contributions_count=0,
         )

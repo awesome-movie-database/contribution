@@ -16,4 +16,5 @@ class User:
     telegram: Optional[Telegram]
     is_active: bool
     rating: float
-    contributions_count: int
+    accepted_contributions_count: int
+    rejected_contributions_count: int
