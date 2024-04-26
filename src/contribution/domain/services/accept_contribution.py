@@ -43,7 +43,7 @@ class AcceptContribution:
         current_timestamp: datetime,
     ) -> Optional[Achievement]:
         contribution.status = ContributionStatus.ACCEPTED
-        contribution.updated_at = current_timestamp
+        contribution.status_updated_at = current_timestamp
 
         author.rating += self._increase_rating_on
         author.accepted_contributions_count += 1

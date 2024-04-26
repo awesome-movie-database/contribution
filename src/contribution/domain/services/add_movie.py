@@ -74,5 +74,5 @@ class AddMovie:
             crew=crew,
             status=ContributionStatus.PENDING,
             created_at=current_timestamp,
-            updated_at=None,
+            status_updated_at=None,
         )

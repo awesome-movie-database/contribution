@@ -39,7 +39,7 @@ class RejectContribution:
         current_timestamp: datetime,
     ) -> Optional[Achievement]:
         contribution.status = ContributionStatus.REJECTED
-        contribution.updated_at = current_timestamp
+        contribution.status_updated_at = current_timestamp
 
         author.rejected_contributions_count += 1
 

@@ -55,5 +55,5 @@ class AddPerson:
             death_date=death_date,
             status=ContributionStatus.PENDING,
             created_at=current_timestamp,
-            updated_at=None,
+            status_updated_at=None,
         )

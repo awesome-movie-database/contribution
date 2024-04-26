@@ -9,4 +9,4 @@ from datetime import datetime
 class Contribution:
     status: ContributionStatus
     created_at: datetime
-    updated_at: Optional[datetime]
+    status_updated_at: Optional[datetime]

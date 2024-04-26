@@ -104,7 +104,7 @@ class EditMovie:
             remove_crew=remove_crew,
             status=ContributionStatus.PENDING,
             created_at=current_timestamp,
-            updated_at=None,
+            status_updated_at=None,
         )
 
     def _ensure_contribution_does_not_duplicate_movie_fields_values(
