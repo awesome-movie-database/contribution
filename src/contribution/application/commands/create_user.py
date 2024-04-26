@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from contribution.domain.value_objects import (
+    UserId,
     Email,
     Telegram,
 )
@@ -9,6 +10,7 @@ from contribution.domain.value_objects import (
 
 @dataclass(frozen=True, slots=True)
 class CreateUserCommand:
+    user_id: UserId
     name: str
     email: Optional[Email]
     telegram: Optional[Telegram]
