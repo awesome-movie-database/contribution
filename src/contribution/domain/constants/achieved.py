@@ -1,0 +1,16 @@
+from enum import Enum, auto
+
+
+class Achieved(Enum):
+    ACCEPTED_CONTRIBUTION_1 = auto()
+    ACCEPTED_CONTRIBUTION_2 = auto()
+    ACCEPTED_CONTRIBUTION_3 = auto()
+    ACCEPTED_CONTRIBUTION_4 = auto()
+    ACCEPTED_CONTRIBUTION_5 = auto()
+    ACCEPTED_CONTRIBUTION_6 = auto()
+    REJECTED_CONTRIBUTION_1 = auto()
+    REJECTED_CONTRIBUTION_2 = auto()
+    REJECTED_CONTRIBUTION_3 = auto()
+    REJECTED_CONTRIBUTION_4 = auto()
+    REJECTED_CONTRIBUTION_5 = auto()
+    REJECTED_CONTRIBUTION_6 = auto()
