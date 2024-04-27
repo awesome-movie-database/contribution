@@ -10,6 +10,7 @@ __all__ = (
     "EditMovieContributionGateway",
     "AddPersonContributionGateway",
     "EditPersonContributionGateway",
+    "PermissionsGateway",
 )
 
 from .user import UserGateway
@@ -23,3 +24,4 @@ from .add_movie_contribution import AddMovieContributionGateway
 from .edit_movie_contribution import EditMovieContributionGateway
 from .add_person_gateway import AddPersonContributionGateway
 from .edit_person_contribution import EditPersonContributionGateway
+from .permissions import PermissionsGateway

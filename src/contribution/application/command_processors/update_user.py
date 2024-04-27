@@ -45,7 +45,7 @@ class UpdateUserProcessor:
     async def process(self, command: UpdateUserCommand) -> None:
         user = await self._user_gateway.with_id(command.user_id)
         if not user:
-            raise UserDoesNotExistError()
+            raise UserDoesNotExistError(command.user_id)
 
         if command.name.is_set:
             user_with_same_name = await self._user_gateway.with_name(

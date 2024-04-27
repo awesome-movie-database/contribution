@@ -5,6 +5,8 @@ __all__ = (
     "UserEmailIsAlreadyTakenError",
     "UserTelegramIsAlreadyTakenError",
     "UserDoesNotExistError",
+    "PersonsDoNotExistError",
+    "NotEnoughPermissionsError",
 )
 
 from .base import ApplicationError
@@ -15,3 +17,5 @@ from .user import (
     UserTelegramIsAlreadyTakenError,
     UserDoesNotExistError,
 )
+from .person import PersonsDoNotExistError
+from .permissions import NotEnoughPermissionsError

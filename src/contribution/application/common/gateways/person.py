@@ -11,6 +11,9 @@ class PersonGateway(Protocol):
     async def acquire_with_id(self, id: PersonId) -> Optional[Person]:
         raise NotImplementedError
 
+    async def list_with_ids(self, *ids: PersonId) -> list[Person]:
+        raise NotImplementedError
+
     async def save(self, person: Person) -> None:
         raise NotImplementedError
 

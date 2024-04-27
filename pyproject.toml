@@ -9,6 +9,10 @@ version = "0.1.0"
 license = { file = "LICENSE" }
 requires-python = "==3.10.*"
 
+dependencies = [
+    "uuid7==0.1.*",
+]
+
 [project.optional-dependencies]
 dev = [
     "mypy==1.8.*",
