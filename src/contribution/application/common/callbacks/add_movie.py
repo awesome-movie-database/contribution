@@ -1,5 +1,5 @@
 from typing import Protocol, Optional, Sequence
-from datetime import date
+from datetime import date, datetime
 
 from contribution.domain.constants import (
     Genre,
@@ -33,5 +33,6 @@ class OnMovieAdded(Protocol):
         roles: Sequence[ContributionRole],
         writers: Sequence[ContributionWriter],
         crew: Sequence[ContributionCrewMember],
+        added_at: datetime,
     ) -> None:
         raise NotImplementedError

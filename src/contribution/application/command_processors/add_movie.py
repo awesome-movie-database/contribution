@@ -36,12 +36,15 @@ def add_movie_factory(
     identity_provider: IdentityProvider,
     on_movie_added: OnMovieAdded,
 ) -> CommandProcessor[AddMovieCommand, AddMovieContributionId]:
+    current_timestamp = datetime.now(timezone.utc)
+
     add_movie_processor = AddMovieProcessor(
         add_movie=add_movie,
         ensure_persons_exist=ensure_persons_exist,
         add_movie_contribution_gateway=add_movie_contribution_gateway,
         user_gateway=user_gateway,
         identity_provider=identity_provider,
+        current_timestamp=current_timestamp,
     )
     authz_processor = AuthorizationProcessor(
         processor=add_movie_processor,
@@ -53,6 +56,7 @@ def add_movie_factory(
         processor=authz_processor,
         on_movie_added=on_movie_added,
         identity_provider=identity_provider,
+        current_timestamp=current_timestamp,
     )
     tx_processor = TransactionProcessor(
         processor=callback_processor,
@@ -70,12 +74,14 @@ class AddMovieProcessor:
         add_movie_contribution_gateway: AddMovieContributionGateway,
         user_gateway: UserGateway,
         identity_provider: IdentityProvider,
+        current_timestamp: datetime,
     ):
         self._add_movie = add_movie
         self._ensure_persons_exist = ensure_persons_exist
         self._add_movie_contribution_gateway = add_movie_contribution_gateway
         self._user_gateway = user_gateway
         self._identity_provider = identity_provider
+        self._current_timestamp = current_timestamp
 
     async def process(
         self,
@@ -107,7 +113,7 @@ class AddMovieProcessor:
             roles=command.roles,
             writers=command.writers,
             crew=command.crew,
-            current_timestamp=datetime.now(timezone.utc),
+            current_timestamp=self._current_timestamp,
         )
         await self._add_movie_contribution_gateway.save(contribution)
 
@@ -121,10 +127,12 @@ class CallbackProcessor:
         processor: AuthorizationProcessor,
         on_movie_added: OnMovieAdded,
         identity_provider: IdentityProvider,
+        current_timestamp: datetime,
     ):
         self._processor = processor
         self._on_movie_added = on_movie_added
         self._identity_provider = identity_provider
+        self._current_timestamp = current_timestamp
 
     async def process(
         self,
@@ -147,6 +155,7 @@ class CallbackProcessor:
             roles=command.roles,
             writers=command.writers,
             crew=command.crew,
+            added_at=self._current_timestamp,
         )
 
         return result
