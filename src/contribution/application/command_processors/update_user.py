@@ -1,8 +1,6 @@
 from contribution.domain.services import UpdateUser
-from contribution.application.common.command_processor import (
+from contribution.application.common.command_processors import (
     CommandProcessor,
-)
-from contribution.application.common.transaction_processor import (
     TransactionProcessor,
 )
 from contribution.application.common.exceptions import (

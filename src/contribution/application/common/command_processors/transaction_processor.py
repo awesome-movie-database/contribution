@@ -1,6 +1,6 @@
 from typing import Generic, TypeVar
 
-from .unit_of_work import UnitOfWork
+from contribution.application.common.unit_of_work import UnitOfWork
 from .command_processor import CommandProcessor
 
 
