@@ -37,6 +37,7 @@ from contribution.application.common.gateways import (
 )
 from contribution.application.common.unit_of_work import UnitOfWork
 from contribution.application.common.identity_provider import IdentityProvider
+from contribution.application.common.callbacks import OnMovieEdited
 from contribution.application.commands import EditMovieCommand
 
 
@@ -53,7 +54,10 @@ def edit_movie_factory(
     permissions_gateway: PermissionsGateway,
     unit_of_work: UnitOfWork,
     identity_provider: IdentityProvider,
+    on_movie_edited: OnMovieEdited,
 ) -> CommandProcessor[EditMovieCommand, EditMovieContributionId]:
+    current_timestamp = datetime.now(timezone.utc)
+
     edit_movie_processor = EditMovieProcessor(
         edit_movie=edit_movie,
         ensure_persons_exist=ensure_persons_exist,
@@ -64,6 +68,7 @@ def edit_movie_factory(
         writer_gateway=writer_gateway,
         crew_member_gateway=crew_member_gateway,
         identity_provider=identity_provider,
+        current_timestamp=current_timestamp,
     )
     authz_processor = AuthorizationProcessor(
         processor=edit_movie_processor,
@@ -71,8 +76,14 @@ def edit_movie_factory(
         permissions_gateway=permissions_gateway,
         identity_provider=identity_provider,
     )
-    tx_processor = TransactionProcessor(
+    callback_processor = CallbackProcessor(
         processor=authz_processor,
+        on_movied_edited=on_movie_edited,
+        identity_provider=identity_provider,
+        current_timestamp=current_timestamp,
+    )
+    tx_processor = TransactionProcessor(
+        processor=callback_processor,
         unit_of_work=unit_of_work,
     )
     return tx_processor
@@ -91,6 +102,7 @@ class EditMovieProcessor:
         writer_gateway: WriterGateway,
         crew_member_gateway: CrewMemberGateway,
         identity_provider: IdentityProvider,
+        current_timestamp: datetime,
     ):
         self._edit_movie = edit_movie
         self._ensure_persons_exist = ensure_persons_exist
@@ -214,3 +226,48 @@ class EditMovieProcessor:
                 ids_of_crew_members_from_gateway,
             )
             raise CrewMembersDoNotExistError(list(ids_of_missing_crew_members))
+
+
+class CallbackProcessor:
+    def __init__(
+        self,
+        *,
+        processor: AuthorizationProcessor,
+        on_movied_edited: OnMovieEdited,
+        identity_provider: IdentityProvider,
+        current_timestamp: datetime,
+    ):
+        self._processor = processor
+        self._on_movie_edited = on_movied_edited
+        self._identity_provider = identity_provider
+        self._current_timestamp = current_timestamp
+
+    async def process(
+        self,
+        command: EditMovieCommand,
+    ) -> EditMovieContributionId:
+        result = await self._processor.process(command)
+        current_user_id = await self._identity_provider.user_id()
+
+        await self._on_movie_edited(
+            id=result,
+            author_id=current_user_id,
+            movie_id=command.movie_id,
+            title=command.title,
+            release_date=command.release_date,
+            countries=command.countries,
+            genres=command.genres,
+            mpaa=command.mpaa,
+            duration=command.duration,
+            budget=command.budget,
+            revenue=command.revenue,
+            add_roles=command.add_roles,
+            remove_roles=command.remove_roles,
+            add_writers=command.add_writers,
+            remove_writers=command.remove_writers,
+            add_crew=command.add_crew,
+            remove_crew=command.remove_crew,
+            edited_at=self._current_timestamp,
+        )
+
+        return result
