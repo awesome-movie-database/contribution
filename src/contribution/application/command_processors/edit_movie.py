@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timezone
 from typing import Sequence
 
@@ -39,6 +40,9 @@ from contribution.application.common.unit_of_work import UnitOfWork
 from contribution.application.common.identity_provider import IdentityProvider
 from contribution.application.common.callbacks import OnMovieEdited
 from contribution.application.commands import EditMovieCommand
+
+
+logger = logging.getLogger(__name__)
 
 
 def edit_movie_factory(
@@ -86,7 +90,11 @@ def edit_movie_factory(
         processor=callback_processor,
         unit_of_work=unit_of_work,
     )
-    return tx_processor
+    log_processor = LoggingProcessor(
+        processor=tx_processor,
+    )
+
+    return log_processor
 
 
 class EditMovieProcessor:
@@ -113,6 +121,7 @@ class EditMovieProcessor:
         self._writer_gateway = writer_gateway
         self._crew_member_gateway = crew_member_gateway
         self._identity_provider = identity_provider
+        self._current_timestamp = current_timestamp
 
     async def process(
         self,
@@ -156,7 +165,7 @@ class EditMovieProcessor:
             remove_writers=command.remove_writers,
             add_crew=command.add_crew,
             remove_crew=command.remove_crew,
-            current_timestamp=datetime.now(timezone.utc),
+            current_timestamp=self._current_timestamp,
         )
         await self._edit_movie_contribution_gateway.save(contribution)
 
@@ -268,6 +277,35 @@ class CallbackProcessor:
             add_crew=command.add_crew,
             remove_crew=command.remove_crew,
             edited_at=self._current_timestamp,
+        )
+
+        return result
+
+
+class LoggingProcessor:
+    def __init__(self, processor: TransactionProcessor):
+        self._processor = processor
+
+    async def process(
+        self,
+        command: EditMovieCommand,
+    ) -> EditMovieContributionId:
+        logger.debug(
+            msg="Processing Edit Movie command",
+            extra={"command": command},
+        )
+        try:
+            result = await self._processor.process(command)
+        except UserDoesNotExistError as e:
+            logger.error(
+                msg="User is authenticated, but user gateway returns None",
+                extra={"user_id": e.id},
+            )
+            raise e
+
+        logger.debug(
+            msg="Edit movie command was processed",
+            extra={"contribution_id": result},
         )
 
         return result
