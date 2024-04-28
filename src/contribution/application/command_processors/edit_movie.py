@@ -14,6 +14,7 @@ from contribution.domain.services import EditMovie
 from contribution.application.common.services import (
     AccessConcern,
     EnsurePersonsExist,
+    CreatePhotoFromObj,
 )
 from contribution.application.common.command_processors import (
     CommandProcessor,
@@ -36,6 +37,7 @@ from contribution.application.common.gateways import (
     CrewMemberGateway,
     PermissionsGateway,
 )
+from contribution.application.common.object_storage import ObjectStorage
 from contribution.application.common.unit_of_work import UnitOfWork
 from contribution.application.common.identity_provider import IdentityProvider
 from contribution.application.common.callbacks import OnMovieEdited
@@ -49,6 +51,7 @@ def edit_movie_factory(
     edit_movie: EditMovie,
     access_concern: AccessConcern,
     ensure_persons_exist: EnsurePersonsExist,
+    create_photo_from_obj: CreatePhotoFromObj,
     edit_movie_contribution_gateway: EditMovieContributionGateway,
     user_gateway: UserGateway,
     movie_gateway: MovieGateway,
@@ -56,6 +59,7 @@ def edit_movie_factory(
     writer_gateway: WriterGateway,
     crew_member_gateway: CrewMemberGateway,
     permissions_gateway: PermissionsGateway,
+    object_storage: ObjectStorage,
     unit_of_work: UnitOfWork,
     identity_provider: IdentityProvider,
     on_movie_edited: OnMovieEdited,
@@ -65,12 +69,14 @@ def edit_movie_factory(
     edit_movie_processor = EditMovieProcessor(
         edit_movie=edit_movie,
         ensure_persons_exist=ensure_persons_exist,
+        create_photo_from_obj=create_photo_from_obj,
         edit_movie_contribution_gateway=edit_movie_contribution_gateway,
         user_gateway=user_gateway,
         movie_gateway=movie_gateway,
         role_gateway=role_gateway,
         writer_gateway=writer_gateway,
         crew_member_gateway=crew_member_gateway,
+        object_storage=object_storage,
         identity_provider=identity_provider,
         current_timestamp=current_timestamp,
     )
@@ -103,23 +109,27 @@ class EditMovieProcessor:
         *,
         edit_movie: EditMovie,
         ensure_persons_exist: EnsurePersonsExist,
+        create_photo_from_obj: CreatePhotoFromObj,
         edit_movie_contribution_gateway: EditMovieContributionGateway,
         user_gateway: UserGateway,
         movie_gateway: MovieGateway,
         role_gateway: RoleGateway,
         writer_gateway: WriterGateway,
         crew_member_gateway: CrewMemberGateway,
+        object_storage: ObjectStorage,
         identity_provider: IdentityProvider,
         current_timestamp: datetime,
     ):
         self._edit_movie = edit_movie
         self._ensure_persons_exist = ensure_persons_exist
+        self._create_photo_from_obj = create_photo_from_obj
         self._edit_movie_contribution_gateway = edit_movie_contribution_gateway
         self._user_gateway = user_gateway
         self._movie_gateway = movie_gateway
         self._role_gateway = role_gateway
         self._writer_gateway = writer_gateway
         self._crew_member_gateway = crew_member_gateway
+        self._object_storage = object_storage
         self._identity_provider = identity_provider
         self._current_timestamp = current_timestamp
 
@@ -147,6 +157,10 @@ class EditMovieProcessor:
             *(crew_member.person_id for crew_member in command.add_crew),
         )
 
+        add_photos = [
+            self._create_photo_from_obj(obj) for obj in command.add_photos
+        ]
+
         contribution = self._edit_movie(
             id=EditMovieContributionId(uuid7()),
             author=author,
@@ -165,9 +179,12 @@ class EditMovieProcessor:
             remove_writers=command.remove_writers,
             add_crew=command.add_crew,
             remove_crew=command.remove_crew,
+            add_photos=[photo.url for photo in add_photos],
             current_timestamp=self._current_timestamp,
         )
         await self._edit_movie_contribution_gateway.save(contribution)
+
+        await self._object_storage.save_photo_seq(add_photos)
 
         return contribution.id
 

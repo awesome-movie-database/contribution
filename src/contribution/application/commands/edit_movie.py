@@ -37,3 +37,4 @@ class EditMovieCommand:
     remove_writers: Sequence[WriterId]
     add_crew: Sequence[ContributionCrewMember]
     remove_crew: Sequence[CrewMemberId]
+    add_photos: Sequence[bytes]

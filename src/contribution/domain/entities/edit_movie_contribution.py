@@ -18,6 +18,7 @@ from contribution.domain.value_objects import (
     ContributionCrewMember,
     Country,
     Money,
+    PhotoUrl,
 )
 from contribution.domain.maybe import Maybe
 from .contribution import Contribution
@@ -45,3 +46,5 @@ class EditMovieContribution(Contribution):
 
     add_crew: Sequence[ContributionCrewMember]
     remove_crew: Sequence[CrewMemberId]
+
+    add_photos: Sequence[PhotoUrl]
