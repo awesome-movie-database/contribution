@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timezone
 
 from uuid_extensions import uuid7
@@ -23,6 +24,9 @@ from contribution.application.common.unit_of_work import UnitOfWork
 from contribution.application.common.identity_provider import IdentityProvider
 from contribution.application.common.callbacks import OnMovieAdded
 from contribution.application.commands import AddMovieCommand
+
+
+logger = logging.getLogger(__name__)
 
 
 def add_movie_factory(
@@ -62,7 +66,11 @@ def add_movie_factory(
         processor=callback_processor,
         unit_of_work=unit_of_work,
     )
-    return tx_processor
+    log_processor = LoggingProcessor(
+        processor=tx_processor,
+    )
+
+    return log_processor
 
 
 class AddMovieProcessor:
@@ -156,6 +164,36 @@ class CallbackProcessor:
             writers=command.writers,
             crew=command.crew,
             added_at=self._current_timestamp,
+        )
+
+        return result
+
+
+class LoggingProcessor:
+    def __init__(self, processor: TransactionProcessor):
+        self._processor = processor
+
+    async def process(
+        self,
+        command: AddMovieCommand,
+    ) -> AddMovieContributionId:
+        logger.debug(
+            msg="Processing Add Movie command",
+            extra={"command": command},
+        )
+
+        try:
+            result = await self._processor.process(command)
+        except UserDoesNotExistError as e:
+            logger.error(
+                msg="User is authenticated, but user gateway returns None",
+                extra={"user_id": e.id},
+            )
+            raise e
+
+        logger.debug(
+            msg="Add movie command was processed",
+            extra={"contribution_id": result},
         )
 
         return result
