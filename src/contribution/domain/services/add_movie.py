@@ -13,6 +13,7 @@ from contribution.domain.value_objects import (
     ContributionCrewMember,
     Country,
     Money,
+    PhotoUrl,
 )
 from contribution.domain.validators import (
     ValidateMovieTitle,
@@ -50,6 +51,7 @@ class AddMovie:
         roles: Sequence[ContributionRole],
         writers: Sequence[ContributionWriter],
         crew: Sequence[ContributionCrewMember],
+        photos: Sequence[PhotoUrl],
         current_timestamp: datetime,
     ) -> AddMovieContribution:
         if not author.is_active:
@@ -74,5 +76,6 @@ class AddMovie:
             crew=crew,
             status=ContributionStatus.PENDING,
             created_at=current_timestamp,
+            photos=photos,
             status_updated_at=None,
         )

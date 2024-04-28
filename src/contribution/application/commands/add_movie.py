@@ -28,3 +28,4 @@ class AddMovieCommand:
     roles: Sequence[ContributionRole]
     writers: Sequence[ContributionWriter]
     crew: Sequence[ContributionCrewMember]
+    photos: Sequence[bytes]

@@ -8,6 +8,7 @@ from contribution.domain.services import AddMovie
 from contribution.application.common.services import (
     AccessConcern,
     EnsurePersonsExist,
+    CreatePhotoFromObj,
 )
 from contribution.application.common.command_processors import (
     CommandProcessor,
@@ -20,6 +21,7 @@ from contribution.application.common.gateways import (
     UserGateway,
     PermissionsGateway,
 )
+from contribution.application.common.object_storage import ObjectStorage
 from contribution.application.common.unit_of_work import UnitOfWork
 from contribution.application.common.identity_provider import IdentityProvider
 from contribution.application.common.callbacks import OnMovieAdded
@@ -33,9 +35,11 @@ def add_movie_factory(
     add_movie: AddMovie,
     access_concern: AccessConcern,
     ensure_persons_exist: EnsurePersonsExist,
+    create_photo_from_obj: CreatePhotoFromObj,
     add_movie_contribution_gateway: AddMovieContributionGateway,
     user_gateway: UserGateway,
     permissions_gateway: PermissionsGateway,
+    object_storage: ObjectStorage,
     unit_of_work: UnitOfWork,
     identity_provider: IdentityProvider,
     on_movie_added: OnMovieAdded,
@@ -45,8 +49,10 @@ def add_movie_factory(
     add_movie_processor = AddMovieProcessor(
         add_movie=add_movie,
         ensure_persons_exist=ensure_persons_exist,
+        create_photo_from_obj=create_photo_from_obj,
         add_movie_contribution_gateway=add_movie_contribution_gateway,
         user_gateway=user_gateway,
+        object_storage=object_storage,
         identity_provider=identity_provider,
         current_timestamp=current_timestamp,
     )
@@ -79,15 +85,19 @@ class AddMovieProcessor:
         *,
         add_movie: AddMovie,
         ensure_persons_exist: EnsurePersonsExist,
+        create_photo_from_obj: CreatePhotoFromObj,
         add_movie_contribution_gateway: AddMovieContributionGateway,
         user_gateway: UserGateway,
+        object_storage: ObjectStorage,
         identity_provider: IdentityProvider,
         current_timestamp: datetime,
     ):
         self._add_movie = add_movie
         self._ensure_persons_exist = ensure_persons_exist
+        self._create_photo_from_obj = create_photo_from_obj
         self._add_movie_contribution_gateway = add_movie_contribution_gateway
         self._user_gateway = user_gateway
+        self._object_storage = object_storage
         self._identity_provider = identity_provider
         self._current_timestamp = current_timestamp
 
@@ -107,6 +117,8 @@ class AddMovieProcessor:
             *(crew_member.person_id for crew_member in command.crew),
         )
 
+        photos = [self._create_photo_from_obj(obj) for obj in command.photos]
+
         contribution = self._add_movie(
             id=AddMovieContributionId(uuid7()),
             author=author,
@@ -121,9 +133,12 @@ class AddMovieProcessor:
             roles=command.roles,
             writers=command.writers,
             crew=command.crew,
+            photos=[photo.url for photo in photos],
             current_timestamp=self._current_timestamp,
         )
         await self._add_movie_contribution_gateway.save(contribution)
+
+        await self._object_storage.save_photo_seq(photos)
 
         return contribution.id
 

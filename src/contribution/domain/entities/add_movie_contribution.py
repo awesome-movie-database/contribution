@@ -14,6 +14,7 @@ from contribution.domain.value_objects import (
     ContributionCrewMember,
     Country,
     Money,
+    PhotoUrl,
 )
 from .contribution import Contribution
 
@@ -33,3 +34,4 @@ class AddMovieContribution(Contribution):
     roles: Sequence[ContributionRole]
     writers: Sequence[ContributionWriter]
     crew: Sequence[ContributionCrewMember]
+    photos: Sequence[PhotoUrl]

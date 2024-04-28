@@ -18,6 +18,7 @@ __all__ = (
     "Money",
     "Email",
     "Telegram",
+    "PhotoUrl",
 )
 
 from .movie_id import MovieId
@@ -39,3 +40,4 @@ from .country import Country
 from .money import Money
 from .email import Email
 from .telegram import Telegram
+from .photo_url import PhotoUrl
