@@ -27,6 +27,9 @@ from contribution.application.common.callbacks import OnPersonAdded
 from contribution.application.commands import AddPersonCommand
 
 
+logger = logging.getLogger(__name__)
+
+
 def add_person_factory(
     add_person: AddPerson,
     access_concern: AccessConcern,
@@ -71,9 +74,6 @@ def add_person_factory(
     )
 
     return log_processor
-
-
-logger = logging.getLogger(__name__)
 
 
 class AddPersonProcessor:
