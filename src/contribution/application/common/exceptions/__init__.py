@@ -6,6 +6,7 @@ __all__ = (
     "UserTelegramIsAlreadyTakenError",
     "UserDoesNotExistError",
     "MovieDoesNotExistError",
+    "PersonDoesNotExistError",
     "PersonsDoNotExistError",
     "RolesDoNotExistError",
     "WritersDoNotExistError",
@@ -22,7 +23,10 @@ from .user import (
     UserDoesNotExistError,
 )
 from .movie import MovieDoesNotExistError
-from .person import PersonsDoNotExistError
+from .person import (
+    PersonDoesNotExistError,
+    PersonsDoNotExistError,
+)
 from .role import RolesDoNotExistError
 from .writer import WritersDoNotExistError
 from .crew import CrewMembersDoNotExistError

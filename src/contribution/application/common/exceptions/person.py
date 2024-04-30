@@ -4,6 +4,10 @@ from contribution.domain.value_objects import PersonId
 from .base import ApplicationError
 
 
+class PersonDoesNotExistError(ApplicationError):
+    ...
+
+
 class PersonsDoNotExistError(ApplicationError):
     def __init__(
         self,

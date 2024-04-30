@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Sequence
 from datetime import date
 
 from contribution.domain.value_objects import PersonId
@@ -13,3 +13,4 @@ class EditPersonCommand:
     last_name: Maybe[str]
     birth_date: Maybe[date]
     death_date: Maybe[Optional[date]]
+    add_photos: Sequence[bytes]
