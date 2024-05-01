@@ -13,6 +13,7 @@ from contribution.domain.value_objects import (
     ContributionRole,
     ContributionWriter,
     ContributionCrewMember,
+    PhotoUrl,
 )
 
 
@@ -33,6 +34,7 @@ class OnMovieAdded(Protocol):
         roles: Sequence[ContributionRole],
         writers: Sequence[ContributionWriter],
         crew: Sequence[ContributionCrewMember],
+        photos: Sequence[PhotoUrl],
         added_at: datetime,
     ) -> None:
         raise NotImplementedError

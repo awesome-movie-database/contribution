@@ -44,8 +44,6 @@ def add_movie_factory(
     identity_provider: IdentityProvider,
     on_movie_added: OnMovieAdded,
 ) -> CommandProcessor[AddMovieCommand, AddMovieContributionId]:
-    current_timestamp = datetime.now(timezone.utc)
-
     add_movie_processor = AddMovieProcessor(
         add_movie=add_movie,
         ensure_persons_exist=ensure_persons_exist,
@@ -54,7 +52,7 @@ def add_movie_factory(
         user_gateway=user_gateway,
         object_storage=object_storage,
         identity_provider=identity_provider,
-        current_timestamp=current_timestamp,
+        on_movie_added=on_movie_added,
     )
     authz_processor = AuthorizationProcessor(
         processor=add_movie_processor,
@@ -62,14 +60,8 @@ def add_movie_factory(
         permissions_gateway=permissions_gateway,
         identity_provider=identity_provider,
     )
-    callback_processor = CallbackProcessor(
-        processor=authz_processor,
-        on_movie_added=on_movie_added,
-        identity_provider=identity_provider,
-        current_timestamp=current_timestamp,
-    )
     tx_processor = TransactionProcessor(
-        processor=callback_processor,
+        processor=authz_processor,
         unit_of_work=unit_of_work,
     )
     log_processor = LoggingProcessor(
@@ -90,7 +82,7 @@ class AddMovieProcessor:
         user_gateway: UserGateway,
         object_storage: ObjectStorage,
         identity_provider: IdentityProvider,
-        current_timestamp: datetime,
+        on_movie_added: OnMovieAdded,
     ):
         self._add_movie = add_movie
         self._ensure_persons_exist = ensure_persons_exist
@@ -99,13 +91,14 @@ class AddMovieProcessor:
         self._user_gateway = user_gateway
         self._object_storage = object_storage
         self._identity_provider = identity_provider
-        self._current_timestamp = current_timestamp
+        self._on_movie_added = on_movie_added
 
     async def process(
         self,
         command: AddMovieCommand,
     ) -> AddMovieContributionId:
         current_user_id = await self._identity_provider.user_id()
+        current_timestamp = datetime.now(timezone.utc)
 
         author = await self._user_gateway.with_id(current_user_id)
         if not author:
@@ -118,6 +111,7 @@ class AddMovieProcessor:
         )
 
         photos = [self._create_photo_from_obj(obj) for obj in command.photos]
+        photos_urls = [photo.url for photo in photos]
 
         contribution = self._add_movie(
             id=AddMovieContributionId(uuid7()),
@@ -133,39 +127,15 @@ class AddMovieProcessor:
             roles=command.roles,
             writers=command.writers,
             crew=command.crew,
-            photos=[photo.url for photo in photos],
-            current_timestamp=self._current_timestamp,
+            photos=photos_urls,
+            current_timestamp=current_timestamp,
         )
         await self._add_movie_contribution_gateway.save(contribution)
 
         await self._object_storage.save_photo_seq(photos)
 
-        return contribution.id
-
-
-class CallbackProcessor:
-    def __init__(
-        self,
-        *,
-        processor: AuthorizationProcessor,
-        on_movie_added: OnMovieAdded,
-        identity_provider: IdentityProvider,
-        current_timestamp: datetime,
-    ):
-        self._processor = processor
-        self._on_movie_added = on_movie_added
-        self._identity_provider = identity_provider
-        self._current_timestamp = current_timestamp
-
-    async def process(
-        self,
-        command: AddMovieCommand,
-    ) -> AddMovieContributionId:
-        result = await self._processor.process(command)
-        current_user_id = await self._identity_provider.user_id()
-
         await self._on_movie_added(
-            id=result,
+            id=contribution.id,
             author_id=current_user_id,
             title=command.title,
             release_date=command.release_date,
@@ -178,10 +148,11 @@ class CallbackProcessor:
             roles=command.roles,
             writers=command.writers,
             crew=command.crew,
-            added_at=self._current_timestamp,
+            photos=photos_urls,
+            added_at=current_timestamp,
         )
 
-        return result
+        return contribution.id
 
 
 class LoggingProcessor:
