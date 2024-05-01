@@ -5,8 +5,7 @@ __all__ = (
     "EditMovieCommand",
     "AddPersonCommand",
     "EditPersonCommand",
-    "AcceptContributionCommand",
-    "RejectContributionCommand",
+    "AcceptMovieAdditionCommand",
 )
 
 from .create_user import CreateUserCommand
@@ -15,5 +14,4 @@ from .add_movie import AddMovieCommand
 from .edit_movie import EditMovieCommand
 from .add_person import AddPersonCommand
 from .edit_person import EditPersonCommand
-from .accept_contribution import AcceptContributionCommand
-from .reject_contribution import RejectContributionCommand
+from .accept_movie_addition import AcceptMovieAdditionCommand
