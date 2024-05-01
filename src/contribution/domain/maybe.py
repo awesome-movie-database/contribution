@@ -31,11 +31,11 @@ class Maybe(Generic[_T]):
         self._value = value
 
     @classmethod
-    def without_value(cls) -> "Maybe":
+    def without_value(cls) -> "Maybe[_T]":
         return Maybe(_Unset.UNSET)
 
     @classmethod
-    def with_value(cls, value: _T) -> "Maybe":
+    def with_value(cls, value: _T) -> "Maybe[_T]":
         return Maybe(value)
 
     @property
