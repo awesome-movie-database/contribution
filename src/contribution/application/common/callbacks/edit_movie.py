@@ -1,5 +1,4 @@
-from typing import Protocol
-from typing import Sequence, Optional
+from typing import Protocol, Optional, Sequence
 from datetime import date, datetime
 
 from contribution.domain.constants import (
@@ -18,6 +17,7 @@ from contribution.domain.value_objects import (
     ContributionCrewMember,
     Country,
     Money,
+    PhotoUrl,
 )
 from contribution.domain.maybe import Maybe
 
@@ -43,6 +43,7 @@ class OnMovieEdited(Protocol):
         remove_writers: Sequence[WriterId],
         add_crew: Sequence[ContributionCrewMember],
         remove_crew: Sequence[CrewMemberId],
+        add_photos: Sequence[PhotoUrl],
         edited_at: datetime,
     ) -> None:
         raise NotImplementedError
