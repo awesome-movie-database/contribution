@@ -42,8 +42,6 @@ def add_person_factory(
     identity_provider: IdentityProvider,
     on_person_added: OnPersonAdded,
 ) -> CommandProcessor[AddPersonCommand, AddPersonContributionId]:
-    current_timestamp = datetime.now(timezone.utc)
-
     add_person_processor = AddPersonProcessor(
         add_person=add_person,
         create_photo_from_obj=create_photo_from_obj,
@@ -51,7 +49,7 @@ def add_person_factory(
         user_gateway=user_gateway,
         object_storage=object_storage,
         identity_provider=identity_provider,
-        current_timestamp=current_timestamp,
+        on_person_added=on_person_added,
     )
     authz_processor = AuthorizationProcessor(
         processor=add_person_processor,
@@ -59,14 +57,8 @@ def add_person_factory(
         permissions_gateway=permissions_gateway,
         identity_provider=identity_provider,
     )
-    callback_processor = CallbackProcessor(
-        processor=authz_processor,
-        on_person_added=on_person_added,
-        identity_provider=identity_provider,
-        current_timestamp=current_timestamp,
-    )
     tx_processor = TransactionProcessor(
-        processor=callback_processor,
+        processor=authz_processor,
         unit_of_work=unit_of_work,
     )
     log_processor = LoggingProcessor(
@@ -86,7 +78,7 @@ class AddPersonProcessor:
         user_gateway: UserGateway,
         object_storage: ObjectStorage,
         identity_provider: IdentityProvider,
-        current_timestamp: datetime,
+        on_person_added: OnPersonAdded,
     ):
         self._add_person = add_person
         self._create_photo_from_obj = create_photo_from_obj
@@ -94,19 +86,21 @@ class AddPersonProcessor:
         self._user_gateway = user_gateway
         self._object_storage = object_storage
         self._identity_provider = identity_provider
-        self._current_timestamp = current_timestamp
+        self._on_person_added = on_person_added
 
     async def process(
         self,
         command: AddPersonCommand,
     ) -> AddPersonContributionId:
         current_user_id = await self._identity_provider.user_id()
+        current_timestamp = datetime.now(timezone.utc)
 
         author = await self._user_gateway.with_id(current_user_id)
         if not author:
             raise UserDoesNotExistError(current_user_id)
 
         photos = [self._create_photo_from_obj(obj) for obj in command.photos]
+        photos_urls = [photo.url for photo in photos]
 
         contribution = self._add_person(
             id=AddPersonContributionId(uuid7()),
@@ -115,48 +109,25 @@ class AddPersonProcessor:
             last_name=command.last_name,
             birth_date=command.birth_date,
             death_date=command.death_date,
-            photos=[photo.url for photo in photos],
-            current_timestamp=self._current_timestamp,
+            photos=photos_urls,
+            current_timestamp=current_timestamp,
         )
         await self._add_person_contribution_gateway.save(contribution)
 
         await self._object_storage.save_photo_seq(photos)
 
-        return contribution.id
-
-
-class CallbackProcessor:
-    def __init__(
-        self,
-        *,
-        processor: AuthorizationProcessor,
-        on_person_added: OnPersonAdded,
-        identity_provider: IdentityProvider,
-        current_timestamp: datetime,
-    ):
-        self._processor = processor
-        self._on_person_added = on_person_added
-        self._identity_provider = identity_provider
-        self._current_timestamp = current_timestamp
-
-    async def process(
-        self,
-        command: AddPersonCommand,
-    ) -> AddPersonContributionId:
-        result = await self._processor.process(command)
-        current_user_id = await self._identity_provider.user_id()
-
         await self._on_person_added(
-            id=result,
+            id=contribution.id,
             author_id=current_user_id,
             first_name=command.first_name,
             last_name=command.last_name,
             birth_date=command.birth_date,
             death_date=command.death_date,
-            added_at=self._current_timestamp,
+            photos=photos_urls,
+            added_at=current_timestamp,
         )
 
-        return result
+        return contribution.id
 
 
 class LoggingProcessor:

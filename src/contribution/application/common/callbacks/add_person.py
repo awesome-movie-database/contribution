@@ -1,9 +1,10 @@
-from typing import Protocol, Optional
+from typing import Protocol, Optional, Sequence
 from datetime import date, datetime
 
 from contribution.domain.value_objects import (
     AddPersonContributionId,
     UserId,
+    PhotoUrl,
 )
 
 
@@ -17,6 +18,7 @@ class OnPersonAdded(Protocol):
         last_name: str,
         birth_date: date,
         death_date: Optional[date],
+        photos: Sequence[PhotoUrl],
         added_at: datetime,
     ) -> None:
         raise NotImplementedError
