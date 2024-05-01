@@ -24,7 +24,10 @@ from contribution.application.common.gateways import (
     AchievementGateway,
 )
 from contribution.application.common.unit_of_work import UnitOfWork
-from contribution.application.common.callbacks import OnAchievementEarned
+from contribution.application.common.callbacks import (
+    OnAchievementEarned,
+    OnMovieAdditionAccepted,
+)
 from contribution.application.commands import AcceptMovieAdditionCommand
 
 
@@ -40,6 +43,7 @@ def accept_movie_addition_factory(
     achievement_gateway: AchievementGateway,
     unit_of_work: UnitOfWork,
     on_achievement_earned: OnAchievementEarned,
+    on_movie_addition_accepted: OnMovieAdditionAccepted,
 ) -> CommandProcessor[AcceptMovieAdditionCommand, None]:
     accept_movie_addition_processor = AcceptMovieAdditionProcessor(
         accept_contribution=accept_contribution,
@@ -49,6 +53,7 @@ def accept_movie_addition_factory(
         movie_gateway=movie_gateway,
         achievement_gateway=achievement_gateway,
         on_achievement_earned=on_achievement_earned,
+        on_movie_addition_accepted=on_movie_addition_accepted,
     )
     tx_processor = TransactionProcessor(
         processor=accept_movie_addition_processor,
@@ -72,6 +77,7 @@ class AcceptMovieAdditionProcessor:
         movie_gateway: MovieGateway,
         achievement_gateway: AchievementGateway,
         on_achievement_earned: OnAchievementEarned,
+        on_movie_addition_accepted: OnMovieAdditionAccepted,
     ):
         self._accept_contribution = accept_contribution
         self._create_movie = create_movie
@@ -80,6 +86,7 @@ class AcceptMovieAdditionProcessor:
         self._movie_gateway = movie_gateway
         self._achievement_gateway = achievement_gateway
         self._on_achievement_earned = on_achievement_earned
+        self._on_movie_addition_accepted = on_movie_addition_accepted
 
     async def process(
         self,
@@ -134,6 +141,12 @@ class AcceptMovieAdditionProcessor:
             revenue=contribution.revenue,
         )
         await self._movie_gateway.save(new_movie)
+
+        await self._on_movie_addition_accepted(
+            id=contribution.id,
+            user_id=contribution.author_id,
+            accepted_at=current_timestamp,
+        )
 
 
 class LoggingProcessor:
