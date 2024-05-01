@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Sequence
 from dataclasses import dataclass
 from datetime import date
 
@@ -6,6 +6,7 @@ from contribution.domain.value_objects import (
     EditPersonContributionId,
     UserId,
     PersonId,
+    PhotoUrl,
 )
 from contribution.domain.maybe import Maybe
 from .contribution import Contribution
@@ -20,3 +21,4 @@ class EditPersonContribution(Contribution):
     last_name: Maybe[str]
     birth_date: Maybe[date]
     death_date: Maybe[Optional[date]]
+    add_photos: Sequence[PhotoUrl]

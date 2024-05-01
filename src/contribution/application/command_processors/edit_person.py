@@ -47,8 +47,6 @@ def edit_person_factory(
     identity_provider: IdentityProvider,
     on_person_edited: OnPersonEdited,
 ) -> CommandProcessor[EditPersonCommand, EditPersonContributionId]:
-    current_timestamp = datetime.now(timezone.utc)
-
     add_person_processor = EditPersonProcessor(
         edit_person=edit_person,
         create_photo_from_obj=create_photo_from_obj,
@@ -57,7 +55,7 @@ def edit_person_factory(
         person_gateway=person_gateway,
         object_storage=object_storage,
         identity_provider=identity_provider,
-        current_timestamp=current_timestamp,
+        on_person_edited=on_person_edited,
     )
     authz_processor = AuthorizationProcessor(
         processor=add_person_processor,
@@ -65,14 +63,8 @@ def edit_person_factory(
         permissions_gateway=permissions_gateway,
         identity_provider=identity_provider,
     )
-    callback_processor = CallbackProcessor(
-        processor=authz_processor,
-        on_person_edited=on_person_edited,
-        identity_provider=identity_provider,
-        current_timestamp=current_timestamp,
-    )
     tx_processor = TransactionProcessor(
-        processor=callback_processor,
+        processor=authz_processor,
         unit_of_work=unit_of_work,
     )
     log_processor = LoggingProcessor(
@@ -93,7 +85,7 @@ class EditPersonProcessor:
         person_gateway: PersonGateway,
         object_storage: ObjectStorage,
         identity_provider: IdentityProvider,
-        current_timestamp: datetime,
+        on_person_edited: OnPersonEdited,
     ):
         self._edit_person = edit_person
         self._create_photo_from_obj = create_photo_from_obj
@@ -104,13 +96,14 @@ class EditPersonProcessor:
         self._person_gateway = person_gateway
         self._object_storage = object_storage
         self._identity_provider = identity_provider
-        self._current_timestamp = current_timestamp
+        self._on_person_edited = on_person_edited
 
     async def process(
         self,
         command: EditPersonCommand,
     ) -> EditPersonContributionId:
         current_user_id = await self._identity_provider.user_id()
+        current_timestamp = datetime.now(timezone.utc)
 
         author = await self._user_gateway.with_id(current_user_id)
         if not author:
@@ -120,9 +113,10 @@ class EditPersonProcessor:
         if not person:
             raise PersonDoesNotExistError()
 
-        photos = [
+        add_photos = [
             self._create_photo_from_obj(obj) for obj in command.add_photos
         ]
+        add_photos_urls = [photo.url for photo in add_photos]
 
         contribution = self._edit_person(
             id=EditPersonContributionId(uuid7()),
@@ -132,48 +126,26 @@ class EditPersonProcessor:
             last_name=command.last_name,
             birth_date=command.birth_date,
             death_date=command.death_date,
-            current_timestamp=self._current_timestamp,
+            add_photos=add_photos_urls,
+            current_timestamp=current_timestamp,
         )
         await self._edit_person_contribution_gateway.save(contribution)
 
-        await self._object_storage.save_photo_seq(photos)
-
-        return contribution.id
-
-
-class CallbackProcessor:
-    def __init__(
-        self,
-        *,
-        processor: AuthorizationProcessor,
-        on_person_edited: OnPersonEdited,
-        identity_provider: IdentityProvider,
-        current_timestamp: datetime,
-    ):
-        self._processor = processor
-        self._on_person_edited = on_person_edited
-        self._identity_provider = identity_provider
-        self._current_timestamp = current_timestamp
-
-    async def process(
-        self,
-        command: EditPersonCommand,
-    ) -> EditPersonCommand:
-        result = await self._processor.process(command)
-        current_user_id = await self._identity_provider.user_id()
+        await self._object_storage.save_photo_seq(add_photos)
 
         await self._on_person_edited(
-            id=result,
+            id=contribution.id,
             author_id=current_user_id,
             person_id=command.person_id,
             first_name=command.first_name,
             last_name=command.last_name,
             birth_date=command.birth_date,
             death_date=command.death_date,
-            edited_at=self._current_timestamp,
+            add_photos=add_photos_urls,
+            edited_at=current_timestamp,
         )
 
-        return result
+        return contribution.id
 
 
 class LoggingProcessor:

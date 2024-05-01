@@ -1,8 +1,11 @@
-from typing import Optional
+from typing import Optional, Sequence
 from datetime import date, datetime
 
 from contribution.domain.constants import ContributionStatus
-from contribution.domain.value_objects import EditPersonContributionId
+from contribution.domain.value_objects import (
+    EditPersonContributionId,
+    PhotoUrl,
+)
 from contribution.domain.validators import (
     ValidatePersonFirstName,
     ValidatePersonLastName,
@@ -39,6 +42,7 @@ class EditPerson:
         last_name: Maybe[str],
         birth_date: Maybe[date],
         death_date: Maybe[Optional[date]],
+        add_photos: Sequence[PhotoUrl],
         current_timestamp: datetime,
     ) -> EditPersonContribution:
         if not author.is_active:
@@ -87,6 +91,7 @@ class EditPerson:
             last_name=last_name,
             birth_date=birth_date,
             death_date=death_date,
+            add_photos=add_photos,
             status=ContributionStatus.PENDING,
             created_at=current_timestamp,
             status_updated_at=None,

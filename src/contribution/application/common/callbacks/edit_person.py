@@ -1,10 +1,11 @@
-from typing import Protocol, Optional
+from typing import Protocol, Optional, Sequence
 from datetime import date, datetime
 
 from contribution.domain.value_objects import (
     EditPersonContributionId,
     UserId,
     PersonId,
+    PhotoUrl,
 )
 from contribution.domain.maybe import Maybe
 
@@ -20,6 +21,7 @@ class OnPersonEdited(Protocol):
         last_name: Maybe[str],
         birth_date: Maybe[date],
         death_date: Maybe[Optional[date]],
+        add_photos: Sequence[PhotoUrl],
         edited_at: datetime,
     ) -> None:
         raise NotImplementedError
