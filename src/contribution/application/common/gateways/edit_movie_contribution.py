@@ -1,9 +1,16 @@
-from typing import Protocol
+from typing import Protocol, Optional
 
+from contribution.domain.value_objects import EditMovieContributionId
 from contribution.domain.entities import EditMovieContribution
 
 
 class EditMovieContributionGateway(Protocol):
+    async def with_id(
+        self,
+        id: EditMovieContributionId,
+    ) -> Optional[EditMovieContribution]:
+        raise NotImplementedError
+
     async def save(self, contribution: EditMovieContribution) -> None:
         raise NotImplementedError
 

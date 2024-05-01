@@ -6,45 +6,45 @@ from uuid_extensions import uuid7
 from contribution.domain.value_objects import AchievementId
 from contribution.domain.services import (
     AcceptContribution,
-    CreateMovie,
+    UpdateMovie,
 )
 from contribution.application.common.command_processors import (
     CommandProcessor,
     TransactionProcessor,
 )
 from contribution.application.common.exceptions import (
-    MovieIdIsAlreadyTakenError,
+    MovieDoesNotExistError,
     UserDoesNotExistError,
     ContributionDoesNotExistError,
 )
 from contribution.application.common.gateways import (
-    AddMovieContributionGateway,
+    EditMovieContributionGateway,
     MovieGateway,
     UserGateway,
     AchievementGateway,
 )
 from contribution.application.common.unit_of_work import UnitOfWork
 from contribution.application.common.callbacks import OnAchievementEarned
-from contribution.application.commands import AcceptMovieAdditionCommand
+from contribution.application.commands import AcceptMovieEditingCommand
 
 
 logger = logging.getLogger(__name__)
 
 
-def accept_movie_addition_factory(
+def accept_movie_editing_factory(
     accept_contribution: AcceptContribution,
-    create_movie: CreateMovie,
-    add_movie_contribution_gateway: AddMovieContributionGateway,
+    update_movie: UpdateMovie,
+    edit_movie_contribution_gateway: EditMovieContributionGateway,
     user_gateway: UserGateway,
     movie_gateway: MovieGateway,
     achievement_gateway: AchievementGateway,
     unit_of_work: UnitOfWork,
     on_achievement_earned: OnAchievementEarned,
-) -> CommandProcessor[AcceptMovieAdditionCommand, None]:
-    accept_movie_addition_processor = AcceptMovieAdditionProcessor(
+) -> CommandProcessor[AcceptMovieEditingCommand, None]:
+    accept_movie_addition_processor = AcceptMovieEditingProcessor(
         accept_contribution=accept_contribution,
-        create_movie=create_movie,
-        add_movie_contribution_gateway=add_movie_contribution_gateway,
+        update_movie=update_movie,
+        edit_movie_contribution_gateway=edit_movie_contribution_gateway,
         user_gateway=user_gateway,
         movie_gateway=movie_gateway,
         achievement_gateway=achievement_gateway,
@@ -61,21 +61,21 @@ def accept_movie_addition_factory(
     return log_processor
 
 
-class AcceptMovieAdditionProcessor:
+class AcceptMovieEditingProcessor:
     def __init__(
         self,
         *,
         accept_contribution: AcceptContribution,
-        create_movie: CreateMovie,
-        add_movie_contribution_gateway: AddMovieContributionGateway,
+        update_movie: UpdateMovie,
+        edit_movie_contribution_gateway: EditMovieContributionGateway,
         user_gateway: UserGateway,
         movie_gateway: MovieGateway,
         achievement_gateway: AchievementGateway,
         on_achievement_earned: OnAchievementEarned,
     ):
         self._accept_contribution = accept_contribution
-        self._create_movie = create_movie
-        self._add_movie_contribution_gateway = add_movie_contribution_gateway
+        self._update_movie = update_movie
+        self._edit_movie_contribution_gateway = edit_movie_contribution_gateway
         self._user_gateway = user_gateway
         self._movie_gateway = movie_gateway
         self._achievement_gateway = achievement_gateway
@@ -83,11 +83,11 @@ class AcceptMovieAdditionProcessor:
 
     async def process(
         self,
-        command: AcceptMovieAdditionCommand,
+        command: AcceptMovieEditingCommand,
     ) -> None:
         current_timestamp = datetime.now(timezone.utc)
 
-        contribution = await self._add_movie_contribution_gateway.with_id(
+        contribution = await self._edit_movie_contribution_gateway.with_id(
             id=command.contribution_id,
         )
         if not contribution:
@@ -99,9 +99,11 @@ class AcceptMovieAdditionProcessor:
         if not author:
             raise UserDoesNotExistError(contribution.author_id)
 
-        movie = await self._movie_gateway.with_id(command.movie_id)
-        if movie:
-            raise MovieIdIsAlreadyTakenError()
+        movie = await self._movie_gateway.acquire_with_id(
+            id=contribution.movie_id,
+        )
+        if not movie:
+            raise MovieDoesNotExistError()
 
         achievement = self._accept_contribution(
             achievement_id=AchievementId(uuid7()),
@@ -120,10 +122,10 @@ class AcceptMovieAdditionProcessor:
             )
 
         await self._user_gateway.update(author)
-        await self._add_movie_contribution_gateway.update(contribution)
+        await self._edit_movie_contribution_gateway.update(contribution)
 
-        new_movie = self._create_movie(
-            id=command.movie_id,
+        self._update_movie(
+            movie,
             title=contribution.title,
             release_date=contribution.release_date,
             countries=contribution.countries,
@@ -133,7 +135,7 @@ class AcceptMovieAdditionProcessor:
             budget=contribution.budget,
             revenue=contribution.revenue,
         )
-        await self._movie_gateway.save(new_movie)
+        await self._movie_gateway.update(movie)
 
 
 class LoggingProcessor:
@@ -142,10 +144,10 @@ class LoggingProcessor:
 
     async def process(
         self,
-        command: AcceptMovieAdditionCommand,
+        command: AcceptMovieEditingCommand,
     ) -> None:
         logger.debug(
-            msg="Processing Accept Movie Addition command",
+            msg="Processing Accept Movie Editing command",
             extra={"command": command},
         )
 
@@ -166,15 +168,9 @@ class LoggingProcessor:
                 extra={"user_id": e.id},
             )
             raise e
-        except MovieIdIsAlreadyTakenError as e:
-            logger.error(
-                msg="Movie id is already taken",
-                extra={"movie_id": command.movie_id},
-            )
-            raise e
 
         logger.debug(
-            msg="Accept Movie Addition command was processed",
+            msg="Accept movie editing command was processed",
         )
 
         return result
