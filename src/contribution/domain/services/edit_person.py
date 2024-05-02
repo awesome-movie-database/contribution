@@ -1,7 +1,10 @@
 from typing import Optional, Sequence
 from datetime import date, datetime
 
-from contribution.domain.constants import ContributionStatus
+from contribution.domain.constants import (
+    ContributionStatus,
+    Sex,
+)
 from contribution.domain.value_objects import (
     EditPersonContributionId,
     PhotoUrl,
@@ -40,6 +43,7 @@ class EditPerson:
         person: Person,
         first_name: Maybe[str],
         last_name: Maybe[str],
+        sex: Maybe[Sex],
         birth_date: Maybe[date],
         death_date: Maybe[Optional[date]],
         add_photos: Sequence[PhotoUrl],
@@ -79,6 +83,7 @@ class EditPerson:
             person=person,
             first_name=first_name,
             last_name=last_name,
+            sex=sex,
             birth_date=birth_date,
             death_date=death_date,
         )
@@ -89,6 +94,7 @@ class EditPerson:
             person_id=person.id,
             first_name=first_name,
             last_name=last_name,
+            sex=sex,
             birth_date=birth_date,
             death_date=death_date,
             add_photos=add_photos,
@@ -103,6 +109,7 @@ class EditPerson:
         person: Person,
         first_name: Maybe[str],
         last_name: Maybe[str],
+        sex: Maybe[Sex],
         birth_date: Maybe[date],
         death_date: Maybe[Optional[date]],
     ) -> None:
@@ -112,6 +119,8 @@ class EditPerson:
             fields_with_duplicates.append("first_name")
         if last_name.is_set and last_name.value == person.last_name:
             fields_with_duplicates.append("last_name")
+        if sex.is_set and sex.value == person.sex:
+            fields_with_duplicates.append("sex")
         if birth_date.is_set and birth_date.value == person.birth_date:
             fields_with_duplicates.append("birth_date")
         if death_date.is_set and death_date.value == person.death_date:
