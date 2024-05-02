@@ -1,6 +1,7 @@
 from typing import Protocol, Optional, Sequence
 from datetime import date, datetime
 
+from contribution.domain.constants import Sex
 from contribution.domain.value_objects import (
     EditPersonContributionId,
     UserId,
@@ -19,6 +20,7 @@ class OnPersonEdited(Protocol):
         person_id: PersonId,
         first_name: Maybe[str],
         last_name: Maybe[str],
+        sex: Maybe[Sex],
         birth_date: Maybe[date],
         death_date: Maybe[Optional[date]],
         add_photos: Sequence[PhotoUrl],
