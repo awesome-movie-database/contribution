@@ -19,7 +19,10 @@ from contribution.application.common.gateways import (
     AchievementGateway,
 )
 from contribution.application.common.unit_of_work import UnitOfWork
-from contribution.application.common.callbacks import OnAchievementEarned
+from contribution.application.common.callbacks import (
+    OnAchievementEarned,
+    OnMovieAdditionRejected,
+)
 from contribution.application.commands import RejectMovieAdditionCommand
 
 
@@ -33,6 +36,7 @@ def reject_movie_addition_factory(
     achievement_gateway: AchievementGateway,
     unit_of_work: UnitOfWork,
     on_achievement_earned: OnAchievementEarned,
+    on_movie_addition_rejected: OnMovieAdditionRejected,
 ) -> CommandProcessor[RejectMovieAdditionCommand, None]:
     accept_movie_addition_processor = RejectMovieAdditionProcessor(
         reject_contribution=reject_contribution,
@@ -40,6 +44,7 @@ def reject_movie_addition_factory(
         user_gateway=user_gateway,
         achievement_gateway=achievement_gateway,
         on_achievement_earned=on_achievement_earned,
+        on_movie_addition_rejected=on_movie_addition_rejected,
     )
     tx_processor = TransactionProcessor(
         processor=accept_movie_addition_processor,
@@ -61,12 +66,14 @@ class RejectMovieAdditionProcessor:
         user_gateway: UserGateway,
         achievement_gateway: AchievementGateway,
         on_achievement_earned: OnAchievementEarned,
+        on_movie_addition_rejected: OnMovieAdditionRejected,
     ):
         self._reject_contribution = reject_contribution
         self._add_movie_contribution_gateway = add_movie_contribution_gateway
         self._user_gateway = user_gateway
         self._achievement_gateway = achievement_gateway
         self._on_achievement_earned = on_achievement_earned
+        self._on_movie_addition_rejected = on_movie_addition_rejected
 
     async def process(
         self,
@@ -104,6 +111,13 @@ class RejectMovieAdditionProcessor:
 
         await self._user_gateway.update(author)
         await self._add_movie_contribution_gateway.update(contribution)
+
+        await self._on_movie_addition_rejected(
+            id=contribution.id,
+            user_id=contribution.author_id,
+            movie_title=contribution.title,
+            rejected_at=current_timestamp,
+        )
 
 
 class LoggingProcessor:

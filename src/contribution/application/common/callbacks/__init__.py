@@ -6,6 +6,7 @@ __all__ = (
     "OnAchievementEarned",
     "OnMovieAdditionAccepted",
     "OnMovieEditingAccepted",
+    "OnMovieAdditionRejected",
 )
 
 from .movie_added import OnMovieAdded
@@ -15,3 +16,4 @@ from .person_edited import OnPersonEdited
 from .achievement_earned import OnAchievementEarned
 from .movie_addition_accepted import OnMovieAdditionAccepted
 from .movie_editing_accepted import OnMovieEditingAccepted
+from .movie_addition_rejected import OnMovieAdditionRejected
