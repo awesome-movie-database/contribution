@@ -1,6 +1,7 @@
 from typing import Optional
 from datetime import date
 
+from contribution.domain.constants import Sex
 from contribution.domain.value_objects import PersonId
 from contribution.domain.validators import (
     ValidatePersonFirstName,
@@ -27,6 +28,7 @@ class CreatePerson:
         id: PersonId,
         first_name: str,
         last_name: str,
+        sex: Sex,
         birth_date: date,
         death_date: Optional[date],
     ) -> Person:
@@ -40,6 +42,7 @@ class CreatePerson:
             id=id,
             first_name=first_name,
             last_name=last_name,
+            sex=sex,
             birth_date=birth_date,
             death_date=death_date,
         )

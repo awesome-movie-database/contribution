@@ -1,4 +1,5 @@
 __all__ = (
+    "Sex",
     "Genre",
     "MPAA",
     "Writing",
@@ -7,6 +8,7 @@ __all__ = (
     "Achieved",
 )
 
+from .sex import Sex
 from .genre import Genre
 from .mpaa import MPAA
 from .writing import Writing

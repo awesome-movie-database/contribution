@@ -1,6 +1,7 @@
 from typing import Optional
 from datetime import date
 
+from contribution.domain.constants import Sex
 from contribution.domain.validators import (
     ValidatePersonFirstName,
     ValidatePersonLastName,
@@ -27,6 +28,7 @@ class UpdatePerson:
         *,
         first_name: Maybe[str],
         last_name: Maybe[str],
+        sex: Maybe[Sex],
         birth_date: Maybe[date],
         death_date: Maybe[Optional[date]],
     ) -> None:
@@ -36,6 +38,9 @@ class UpdatePerson:
         if last_name.is_set:
             self._validate_person_last_name(last_name.value)
             person.last_name = last_name.value
+
+        if sex.is_set:
+            person.sex = sex.value
 
         if birth_date.is_set and death_date.is_set and death_date.value:
             self._validate_birth_and_death_dates(
