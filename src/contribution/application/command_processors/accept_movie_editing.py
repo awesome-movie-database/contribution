@@ -24,7 +24,10 @@ from contribution.application.common.gateways import (
     AchievementGateway,
 )
 from contribution.application.common.unit_of_work import UnitOfWork
-from contribution.application.common.callbacks import OnAchievementEarned
+from contribution.application.common.callbacks import (
+    OnAchievementEarned,
+    OnMovieEditingAccepted,
+)
 from contribution.application.commands import AcceptMovieEditingCommand
 
 
@@ -40,6 +43,7 @@ def accept_movie_editing_factory(
     achievement_gateway: AchievementGateway,
     unit_of_work: UnitOfWork,
     on_achievement_earned: OnAchievementEarned,
+    on_movie_editing_accepted: OnMovieEditingAccepted,
 ) -> CommandProcessor[AcceptMovieEditingCommand, None]:
     accept_movie_addition_processor = AcceptMovieEditingProcessor(
         accept_contribution=accept_contribution,
@@ -49,6 +53,7 @@ def accept_movie_editing_factory(
         movie_gateway=movie_gateway,
         achievement_gateway=achievement_gateway,
         on_achievement_earned=on_achievement_earned,
+        on_movie_editing_accepted=on_movie_editing_accepted,
     )
     tx_processor = TransactionProcessor(
         processor=accept_movie_addition_processor,
@@ -72,6 +77,7 @@ class AcceptMovieEditingProcessor:
         movie_gateway: MovieGateway,
         achievement_gateway: AchievementGateway,
         on_achievement_earned: OnAchievementEarned,
+        on_movie_editing_accepted: OnMovieEditingAccepted,
     ):
         self._accept_contribution = accept_contribution
         self._update_movie = update_movie
@@ -80,6 +86,7 @@ class AcceptMovieEditingProcessor:
         self._movie_gateway = movie_gateway
         self._achievement_gateway = achievement_gateway
         self._on_achievement_earned = on_achievement_earned
+        self._on_movie_editing_accepted = on_movie_editing_accepted
 
     async def process(
         self,
@@ -136,6 +143,13 @@ class AcceptMovieEditingProcessor:
             revenue=contribution.revenue,
         )
         await self._movie_gateway.update(movie)
+
+        await self._on_movie_editing_accepted(
+            id=contribution.id,
+            user_id=contribution.author_id,
+            movie_title=movie.title,
+            accepted_at=current_timestamp,
+        )
 
 
 class LoggingProcessor:

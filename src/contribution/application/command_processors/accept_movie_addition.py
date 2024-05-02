@@ -145,6 +145,7 @@ class AcceptMovieAdditionProcessor:
         await self._on_movie_addition_accepted(
             id=contribution.id,
             user_id=contribution.author_id,
+            movie_title=contribution.title,
             accepted_at=current_timestamp,
         )
 
