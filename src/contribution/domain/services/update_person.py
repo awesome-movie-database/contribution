@@ -49,10 +49,17 @@ class UpdatePerson:
             )
             person.birth_date = birth_date.value
             person.death_date = death_date.value
-        elif birth_date and death_date.is_set:
-            person.birth_date = birth_date.value
+        elif not birth_date.is_set and death_date.is_set and death_date.value:
+            self._validate_birth_and_death_dates(
+                birth_date=person.birth_date,
+                death_date=death_date.value,
+            )
             person.death_date = death_date.value
-        else:
+        elif birth_date.is_set and not death_date.is_set and person.death_date:
+            self._validate_birth_and_death_dates(
+                birth_date=birth_date.value,
+                death_date=person.death_date,
+            )
             person.birth_date = birth_date.value
 
     def _validate_birth_and_death_dates(
