@@ -10,16 +10,21 @@ from contribution.application.common.command_processors import (
     TransactionProcessor,
 )
 from contribution.application.common.exceptions import (
+    MovieDoesNotExistError,
     UserDoesNotExistError,
     ContributionDoesNotExistError,
 )
 from contribution.application.common.gateways import (
     EditMovieContributionGateway,
+    MovieGateway,
     UserGateway,
     AchievementGateway,
 )
 from contribution.application.common.unit_of_work import UnitOfWork
-from contribution.application.common.callbacks import OnAchievementEarned
+from contribution.application.common.callbacks import (
+    OnAchievementEarned,
+    OnMovieEditingRejected,
+)
 from contribution.application.commands import RejectMovieEditingCommand
 
 
@@ -29,17 +34,21 @@ logger = logging.getLogger(__name__)
 def reject_movie_editing_factory(
     reject_contribution: RejectContribution,
     edit_movie_contribution_gateway: EditMovieContributionGateway,
+    movie_gateway: MovieGateway,
     user_gateway: UserGateway,
     achievement_gateway: AchievementGateway,
     unit_of_work: UnitOfWork,
     on_achievement_earned: OnAchievementEarned,
+    on_movie_editing_rejected: OnMovieEditingRejected,
 ) -> CommandProcessor[RejectMovieEditingCommand, None]:
     accept_movie_addition_processor = RejectMovieEditingProcessor(
         reject_contribution=reject_contribution,
         edit_movie_contribution_gateway=edit_movie_contribution_gateway,
+        movie_gateway=movie_gateway,
         user_gateway=user_gateway,
         achievement_gateway=achievement_gateway,
         on_achievement_earned=on_achievement_earned,
+        on_movie_editing_rejected=on_movie_editing_rejected,
     )
     tx_processor = TransactionProcessor(
         processor=accept_movie_addition_processor,
@@ -58,15 +67,19 @@ class RejectMovieEditingProcessor:
         *,
         reject_contribution: RejectContribution,
         edit_movie_contribution_gateway: EditMovieContributionGateway,
+        movie_gateway: MovieGateway,
         user_gateway: UserGateway,
         achievement_gateway: AchievementGateway,
         on_achievement_earned: OnAchievementEarned,
+        on_movie_editing_rejected: OnMovieEditingRejected,
     ):
         self._reject_contribution = reject_contribution
         self._edit_movie_contribution_gateway = edit_movie_contribution_gateway
+        self._movie_gateway = movie_gateway
         self._user_gateway = user_gateway
         self._achievement_gateway = achievement_gateway
         self._on_achievement_earned = on_achievement_earned
+        self._on_movie_editing_rejected = on_movie_editing_rejected
 
     async def process(
         self,
@@ -86,6 +99,10 @@ class RejectMovieEditingProcessor:
         if not author:
             raise UserDoesNotExistError(contribution.author_id)
 
+        movie = await self._movie_gateway.with_id(contribution.movie_id)
+        if not movie:
+            raise MovieDoesNotExistError()
+
         achievement = self._reject_contribution(
             achievement_id=AchievementId(uuid7()),
             contribution=contribution,
@@ -104,6 +121,13 @@ class RejectMovieEditingProcessor:
 
         await self._user_gateway.update(author)
         await self._edit_movie_contribution_gateway.update(contribution)
+
+        await self._on_movie_editing_rejected(
+            id=contribution.id,
+            user_id=contribution.author_id,
+            movie_title=movie.title,
+            rejected_at=current_timestamp,
+        )
 
 
 class LoggingProcessor:
