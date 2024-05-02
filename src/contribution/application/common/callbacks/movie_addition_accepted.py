@@ -1,10 +1,7 @@
 from typing import Protocol
 from datetime import datetime
 
-from contribution.domain.value_objects import (
-    AddMovieContributionId,
-    UserId,
-)
+from contribution.domain.value_objects import AddMovieContributionId
 
 
 class OnMovieAdditionAccepted(Protocol):
@@ -12,8 +9,6 @@ class OnMovieAdditionAccepted(Protocol):
         self,
         *,
         id: AddMovieContributionId,
-        user_id: UserId,
-        movie_title: str,
         accepted_at: datetime,
     ) -> None:
         raise NotImplementedError

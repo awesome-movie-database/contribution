@@ -10,13 +10,11 @@ from contribution.application.common.command_processors import (
     TransactionProcessor,
 )
 from contribution.application.common.exceptions import (
-    MovieDoesNotExistError,
     UserDoesNotExistError,
     ContributionDoesNotExistError,
 )
 from contribution.application.common.gateways import (
     EditMovieContributionGateway,
-    MovieGateway,
     UserGateway,
     AchievementGateway,
 )
@@ -34,7 +32,6 @@ logger = logging.getLogger(__name__)
 def reject_movie_editing_factory(
     reject_contribution: RejectContribution,
     edit_movie_contribution_gateway: EditMovieContributionGateway,
-    movie_gateway: MovieGateway,
     user_gateway: UserGateway,
     achievement_gateway: AchievementGateway,
     unit_of_work: UnitOfWork,
@@ -44,7 +41,6 @@ def reject_movie_editing_factory(
     accept_movie_addition_processor = RejectMovieEditingProcessor(
         reject_contribution=reject_contribution,
         edit_movie_contribution_gateway=edit_movie_contribution_gateway,
-        movie_gateway=movie_gateway,
         user_gateway=user_gateway,
         achievement_gateway=achievement_gateway,
         on_achievement_earned=on_achievement_earned,
@@ -67,7 +63,6 @@ class RejectMovieEditingProcessor:
         *,
         reject_contribution: RejectContribution,
         edit_movie_contribution_gateway: EditMovieContributionGateway,
-        movie_gateway: MovieGateway,
         user_gateway: UserGateway,
         achievement_gateway: AchievementGateway,
         on_achievement_earned: OnAchievementEarned,
@@ -75,7 +70,6 @@ class RejectMovieEditingProcessor:
     ):
         self._reject_contribution = reject_contribution
         self._edit_movie_contribution_gateway = edit_movie_contribution_gateway
-        self._movie_gateway = movie_gateway
         self._user_gateway = user_gateway
         self._achievement_gateway = achievement_gateway
         self._on_achievement_earned = on_achievement_earned
@@ -99,10 +93,6 @@ class RejectMovieEditingProcessor:
         if not author:
             raise UserDoesNotExistError(contribution.author_id)
 
-        movie = await self._movie_gateway.with_id(contribution.movie_id)
-        if not movie:
-            raise MovieDoesNotExistError()
-
         achievement = self._reject_contribution(
             achievement_id=AchievementId(uuid7()),
             contribution=contribution,
@@ -112,22 +102,21 @@ class RejectMovieEditingProcessor:
         if achievement:
             await self._achievement_gateway.save(achievement)
 
+        await self._user_gateway.update(author)
+        await self._edit_movie_contribution_gateway.update(contribution)
+
+        await self._on_movie_editing_rejected(
+            id=contribution.id,
+            rejected_at=current_timestamp,
+        )
+
+        if achievement:
             await self._on_achievement_earned(
                 id=achievement.id,
                 user_id=achievement.user_id,
                 achieved=achievement.achieved,
                 achieved_at=current_timestamp,
             )
-
-        await self._user_gateway.update(author)
-        await self._edit_movie_contribution_gateway.update(contribution)
-
-        await self._on_movie_editing_rejected(
-            id=contribution.id,
-            user_id=contribution.author_id,
-            movie_title=movie.title,
-            rejected_at=current_timestamp,
-        )
 
 
 class LoggingProcessor:

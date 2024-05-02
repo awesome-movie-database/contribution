@@ -102,22 +102,21 @@ class RejectMovieAdditionProcessor:
         if achievement:
             await self._achievement_gateway.save(achievement)
 
+        await self._user_gateway.update(author)
+        await self._add_movie_contribution_gateway.update(contribution)
+
+        await self._on_movie_addition_rejected(
+            id=contribution.id,
+            rejected_at=current_timestamp,
+        )
+
+        if achievement:
             await self._on_achievement_earned(
                 id=achievement.id,
                 user_id=achievement.user_id,
                 achieved=achievement.achieved,
                 achieved_at=current_timestamp,
             )
-
-        await self._user_gateway.update(author)
-        await self._add_movie_contribution_gateway.update(contribution)
-
-        await self._on_movie_addition_rejected(
-            id=contribution.id,
-            user_id=contribution.author_id,
-            movie_title=contribution.title,
-            rejected_at=current_timestamp,
-        )
 
 
 class LoggingProcessor:
