@@ -8,6 +8,7 @@ __all__ = (
     "OnMovieEditingAccepted",
     "OnMovieAdditionRejected",
     "OnMovieEditingRejected",
+    "OnPersonAdditionAccepted",
 )
 
 from .movie_added import OnMovieAdded
@@ -19,3 +20,4 @@ from .movie_addition_accepted import OnMovieAdditionAccepted
 from .movie_editing_accepted import OnMovieEditingAccepted
 from .movie_addition_rejected import OnMovieAdditionRejected
 from .movie_editing_rejected import OnMovieEditingRejected
+from .person_addition_accepted import OnPersonAdditionAccepted

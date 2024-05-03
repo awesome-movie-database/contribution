@@ -7,6 +7,7 @@ __all__ = (
     "MovieIdIsAlreadyTakenError",
     "UserDoesNotExistError",
     "MovieDoesNotExistError",
+    "PersonIdIsAlreadyTakenError",
     "PersonDoesNotExistError",
     "PersonsDoNotExistError",
     "RolesDoNotExistError",
@@ -29,6 +30,7 @@ from .movie import (
     MovieDoesNotExistError,
 )
 from .person import (
+    PersonIdIsAlreadyTakenError,
     PersonDoesNotExistError,
     PersonsDoNotExistError,
 )
