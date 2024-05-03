@@ -12,6 +12,7 @@ __all__ = (
     "accept_person_addition_factory",
     "accept_person_editing_factory",
     "reject_person_addition_factory",
+    "reject_person_editing_factory",
 )
 
 from .create_user import create_user_factory
@@ -27,3 +28,4 @@ from .reject_movie_editing import reject_movie_editing_factory
 from .accept_person_addition import accept_person_addition_factory
 from .accept_person_editing import accept_person_editing_factory
 from .reject_person_addition import reject_person_addition_factory
+from .reject_person_editing import reject_person_editing_factory

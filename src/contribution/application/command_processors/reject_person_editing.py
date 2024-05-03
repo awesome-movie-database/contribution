@@ -13,35 +13,35 @@ from contribution.application.common.exceptions import (
     ContributionDoesNotExistError,
 )
 from contribution.application.common.gateways import (
-    AddPersonContributionGateway,
+    EditPersonContributionGateway,
     UserGateway,
     AchievementGateway,
 )
 from contribution.application.common.unit_of_work import UnitOfWork
 from contribution.application.common.callbacks import OnAchievementEarned
-from contribution.application.commands import RejectPersonAdditionCommand
+from contribution.application.commands import RejectPersonEditingCommand
 
 
 logger = logging.getLogger(__name__)
 
 
-def reject_person_addition_factory(
+def reject_person_editing_factory(
     reject_contribution: RejectContribution,
-    add_person_contribution_gateway: AddPersonContributionGateway,
+    edit_person_contribution_gateway: EditPersonContributionGateway,
     user_gateway: UserGateway,
     achievement_gateway: AchievementGateway,
     unit_of_work: UnitOfWork,
     on_achievement_earned: OnAchievementEarned,
-) -> CommandProcessor[RejectPersonAdditionCommand, None]:
-    reject_person_addition_processor = RejectPersonAdditionProcessor(
+) -> CommandProcessor[RejectPersonEditingCommand, None]:
+    reject_person_editing_processor = RejectPersonEditingProcessor(
         reject_contribution=reject_contribution,
-        add_person_contribution_gateway=add_person_contribution_gateway,
+        edit_person_contribution_gateway=edit_person_contribution_gateway,
         user_gateway=user_gateway,
         achievement_gateway=achievement_gateway,
         on_achievement_earned=on_achievement_earned,
     )
     tx_processor = TransactionProcessor(
-        processor=reject_person_addition_processor,
+        processor=reject_person_editing_processor,
         unit_of_work=unit_of_work,
     )
     log_processor = LoggingProcessor(
@@ -51,27 +51,29 @@ def reject_person_addition_factory(
     return log_processor
 
 
-class RejectPersonAdditionProcessor:
+class RejectPersonEditingProcessor:
     def __init__(
         self,
         *,
         reject_contribution: RejectContribution,
-        add_person_contribution_gateway: AddPersonContributionGateway,
+        edit_person_contribution_gateway: EditPersonContributionGateway,
         user_gateway: UserGateway,
         achievement_gateway: AchievementGateway,
         on_achievement_earned: OnAchievementEarned,
     ):
         self._reject_contribution = reject_contribution
-        self._add_person_contribution_gateway = add_person_contribution_gateway
+        self._edit_person_contribution_gateway = (
+            edit_person_contribution_gateway
+        )
         self._user_gateway = user_gateway
         self._achievement_gateway = achievement_gateway
         self._on_achievement_earned = on_achievement_earned
 
     async def process(
         self,
-        command: RejectPersonAdditionCommand,
+        command: RejectPersonEditingCommand,
     ) -> None:
-        contribution = await self._add_person_contribution_gateway.with_id(
+        contribution = await self._edit_person_contribution_gateway.with_id(
             id=command.contribution_id,
         )
         if not contribution:
@@ -93,7 +95,7 @@ class RejectPersonAdditionProcessor:
             await self._achievement_gateway.save(achievement)
 
         await self._user_gateway.update(author)
-        await self._add_person_contribution_gateway.update(contribution)
+        await self._edit_person_contribution_gateway.update(contribution)
 
         if achievement:
             await self._on_achievement_earned(
@@ -110,10 +112,10 @@ class LoggingProcessor:
 
     async def process(
         self,
-        command: RejectPersonAdditionCommand,
+        command: RejectPersonEditingCommand,
     ) -> None:
         logger.debug(
-            msg="Processing Reject Person Addition command",
+            msg="Processing Reject Person Editing command",
             extra={"command": command},
         )
 
@@ -136,7 +138,7 @@ class LoggingProcessor:
             raise e
 
         logger.debug(
-            msg="Reject Person Addition command was processed",
+            msg="Reject Person Editing command was processed",
         )
 
         return result
