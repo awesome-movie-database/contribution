@@ -1,5 +1,4 @@
 import logging
-from datetime import datetime, timezone
 
 from uuid_extensions import uuid7
 
@@ -24,10 +23,7 @@ from contribution.application.common.gateways import (
     AchievementGateway,
 )
 from contribution.application.common.unit_of_work import UnitOfWork
-from contribution.application.common.callbacks import (
-    OnAchievementEarned,
-    OnPersonEditingAccepted,
-)
+from contribution.application.common.callbacks import OnAchievementEarned
 from contribution.application.commands import AcceptPersonEditingCommand
 
 
@@ -43,7 +39,6 @@ def accept_person_editing_factory(
     achievement_gateway: AchievementGateway,
     unit_of_work: UnitOfWork,
     on_achievement_earned: OnAchievementEarned,
-    on_person_editing_accepted: OnPersonEditingAccepted,
 ) -> CommandProcessor[AcceptPersonEditingCommand, None]:
     accept_person_editing_processor = AcceptPersonEditingProcessor(
         accept_contribution=accept_contribution,
@@ -53,7 +48,6 @@ def accept_person_editing_factory(
         person_gateway=person_gateway,
         achievement_gateway=achievement_gateway,
         on_achievement_earned=on_achievement_earned,
-        on_person_editing_accepted=on_person_editing_accepted,
     )
     tx_processor = TransactionProcessor(
         processor=accept_person_editing_processor,
@@ -77,7 +71,6 @@ class AcceptPersonEditingProcessor:
         person_gateway: PersonGateway,
         achievement_gateway: AchievementGateway,
         on_achievement_earned: OnAchievementEarned,
-        on_person_editing_accepted: OnPersonEditingAccepted,
     ):
         self._accept_contribution = accept_contribution
         self._update_person = update_person
@@ -88,14 +81,11 @@ class AcceptPersonEditingProcessor:
         self._person_gateway = person_gateway
         self._achievement_gateway = achievement_gateway
         self._on_achievement_earned = on_achievement_earned
-        self._on_person_editing_accepted = on_person_editing_accepted
 
     async def process(
         self,
         command: AcceptPersonEditingCommand,
     ) -> None:
-        current_timestamp = datetime.now(timezone.utc)
-
         contribution = await self._edit_person_contribution_gateway.with_id(
             id=command.contribution_id,
         )
@@ -118,7 +108,7 @@ class AcceptPersonEditingProcessor:
             achievement_id=AchievementId(uuid7()),
             contribution=contribution,
             author=author,
-            current_timestamp=current_timestamp,
+            current_timestamp=command.accepted_at,
         )
         if achievement:
             await self._achievement_gateway.save(achievement)
@@ -136,17 +126,12 @@ class AcceptPersonEditingProcessor:
         )
         await self._person_gateway.update(person)
 
-        await self._on_person_editing_accepted(
-            id=contribution.id,
-            accepted_at=current_timestamp,
-        )
-
         if achievement:
             await self._on_achievement_earned(
                 id=achievement.id,
                 user_id=achievement.user_id,
                 achieved=achievement.achieved,
-                achieved_at=current_timestamp,
+                achieved_at=command.accepted_at,
             )
 
 

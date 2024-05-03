@@ -1,5 +1,4 @@
 import logging
-from datetime import datetime, timezone
 
 from uuid_extensions import uuid7
 
@@ -24,10 +23,7 @@ from contribution.application.common.gateways import (
     AchievementGateway,
 )
 from contribution.application.common.unit_of_work import UnitOfWork
-from contribution.application.common.callbacks import (
-    OnAchievementEarned,
-    OnPersonAdditionAccepted,
-)
+from contribution.application.common.callbacks import OnAchievementEarned
 from contribution.application.commands import AcceptPersonAdditionCommand
 
 
@@ -43,7 +39,6 @@ def accept_person_addition_factory(
     achievement_gateway: AchievementGateway,
     unit_of_work: UnitOfWork,
     on_achievement_earned: OnAchievementEarned,
-    on_person_addition_accepted: OnPersonAdditionAccepted,
 ) -> CommandProcessor[AcceptPersonAdditionCommand, None]:
     accept_person_addition_processor = AcceptPersonAdditionProcessor(
         accept_contribution=accept_contribution,
@@ -53,7 +48,6 @@ def accept_person_addition_factory(
         person_gateway=person_gateway,
         achievement_gateway=achievement_gateway,
         on_achievement_earned=on_achievement_earned,
-        on_person_addition_accepted=on_person_addition_accepted,
     )
     tx_processor = TransactionProcessor(
         processor=accept_person_addition_processor,
@@ -77,7 +71,6 @@ class AcceptPersonAdditionProcessor:
         person_gateway: PersonGateway,
         achievement_gateway: AchievementGateway,
         on_achievement_earned: OnAchievementEarned,
-        on_person_addition_accepted: OnPersonAdditionAccepted,
     ):
         self._accept_contribution = accept_contribution
         self._create_person = create_person
@@ -86,14 +79,11 @@ class AcceptPersonAdditionProcessor:
         self._person_gateway = person_gateway
         self._achievement_gateway = achievement_gateway
         self._on_achievement_earned = on_achievement_earned
-        self._on_person_addition_accepted = on_person_addition_accepted
 
     async def process(
         self,
         command: AcceptPersonAdditionCommand,
     ) -> None:
-        current_timestamp = datetime.now(timezone.utc)
-
         contribution = await self._add_person_contribution_gateway.with_id(
             id=command.contribution_id,
         )
@@ -114,7 +104,7 @@ class AcceptPersonAdditionProcessor:
             achievement_id=AchievementId(uuid7()),
             contribution=contribution,
             author=author,
-            current_timestamp=current_timestamp,
+            current_timestamp=command.accepted_at,
         )
         if achievement:
             await self._achievement_gateway.save(achievement)
@@ -132,17 +122,12 @@ class AcceptPersonAdditionProcessor:
         )
         await self._person_gateway.save(new_person)
 
-        await self._on_person_addition_accepted(
-            id=contribution.id,
-            accepted_at=current_timestamp,
-        )
-
         if achievement:
             await self._on_achievement_earned(
                 id=achievement.id,
                 user_id=achievement.user_id,
                 achieved=achievement.achieved,
-                achieved_at=current_timestamp,
+                achieved_at=command.accepted_at,
             )
 
 

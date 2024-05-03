@@ -1,5 +1,4 @@
 import logging
-from datetime import datetime, timezone
 
 from uuid_extensions import uuid7
 
@@ -19,10 +18,7 @@ from contribution.application.common.gateways import (
     AchievementGateway,
 )
 from contribution.application.common.unit_of_work import UnitOfWork
-from contribution.application.common.callbacks import (
-    OnAchievementEarned,
-    OnMovieEditingRejected,
-)
+from contribution.application.common.callbacks import OnAchievementEarned
 from contribution.application.commands import RejectMovieEditingCommand
 
 
@@ -36,7 +32,6 @@ def reject_movie_editing_factory(
     achievement_gateway: AchievementGateway,
     unit_of_work: UnitOfWork,
     on_achievement_earned: OnAchievementEarned,
-    on_movie_editing_rejected: OnMovieEditingRejected,
 ) -> CommandProcessor[RejectMovieEditingCommand, None]:
     accept_movie_addition_processor = RejectMovieEditingProcessor(
         reject_contribution=reject_contribution,
@@ -44,7 +39,6 @@ def reject_movie_editing_factory(
         user_gateway=user_gateway,
         achievement_gateway=achievement_gateway,
         on_achievement_earned=on_achievement_earned,
-        on_movie_editing_rejected=on_movie_editing_rejected,
     )
     tx_processor = TransactionProcessor(
         processor=accept_movie_addition_processor,
@@ -66,21 +60,17 @@ class RejectMovieEditingProcessor:
         user_gateway: UserGateway,
         achievement_gateway: AchievementGateway,
         on_achievement_earned: OnAchievementEarned,
-        on_movie_editing_rejected: OnMovieEditingRejected,
     ):
         self._reject_contribution = reject_contribution
         self._edit_movie_contribution_gateway = edit_movie_contribution_gateway
         self._user_gateway = user_gateway
         self._achievement_gateway = achievement_gateway
         self._on_achievement_earned = on_achievement_earned
-        self._on_movie_editing_rejected = on_movie_editing_rejected
 
     async def process(
         self,
         command: RejectMovieEditingCommand,
     ) -> None:
-        current_timestamp = datetime.now(timezone.utc)
-
         contribution = await self._edit_movie_contribution_gateway.with_id(
             id=command.contribution_id,
         )
@@ -97,7 +87,7 @@ class RejectMovieEditingProcessor:
             achievement_id=AchievementId(uuid7()),
             contribution=contribution,
             author=author,
-            current_timestamp=current_timestamp,
+            current_timestamp=command.rejected_at,
         )
         if achievement:
             await self._achievement_gateway.save(achievement)
@@ -105,17 +95,12 @@ class RejectMovieEditingProcessor:
         await self._user_gateway.update(author)
         await self._edit_movie_contribution_gateway.update(contribution)
 
-        await self._on_movie_editing_rejected(
-            id=contribution.id,
-            rejected_at=current_timestamp,
-        )
-
         if achievement:
             await self._on_achievement_earned(
                 id=achievement.id,
                 user_id=achievement.user_id,
                 achieved=achievement.achieved,
-                achieved_at=current_timestamp,
+                achieved_at=command.rejected_at,
             )
 
 
