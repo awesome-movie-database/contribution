@@ -6,57 +6,57 @@ from uuid_extensions import uuid7
 from contribution.domain.value_objects import AchievementId
 from contribution.domain.services import (
     AcceptContribution,
-    UpdateMovie,
+    UpdatePerson,
 )
 from contribution.application.common.command_processors import (
     CommandProcessor,
     TransactionProcessor,
 )
 from contribution.application.common.exceptions import (
-    MovieDoesNotExistError,
+    PersonDoesNotExistError,
     UserDoesNotExistError,
     ContributionDoesNotExistError,
 )
 from contribution.application.common.gateways import (
-    EditMovieContributionGateway,
-    MovieGateway,
+    EditPersonContributionGateway,
+    PersonGateway,
     UserGateway,
     AchievementGateway,
 )
 from contribution.application.common.unit_of_work import UnitOfWork
 from contribution.application.common.callbacks import (
     OnAchievementEarned,
-    OnMovieEditingAccepted,
+    OnPersonEditingAccepted,
 )
-from contribution.application.commands import AcceptMovieEditingCommand
+from contribution.application.commands import AcceptPersonEditingCommand
 
 
 logger = logging.getLogger(__name__)
 
 
-def accept_movie_editing_factory(
+def accept_person_editing_factory(
     accept_contribution: AcceptContribution,
-    update_movie: UpdateMovie,
-    edit_movie_contribution_gateway: EditMovieContributionGateway,
+    update_person: UpdatePerson,
+    edit_person_contribution_gateway: EditPersonContributionGateway,
     user_gateway: UserGateway,
-    movie_gateway: MovieGateway,
+    person_gateway: PersonGateway,
     achievement_gateway: AchievementGateway,
     unit_of_work: UnitOfWork,
     on_achievement_earned: OnAchievementEarned,
-    on_movie_editing_accepted: OnMovieEditingAccepted,
-) -> CommandProcessor[AcceptMovieEditingCommand, None]:
-    accept_movie_editing_processor = AcceptMovieEditingProcessor(
+    on_person_editing_accepted: OnPersonEditingAccepted,
+) -> CommandProcessor[AcceptPersonEditingCommand, None]:
+    accept_person_editing_processor = AcceptPersonEditingProcessor(
         accept_contribution=accept_contribution,
-        update_movie=update_movie,
-        edit_movie_contribution_gateway=edit_movie_contribution_gateway,
+        update_person=update_person,
+        edit_person_contribution_gateway=edit_person_contribution_gateway,
         user_gateway=user_gateway,
-        movie_gateway=movie_gateway,
+        person_gateway=person_gateway,
         achievement_gateway=achievement_gateway,
         on_achievement_earned=on_achievement_earned,
-        on_movie_editing_accepted=on_movie_editing_accepted,
+        on_person_editing_accepted=on_person_editing_accepted,
     )
     tx_processor = TransactionProcessor(
-        processor=accept_movie_editing_processor,
+        processor=accept_person_editing_processor,
         unit_of_work=unit_of_work,
     )
     log_processor = LoggingProcessor(
@@ -66,35 +66,37 @@ def accept_movie_editing_factory(
     return log_processor
 
 
-class AcceptMovieEditingProcessor:
+class AcceptPersonEditingProcessor:
     def __init__(
         self,
         *,
         accept_contribution: AcceptContribution,
-        update_movie: UpdateMovie,
-        edit_movie_contribution_gateway: EditMovieContributionGateway,
+        update_person: UpdatePerson,
+        edit_person_contribution_gateway: EditPersonContributionGateway,
         user_gateway: UserGateway,
-        movie_gateway: MovieGateway,
+        person_gateway: PersonGateway,
         achievement_gateway: AchievementGateway,
         on_achievement_earned: OnAchievementEarned,
-        on_movie_editing_accepted: OnMovieEditingAccepted,
+        on_person_editing_accepted: OnPersonEditingAccepted,
     ):
         self._accept_contribution = accept_contribution
-        self._update_movie = update_movie
-        self._edit_movie_contribution_gateway = edit_movie_contribution_gateway
+        self._update_person = update_person
+        self._edit_person_contribution_gateway = (
+            edit_person_contribution_gateway
+        )
         self._user_gateway = user_gateway
-        self._movie_gateway = movie_gateway
+        self._person_gateway = person_gateway
         self._achievement_gateway = achievement_gateway
         self._on_achievement_earned = on_achievement_earned
-        self._on_movie_editing_accepted = on_movie_editing_accepted
+        self._on_person_editing_accepted = on_person_editing_accepted
 
     async def process(
         self,
-        command: AcceptMovieEditingCommand,
+        command: AcceptPersonEditingCommand,
     ) -> None:
         current_timestamp = datetime.now(timezone.utc)
 
-        contribution = await self._edit_movie_contribution_gateway.with_id(
+        contribution = await self._edit_person_contribution_gateway.with_id(
             id=command.contribution_id,
         )
         if not contribution:
@@ -106,11 +108,11 @@ class AcceptMovieEditingProcessor:
         if not author:
             raise UserDoesNotExistError(contribution.author_id)
 
-        movie = await self._movie_gateway.acquire_with_id(
-            id=contribution.movie_id,
+        person = await self._person_gateway.acquire_with_id(
+            id=contribution.person_id,
         )
-        if not movie:
-            raise MovieDoesNotExistError()
+        if not person:
+            raise PersonDoesNotExistError()
 
         achievement = self._accept_contribution(
             achievement_id=AchievementId(uuid7()),
@@ -122,22 +124,19 @@ class AcceptMovieEditingProcessor:
             await self._achievement_gateway.save(achievement)
 
         await self._user_gateway.update(author)
-        await self._edit_movie_contribution_gateway.update(contribution)
+        await self._edit_person_contribution_gateway.update(contribution)
 
-        self._update_movie(
-            movie,
-            title=contribution.title,
-            release_date=contribution.release_date,
-            countries=contribution.countries,
-            genres=contribution.genres,
-            mpaa=contribution.mpaa,
-            duration=contribution.duration,
-            budget=contribution.budget,
-            revenue=contribution.revenue,
+        self._update_person(
+            person,
+            first_name=contribution.first_name,
+            last_name=contribution.last_name,
+            sex=contribution.sex,
+            birth_date=contribution.birth_date,
+            death_date=contribution.death_date,
         )
-        await self._movie_gateway.update(movie)
+        await self._person_gateway.update(person)
 
-        await self._on_movie_editing_accepted(
+        await self._on_person_editing_accepted(
             id=contribution.id,
             accepted_at=current_timestamp,
         )
@@ -157,10 +156,10 @@ class LoggingProcessor:
 
     async def process(
         self,
-        command: AcceptMovieEditingCommand,
+        command: AcceptPersonEditingCommand,
     ) -> None:
         logger.debug(
-            msg="Processing Accept Movie Editing command",
+            msg="Processing Accept Person Editing command",
             extra={"command": command},
         )
 
@@ -183,7 +182,7 @@ class LoggingProcessor:
             raise e
 
         logger.debug(
-            msg="Accept Movie Editing command was processed",
+            msg="Accept Person Editing command was processed",
         )
 
         return result
