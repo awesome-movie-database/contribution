@@ -238,7 +238,7 @@ class LoggingProcessor:
         except PersonsDoNotExistError as e:
             logger.debug(
                 "Expected error occurred: "
-                "Ids of persons entered by user do not belong to persons",
+                "Person ids entered by user do not belong to any persons",
                 extra={
                     "processing_id": command_processing_id,
                     "ids_of_missing_persons": e.ids_of_missing_persons,
