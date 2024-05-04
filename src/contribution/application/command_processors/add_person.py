@@ -4,6 +4,10 @@ from datetime import datetime, timezone
 from uuid_extensions import uuid7
 
 from contribution.domain.value_objects import AddPersonContributionId
+from contribution.domain.exceptions import (
+    UserIsNotActiveError,
+    InvalidPersonBirthOrDeathDateError,
+)
 from contribution.domain.services import AddPerson
 from contribution.application.common.services import (
     AccessConcern,
@@ -42,6 +46,8 @@ def add_person_factory(
     identity_provider: IdentityProvider,
     on_person_added: OnPersonAdded,
 ) -> CommandProcessor[AddPersonCommand, AddPersonContributionId]:
+    current_timestamp = datetime.now(timezone.utc)
+
     add_person_processor = AddPersonProcessor(
         add_person=add_person,
         create_photo_from_obj=create_photo_from_obj,
@@ -49,7 +55,7 @@ def add_person_factory(
         user_gateway=user_gateway,
         object_storage=object_storage,
         identity_provider=identity_provider,
-        on_person_added=on_person_added,
+        current_timestamp=current_timestamp,
     )
     authz_processor = AuthorizationProcessor(
         processor=add_person_processor,
@@ -57,12 +63,20 @@ def add_person_factory(
         permissions_gateway=permissions_gateway,
         identity_provider=identity_provider,
     )
-    tx_processor = TransactionProcessor(
+    callback_processor = CallbackProcessor(
         processor=authz_processor,
+        create_photo_from_obj=create_photo_from_obj,
+        identity_provider=identity_provider,
+        on_person_added=on_person_added,
+        current_timestamp=current_timestamp,
+    )
+    tx_processor = TransactionProcessor(
+        processor=callback_processor,
         unit_of_work=unit_of_work,
     )
     log_processor = LoggingProcessor(
         processor=tx_processor,
+        identity_provider=identity_provider,
     )
 
     return log_processor
@@ -78,7 +92,7 @@ class AddPersonProcessor:
         user_gateway: UserGateway,
         object_storage: ObjectStorage,
         identity_provider: IdentityProvider,
-        on_person_added: OnPersonAdded,
+        current_timestamp: datetime,
     ):
         self._add_person = add_person
         self._create_photo_from_obj = create_photo_from_obj
@@ -86,14 +100,13 @@ class AddPersonProcessor:
         self._user_gateway = user_gateway
         self._object_storage = object_storage
         self._identity_provider = identity_provider
-        self._on_person_added = on_person_added
+        self._current_timestamp = current_timestamp
 
     async def process(
         self,
         command: AddPersonCommand,
     ) -> AddPersonContributionId:
         current_user_id = await self._identity_provider.user_id()
-        current_timestamp = datetime.now(timezone.utc)
 
         author = await self._user_gateway.with_id(current_user_id)
         if not author:
@@ -111,52 +124,110 @@ class AddPersonProcessor:
             birth_date=command.birth_date,
             death_date=command.death_date,
             photos=photos_urls,
-            current_timestamp=current_timestamp,
+            current_timestamp=self._current_timestamp,
         )
         await self._add_person_contribution_gateway.save(contribution)
 
         await self._object_storage.save_photo_seq(photos)
 
+        return contribution.id
+
+
+class CallbackProcessor:
+    def __init__(
+        self,
+        *,
+        processor: AuthorizationProcessor,
+        create_photo_from_obj: CreatePhotoFromObj,
+        identity_provider: IdentityProvider,
+        on_person_added: OnPersonAdded,
+        current_timestamp: datetime,
+    ):
+        self._processor = processor
+        self._create_photo_from_obj = create_photo_from_obj
+        self._identity_provider = identity_provider
+        self._on_person_added = on_person_added
+        self._current_timestamp = current_timestamp
+
+    async def process(
+        self,
+        command: AddPersonCommand,
+    ) -> AddPersonContributionId:
+        result = await self._processor.process(command)
+        current_user_id = await self._identity_provider.user_id()
+        photos = [self._create_photo_from_obj(obj) for obj in command.photos]
+
         await self._on_person_added(
-            id=contribution.id,
+            id=result,
             author_id=current_user_id,
             first_name=command.first_name,
             last_name=command.last_name,
             sex=command.sex,
             birth_date=command.birth_date,
             death_date=command.death_date,
-            photos=photos_urls,
-            added_at=current_timestamp,
+            photos=[photo.url for photo in photos],
+            added_at=self._current_timestamp,
         )
 
-        return contribution.id
+        return result
 
 
 class LoggingProcessor:
-    def __init__(self, processor: TransactionProcessor):
+    def __init__(
+        self,
+        *,
+        processor: TransactionProcessor,
+        identity_provider: IdentityProvider,
+    ):
         self._processor = processor
+        self._identity_provider = identity_provider
 
     async def process(
         self,
         command: AddPersonCommand,
     ) -> AddPersonContributionId:
+        current_user_id = await self._identity_provider.user_id()
+        command_processing_id = uuid7()
+
         logger.debug(
-            msg="Processing Add Person command",
-            extra={"command": command},
+            msg="'Add Person' processing command started",
+            extra={
+                "processing_id": command_processing_id,
+                "command": command,
+                "current_user_id": current_user_id,
+            },
         )
 
         try:
             result = await self._processor.process(command)
         except UserDoesNotExistError as e:
-            logger.error(
-                msg="User is authenticated, but user gateway returns None",
-                extra={"user_id": e.id},
+            logger.warning(
+                "Unexpected error occurred: "
+                "User is authenticated, but user gateway returns None",
+                extra={"processing_id": command_processing_id},
+            )
+            raise e
+        except UserIsNotActiveError as e:
+            logger.debug(
+                "Expected error occurred: User is not active",
+                extra={"processing_id": command_processing_id},
+            )
+            raise e
+        except InvalidPersonBirthOrDeathDateError as e:
+            logger.debug(
+                "Expected error occurred: "
+                "The date of death entered by user occurred earlier"
+                "than the date of birth",
+                extra={"processing_id": command_processing_id},
             )
             raise e
 
         logger.debug(
-            msg="Add person command was processed",
-            extra={"contribution_id": result},
+            msg="'Add Person' processing command completed",
+            extra={
+                "processing_id": command_processing_id,
+                "contribution_id": result,
+            },
         )
 
         return result
