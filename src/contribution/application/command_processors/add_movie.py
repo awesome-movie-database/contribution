@@ -237,7 +237,11 @@ class LoggingProcessor:
             )
             raise e
         except Exception as e:
-            logger.exception("Unexpected error occurred", exc_info=e)
+            logger.exception(
+                "Unexpected error occurred",
+                exc_info=e,
+                extra={"error": e},
+            )
             raise e
 
         logger.debug(
