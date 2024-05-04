@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from uuid_extensions import uuid7
 
 from contribution.domain.value_objects import AddMovieContributionId
+from contribution.domain.exceptions import UserIsNotActiveError
 from contribution.domain.services import AddMovie
 from contribution.application.common.services import (
     AccessConcern,
@@ -15,7 +16,10 @@ from contribution.application.common.command_processors import (
     AuthorizationProcessor,
     TransactionProcessor,
 )
-from contribution.application.common.exceptions import UserDoesNotExistError
+from contribution.application.common.exceptions import (
+    UserDoesNotExistError,
+    PersonsDoNotExistError,
+)
 from contribution.application.common.gateways import (
     AddMovieContributionGateway,
     UserGateway,
@@ -75,6 +79,7 @@ def add_movie_factory(
     )
     log_processor = LoggingProcessor(
         processor=tx_processor,
+        identity_provider=identity_provider,
     )
 
     return log_processor
@@ -190,29 +195,53 @@ class CallbackProcessor:
 
 
 class LoggingProcessor:
-    def __init__(self, processor: TransactionProcessor):
+    def __init__(
+        self,
+        *,
+        processor: TransactionProcessor,
+        identity_provider: IdentityProvider,
+    ):
         self._processor = processor
+        self._identity_provider = identity_provider
 
     async def process(
         self,
         command: AddMovieCommand,
     ) -> AddMovieContributionId:
+        current_user_id = await self._identity_provider.user_id()
+
         logger.debug(
-            msg="Processing Add Movie command",
-            extra={"command": command},
+            "'Add Movie' command processing started",
+            extra={
+                "command": command,
+                "current_user_id": current_user_id,
+            },
         )
 
         try:
             result = await self._processor.process(command)
         except UserDoesNotExistError as e:
-            logger.error(
-                msg="User is authenticated, but user gateway returns None",
-                extra={"user_id": e.id},
+            logger.warning(
+                "Unexpected error occurred: "
+                "User is authenticated, but user gateway returns None",
             )
+            raise e
+        except UserIsNotActiveError as e:
+            logger.debug("Expected error occurred: User is not active")
+            raise e
+        except PersonsDoNotExistError as e:
+            logger.debug(
+                "Expected error occurred: "
+                "Ids of persons entered by user do not belong to persons",
+                extra={"ids_of_missing_persons": e.ids_of_missing_persons},
+            )
+            raise e
+        except Exception as e:
+            logger.exception("Unexpected error occurred", exc_info=e)
             raise e
 
         logger.debug(
-            msg="Add movie command was processed",
+            "'Add Movie' command processing completed",
             extra={"contribution_id": result},
         )
 
