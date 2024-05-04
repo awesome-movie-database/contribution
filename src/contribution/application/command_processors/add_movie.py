@@ -209,10 +209,12 @@ class LoggingProcessor:
         command: AddMovieCommand,
     ) -> AddMovieContributionId:
         current_user_id = await self._identity_provider.user_id()
+        command_processing_id = uuid7()
 
         logger.debug(
             "'Add Movie' command processing started",
             extra={
+                "processing_id": command_processing_id,
                 "command": command,
                 "current_user_id": current_user_id,
             },
@@ -224,29 +226,42 @@ class LoggingProcessor:
             logger.warning(
                 "Unexpected error occurred: "
                 "User is authenticated, but user gateway returns None",
+                extra={"processing_id": command_processing_id},
             )
             raise e
         except UserIsNotActiveError as e:
-            logger.debug("Expected error occurred: User is not active")
+            logger.debug(
+                "Expected error occurred: User is not active",
+                extra={"processing_id": command_processing_id},
+            )
             raise e
         except PersonsDoNotExistError as e:
             logger.debug(
                 "Expected error occurred: "
                 "Ids of persons entered by user do not belong to persons",
-                extra={"ids_of_missing_persons": e.ids_of_missing_persons},
+                extra={
+                    "processing_id": command_processing_id,
+                    "ids_of_missing_persons": e.ids_of_missing_persons,
+                },
             )
             raise e
         except Exception as e:
             logger.exception(
                 "Unexpected error occurred",
                 exc_info=e,
-                extra={"error": e},
+                extra={
+                    "processing_id": command_processing_id,
+                    "error": e,
+                },
             )
             raise e
 
         logger.debug(
             "'Add Movie' command processing completed",
-            extra={"contribution_id": result},
+            extra={
+                "processing_id": command_processing_id,
+                "contribution_id": result,
+            },
         )
 
         return result
