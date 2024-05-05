@@ -14,6 +14,7 @@ __all__ = (
     "WritersDoNotExistError",
     "CrewMembersDoNotExistError",
     "ContributionDoesNotExistError",
+    "AchievementDoesNotExistError",
     "NotEnoughPermissionsError",
 )
 
@@ -38,4 +39,5 @@ from .role import RolesDoNotExistError
 from .writer import WritersDoNotExistError
 from .crew import CrewMembersDoNotExistError
 from .contribution import ContributionDoesNotExistError
+from .achievement import AchievementDoesNotExistError
 from .permissions import NotEnoughPermissionsError
