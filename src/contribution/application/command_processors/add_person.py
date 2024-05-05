@@ -4,10 +4,7 @@ from datetime import datetime, timezone
 from uuid_extensions import uuid7
 
 from contribution.domain.value_objects import AddPersonContributionId
-from contribution.domain.exceptions import (
-    UserIsNotActiveError,
-    InvalidPersonBirthOrDeathDateError,
-)
+from contribution.domain.exceptions import UserIsNotActiveError
 from contribution.domain.services import AddPerson
 from contribution.application.common.services import (
     AccessConcern,
@@ -210,14 +207,6 @@ class LoggingProcessor:
         except UserIsNotActiveError as e:
             logger.debug(
                 "Expected error occurred: User is not active",
-                extra={"processing_id": command_processing_id},
-            )
-            raise e
-        except InvalidPersonBirthOrDeathDateError as e:
-            logger.debug(
-                "Expected error occurred: "
-                "The date of death entered by user occurred earlier"
-                "than the date of birth",
                 extra={"processing_id": command_processing_id},
             )
             raise e
