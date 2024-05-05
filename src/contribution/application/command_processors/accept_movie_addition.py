@@ -11,6 +11,7 @@ from contribution.domain.services import (
 from contribution.application.common.command_processors import (
     CommandProcessor,
     TransactionProcessor,
+    AchievementEearnedCallbackProcessor,
 )
 from contribution.application.common.exceptions import (
     MovieIdIsAlreadyTakenError,
@@ -51,7 +52,7 @@ def accept_movie_addition_factory(
         achievement_gateway=achievement_gateway,
         on_achievement_earned=on_achievement_earned,
     )
-    callback_processor = CallbackProcessor(
+    callback_processor = AchievementEearnedCallbackProcessor(
         processor=accept_movie_addition_processor,
         achievement_gateway=achievement_gateway,
         on_achievement_earned=on_achievement_earned,
@@ -133,41 +134,6 @@ class AcceptMovieAdditionProcessor:
         await self._movie_gateway.save(new_movie)
 
         return achievement.id if achievement else None
-
-
-class CallbackProcessor:
-    def __init__(
-        self,
-        *,
-        processor: AcceptMovieAdditionProcessor,
-        achievement_gateway: AchievementGateway,
-        on_achievement_earned: OnAchievementEarned,
-    ):
-        self._processor = processor
-        self._achievement_gateway = achievement_gateway
-        self._on_achievement_earned = on_achievement_earned
-
-    async def process(
-        self,
-        command: AcceptMovieAdditionCommand,
-    ) -> Optional[AchievementId]:
-        result = await self._processor.process(command)
-
-        if not result:
-            return result
-
-        achievement = await self._achievement_gateway.with_id(result)
-        if not achievement:
-            raise AchievementDoesNotExistError()
-
-        await self._on_achievement_earned(
-            id=achievement.id,
-            user_id=achievement.user_id,
-            achieved=achievement.achieved,
-            achieved_at=achievement.achieved_at,
-        )
-
-        return result
 
 
 class LoggingProcessor:

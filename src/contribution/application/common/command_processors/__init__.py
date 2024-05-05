@@ -2,8 +2,10 @@ __all__ = (
     "CommandProcessor",
     "AuthorizationProcessor",
     "TransactionProcessor",
+    "AchievementEearnedCallbackProcessor",
 )
 
-from .command_processor import CommandProcessor
-from .authorization_processor import AuthorizationProcessor
-from .transaction_processor import TransactionProcessor
+from .command import CommandProcessor
+from .authorization import AuthorizationProcessor
+from .transaction import TransactionProcessor
+from .achievement_earned_callback import AchievementEearnedCallbackProcessor

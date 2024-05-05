@@ -1,7 +1,7 @@
 from typing import Generic, TypeVar
 
 from contribution.application.common.unit_of_work import UnitOfWork
-from .command_processor import CommandProcessor
+from .command import CommandProcessor
 
 
 _C = TypeVar("_C", contravariant=True)

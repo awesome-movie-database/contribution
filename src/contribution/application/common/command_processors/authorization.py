@@ -6,7 +6,7 @@ from contribution.application.common.exceptions import (
 )
 from contribution.application.common.gateways import PermissionsGateway
 from contribution.application.common.identity_provider import IdentityProvider
-from .command_processor import CommandProcessor
+from .command import CommandProcessor
 
 
 _C = TypeVar("_C", contravariant=True)
