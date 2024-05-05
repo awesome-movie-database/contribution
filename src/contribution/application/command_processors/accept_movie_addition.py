@@ -164,10 +164,8 @@ class LoggingProcessor:
             raise e
         except UserDoesNotExistError as e:
             logger.error(
-                msg=(
-                    "Contribution has author id, "
-                    "using which user gateway returns None"
-                ),
+                "Unexpected error occurred: Contribution has author id, "
+                "using which user gateway returns None",
                 extra={"processing_id": command_processing_id},
             )
             raise e
@@ -179,9 +177,8 @@ class LoggingProcessor:
             raise e
         except AchievementDoesNotExistError as e:
             logger.error(
-                "Unexpected error occurred: "
-                "Achievement was created, but achievement gateway "
-                "returns None",
+                "Unexpected error occurred: Achievement was created, "
+                "but achievement gateway returns None",
                 extra={"processing_id": command_processing_id},
             )
         except Exception as e:
