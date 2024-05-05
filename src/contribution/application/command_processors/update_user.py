@@ -103,25 +103,25 @@ class LoggingProcessor:
         try:
             result = await self._processor.process(command)
         except UserDoesNotExistError as e:
-            logger.warning(
+            logger.error(
                 "Unexpected error occurred: User doesn't exist",
                 extra={"processing_id": command_processing_id},
             )
             raise e
         except UserNameIsAlreadyTakenError as e:
-            logger.warning(
-                "Unexpected error occurred: User id is already taken",
+            logger.error(
+                "Unexpected error occurred: User name is already taken",
                 extra={"processing_id": command_processing_id},
             )
             raise e
         except UserEmailIsAlreadyTakenError as e:
-            logger.warning(
+            logger.error(
                 "Unexpected error occurred: User email already taken",
                 extra={"processing_id": command_processing_id},
             )
             raise e
         except UserTelegramIsAlreadyTakenError as e:
-            logger.warning(
+            logger.error(
                 "Unexpected error occurred: User telegram is already taken",
                 extra={"processing_id": command_processing_id},
             )
