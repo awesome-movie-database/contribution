@@ -345,8 +345,8 @@ class LoggingProcessor:
             )
             raise e
         except MovieDoesNotExistError as e:
-            logger.debug(
-                "Expected error occurred: Movie doesn't exist",
+            logger.error(
+                "Unexpected error occurred: Movie doesn't exist",
                 extra={"processing_id": command_processing_id},
             )
             raise e

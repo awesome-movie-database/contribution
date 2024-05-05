@@ -223,8 +223,8 @@ class LoggingProcessor:
             )
             raise e
         except PersonDoesNotExistError as e:
-            logger.debug(
-                "Expected error occurred: Person doesn't exist",
+            logger.error(
+                "Unexpected error occurred: Person doesn't exist",
                 extra={"processing_id": command_processing_id},
             )
             raise e
