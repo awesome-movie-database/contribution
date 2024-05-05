@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 from uuid_extensions import uuid7
 
@@ -10,11 +11,13 @@ from contribution.domain.services import (
 from contribution.application.common.command_processors import (
     CommandProcessor,
     TransactionProcessor,
+    AchievementEearnedCallbackProcessor,
 )
 from contribution.application.common.exceptions import (
     MovieDoesNotExistError,
     UserDoesNotExistError,
     ContributionDoesNotExistError,
+    AchievementDoesNotExistError,
 )
 from contribution.application.common.gateways import (
     EditMovieContributionGateway,
@@ -39,7 +42,7 @@ def accept_movie_editing_factory(
     achievement_gateway: AchievementGateway,
     unit_of_work: UnitOfWork,
     on_achievement_earned: OnAchievementEarned,
-) -> CommandProcessor[AcceptMovieEditingCommand, None]:
+) -> CommandProcessor[AcceptMovieEditingCommand, Optional[AchievementId]]:
     accept_movie_editing_processor = AcceptMovieEditingProcessor(
         accept_contribution=accept_contribution,
         update_movie=update_movie,
@@ -47,10 +50,14 @@ def accept_movie_editing_factory(
         user_gateway=user_gateway,
         movie_gateway=movie_gateway,
         achievement_gateway=achievement_gateway,
+    )
+    callback_processor = AchievementEearnedCallbackProcessor(
+        processor=accept_movie_editing_processor,
+        achievement_gateway=achievement_gateway,
         on_achievement_earned=on_achievement_earned,
     )
     tx_processor = TransactionProcessor(
-        processor=accept_movie_editing_processor,
+        processor=callback_processor,
         unit_of_work=unit_of_work,
     )
     log_processor = LoggingProcessor(
@@ -70,7 +77,6 @@ class AcceptMovieEditingProcessor:
         user_gateway: UserGateway,
         movie_gateway: MovieGateway,
         achievement_gateway: AchievementGateway,
-        on_achievement_earned: OnAchievementEarned,
     ):
         self._accept_contribution = accept_contribution
         self._update_movie = update_movie
@@ -78,12 +84,11 @@ class AcceptMovieEditingProcessor:
         self._user_gateway = user_gateway
         self._movie_gateway = movie_gateway
         self._achievement_gateway = achievement_gateway
-        self._on_achievement_earned = on_achievement_earned
 
     async def process(
         self,
         command: AcceptMovieEditingCommand,
-    ) -> None:
+    ) -> Optional[AchievementId]:
         contribution = await self._edit_movie_contribution_gateway.with_id(
             id=command.contribution_id,
         )
@@ -127,13 +132,7 @@ class AcceptMovieEditingProcessor:
         )
         await self._movie_gateway.update(movie)
 
-        if achievement:
-            await self._on_achievement_earned(
-                id=achievement.id,
-                user_id=achievement.user_id,
-                achieved=achievement.achieved,
-                achieved_at=command.accepted_at,
-            )
+        return achievement.id if achievement else None
 
 
 class LoggingProcessor:
@@ -143,32 +142,62 @@ class LoggingProcessor:
     async def process(
         self,
         command: AcceptMovieEditingCommand,
-    ) -> None:
+    ) -> Optional[AchievementId]:
+        command_processing_id = uuid7()
+
         logger.debug(
-            msg="Processing Accept Movie Editing command",
-            extra={"command": command},
+            "'Accept Movie Editing' command processing started",
+            extra={
+                "processing_id": command_processing_id,
+                "command": command,
+            },
         )
 
         try:
             result = await self._processor.process(command)
         except ContributionDoesNotExistError as e:
             logger.error(
-                msg="Contribution doesn't exist",
-                extra={"contribution_id": command.contribution_id},
+                "Unexpected error occurred: Contribution doesn't exist",
+                extra={"processing_id": command_processing_id},
             )
             raise e
         except UserDoesNotExistError as e:
             logger.error(
-                msg=(
-                    "Contribution has author id, "
-                    "using which user gateway returns None"
-                ),
-                extra={"user_id": e.id},
+                "Unexpected error occurred: Contribution has author id, "
+                "using which user gateway returns None",
+                extra={"processing_id": command_processing_id},
+            )
+            raise e
+        except MovieDoesNotExistError as e:
+            logger.error(
+                "Unexpected error occurred: Contribution has movie id,"
+                "using which movie gateway returns None",
+                extra={"processing_id": command_processing_id},
+            )
+            raise e
+        except AchievementDoesNotExistError as e:
+            logger.error(
+                "Unexpected error occurred: Achievement was created, "
+                "but achievement gateway returns None",
+                extra={"processing_id": command_processing_id},
+            )
+        except Exception as e:
+            logger.exception(
+                "Unexpected error occurred",
+                exc_info=e,
+                extra={
+                    "processing_id": command_processing_id,
+                    "error": e,
+                },
             )
             raise e
 
         logger.debug(
-            msg="Accept Movie Editing command was processed",
+            "'Accept Movie Editing' command processing completed",
+            extra={
+                "processing_id": command_processing_id,
+                "achievement_id": result,
+            },
         )
 
         return result
