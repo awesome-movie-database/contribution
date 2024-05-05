@@ -2,7 +2,7 @@
 
 ## About the service:
 
-The service allows the user to create request to add and edit content on **amdb**, earn achievements for this and receive own contribution statistics by email or telegram.
+The service allows the user to create the request to add and edit content on **amdb**, earn achievements for this and request to send statistics on own contributions.
 
 ## Used technologies:
 
