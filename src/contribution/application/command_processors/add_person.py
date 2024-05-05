@@ -15,7 +15,10 @@ from contribution.application.common.command_processors import (
     AuthorizationProcessor,
     TransactionProcessor,
 )
-from contribution.application.common.exceptions import UserDoesNotExistError
+from contribution.application.common.exceptions import (
+    UserDoesNotExistError,
+    NotEnoughPermissionsError,
+)
 from contribution.application.common.gateways import (
     AddPersonContributionGateway,
     UserGateway,
@@ -110,7 +113,6 @@ class AddPersonProcessor:
             raise UserDoesNotExistError(current_user_id)
 
         photos = [self._create_photo_from_obj(obj) for obj in command.photos]
-        photos_urls = [photo.url for photo in photos]
 
         contribution = self._add_person(
             id=AddPersonContributionId(uuid7()),
@@ -120,7 +122,7 @@ class AddPersonProcessor:
             sex=command.sex,
             birth_date=command.birth_date,
             death_date=command.death_date,
-            photos=photos_urls,
+            photos=[photo.url for photo in photos],
             current_timestamp=self._current_timestamp,
         )
         await self._add_person_contribution_gateway.save(contribution)
@@ -197,6 +199,17 @@ class LoggingProcessor:
 
         try:
             result = await self._processor.process(command)
+        except NotEnoughPermissionsError as e:
+            logger.debug(
+                "Expected error occurred: User has not enough permissions",
+                extra={
+                    "processing_id": command_processing_id,
+                    "current_user_permissions": (
+                        await self._identity_provider.permissions(),
+                    ),
+                },
+            )
+            raise e
         except UserDoesNotExistError as e:
             logger.warning(
                 "Unexpected error occurred: "

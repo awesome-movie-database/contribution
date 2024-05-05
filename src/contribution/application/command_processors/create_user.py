@@ -129,6 +129,16 @@ class LoggingProcessor:
                 extra={"processing_id": command_processing_id},
             )
             raise e
+        except Exception as e:
+            logger.exception(
+                "Unexpected error occurred",
+                exc_info=e,
+                extra={
+                    "processing_id": command_processing_id,
+                    "error": e,
+                },
+            )
+            raise e
 
         logger.debug(
             "'Create User' command processing completed",

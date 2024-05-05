@@ -17,6 +17,7 @@ from contribution.application.common.command_processors import (
 from contribution.application.common.exceptions import (
     UserDoesNotExistError,
     PersonDoesNotExistError,
+    NotEnoughPermissionsError,
 )
 from contribution.application.common.gateways import (
     EditPersonContributionGateway,
@@ -215,6 +216,17 @@ class LoggingProcessor:
 
         try:
             result = await self._processor.process(command)
+        except NotEnoughPermissionsError as e:
+            logger.debug(
+                "Expected error occurred: User has not enough permissions",
+                extra={
+                    "processing_id": command_processing_id,
+                    "current_user_permissions": (
+                        await self._identity_provider.permissions(),
+                    ),
+                },
+            )
+            raise e
         except UserDoesNotExistError as e:
             logger.warning(
                 "Unexpected error occurred: "
