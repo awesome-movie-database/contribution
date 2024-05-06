@@ -154,7 +154,7 @@ class LoggingProcessor:
             raise e
 
         logger.debug(
-            "'Reject Person Addition' command processing completed",
+            "'Reject Movie Addition' command processing completed",
             extra={
                 "processing_id": command_processing_id,
                 "achievement_id": result,
