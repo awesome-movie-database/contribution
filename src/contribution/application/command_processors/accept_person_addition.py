@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 from uuid_extensions import uuid7
 
@@ -10,11 +11,13 @@ from contribution.domain.services import (
 from contribution.application.common.command_processors import (
     CommandProcessor,
     TransactionProcessor,
+    AchievementEearnedCallbackProcessor,
 )
 from contribution.application.common.exceptions import (
     PersonIdIsAlreadyTakenError,
     UserDoesNotExistError,
     ContributionDoesNotExistError,
+    AchievementDoesNotExistError,
 )
 from contribution.application.common.gateways import (
     AddPersonContributionGateway,
@@ -39,7 +42,7 @@ def accept_person_addition_factory(
     achievement_gateway: AchievementGateway,
     unit_of_work: UnitOfWork,
     on_achievement_earned: OnAchievementEarned,
-) -> CommandProcessor[AcceptPersonAdditionCommand, None]:
+) -> CommandProcessor[AcceptPersonAdditionCommand, Optional[AchievementId]]:
     accept_person_addition_processor = AcceptPersonAdditionProcessor(
         accept_contribution=accept_contribution,
         create_person=create_person,
@@ -47,10 +50,14 @@ def accept_person_addition_factory(
         user_gateway=user_gateway,
         person_gateway=person_gateway,
         achievement_gateway=achievement_gateway,
+    )
+    callback_processor = AchievementEearnedCallbackProcessor(
+        processor=accept_person_addition_processor,
+        achievement_gateway=achievement_gateway,
         on_achievement_earned=on_achievement_earned,
     )
     tx_processor = TransactionProcessor(
-        processor=accept_person_addition_processor,
+        processor=callback_processor,
         unit_of_work=unit_of_work,
     )
     log_processor = LoggingProcessor(
@@ -70,7 +77,6 @@ class AcceptPersonAdditionProcessor:
         user_gateway: UserGateway,
         person_gateway: PersonGateway,
         achievement_gateway: AchievementGateway,
-        on_achievement_earned: OnAchievementEarned,
     ):
         self._accept_contribution = accept_contribution
         self._create_person = create_person
@@ -78,12 +84,11 @@ class AcceptPersonAdditionProcessor:
         self._user_gateway = user_gateway
         self._person_gateway = person_gateway
         self._achievement_gateway = achievement_gateway
-        self._on_achievement_earned = on_achievement_earned
 
     async def process(
         self,
         command: AcceptPersonAdditionCommand,
-    ) -> None:
+    ) -> Optional[AchievementId]:
         contribution = await self._add_person_contribution_gateway.with_id(
             id=command.contribution_id,
         )
@@ -122,13 +127,7 @@ class AcceptPersonAdditionProcessor:
         )
         await self._person_gateway.save(new_person)
 
-        if achievement:
-            await self._on_achievement_earned(
-                id=achievement.id,
-                user_id=achievement.user_id,
-                achieved=achievement.achieved,
-                achieved_at=command.accepted_at,
-            )
+        return achievement.id if achievement else None
 
 
 class LoggingProcessor:
@@ -138,38 +137,61 @@ class LoggingProcessor:
     async def process(
         self,
         command: AcceptPersonAdditionCommand,
-    ) -> None:
+    ) -> Optional[AchievementId]:
+        command_processing_id = uuid7()
+
         logger.debug(
-            msg="Processing Accept Person Addition command",
-            extra={"command": command},
+            msg="'Accept Person Addition' processing command started",
+            extra={
+                "processing_id": command_processing_id,
+                "command": command,
+            },
         )
 
         try:
             result = await self._processor.process(command)
         except ContributionDoesNotExistError as e:
             logger.error(
-                msg="Contribution doesn't exist",
-                extra={"contribution_id": command.contribution_id},
+                "Unexpected error occurred: Contribution doesn't exist",
+                extra={"processing_id": command_processing_id},
             )
             raise e
         except UserDoesNotExistError as e:
             logger.error(
-                msg=(
-                    "Contribution has author id, "
-                    "using which user gateway returns None"
-                ),
-                extra={"user_id": e.id},
+                "Unexpected error occurred: Contribution has author id, "
+                "using which user gateway returns None",
+                extra={"processing_id": command_processing_id},
             )
             raise e
         except PersonIdIsAlreadyTakenError as e:
             logger.error(
-                msg="Person id is already taken",
-                extra={"person_id": command.person_id},
+                "Unexpected error occurred: Person id is already taken",
+                extra={"processing_id": command_processing_id},
+            )
+            raise e
+        except AchievementDoesNotExistError as e:
+            logger.error(
+                "Unexpected error occurred: Achievement was created, "
+                "but achievement gateway returns None",
+                extra={"processing_id": command_processing_id},
+            )
+        except Exception as e:
+            logger.exception(
+                "Unexpected error occurred",
+                exc_info=e,
+                extra={
+                    "processing_id": command_processing_id,
+                    "error": e,
+                },
             )
             raise e
 
         logger.debug(
-            msg="Accept Person Addition command was processed",
+            "'Accept Person Addition' command processing completed",
+            extra={
+                "processing_id": command_processing_id,
+                "achievement_id": result,
+            },
         )
 
         return result
