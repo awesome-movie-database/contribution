@@ -145,7 +145,7 @@ class LoggingProcessor:
         command_processing_id = uuid7()
 
         logger.debug(
-            "'Accept Person Addition' command processing started",
+            "'Accept Person Editing' command processing started",
             extra={
                 "processing_id": command_processing_id,
                 "command": command,
@@ -192,7 +192,7 @@ class LoggingProcessor:
             raise e
 
         logger.debug(
-            "'Accept Person Addition' command processing completed",
+            "'Accept Person Editing' command processing completed",
             extra={
                 "processing_id": command_processing_id,
                 "achievement_id": result,
