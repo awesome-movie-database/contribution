@@ -129,7 +129,8 @@ class AddMovieProcessor:
         contribution = self._add_movie(
             id=AddMovieContributionId(uuid7()),
             author=author,
-            title=command.title,
+            eng_title=command.eng_title,
+            original_title=command.original_title,
             release_date=command.release_date,
             countries=command.countries,
             genres=command.genres,
@@ -177,7 +178,8 @@ class CallbackProcessor:
         await self._on_movie_added(
             id=result,
             author_id=current_user_id,
-            title=command.title,
+            eng_title=command.eng_title,
+            original_title=command.original_title,
             release_date=command.release_date,
             countries=command.countries,
             genres=command.genres,

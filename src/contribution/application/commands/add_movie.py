@@ -17,7 +17,8 @@ from contribution.domain.value_objects import (
 
 @dataclass(frozen=True, slots=True)
 class AddMovieCommand:
-    title: str
+    eng_title: str
+    original_title: str
     release_date: date
     countries: Sequence[Country]
     genres: Sequence[Genre]

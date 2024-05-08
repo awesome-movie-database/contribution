@@ -16,7 +16,8 @@ from contribution.domain.value_objects import (
 @dataclass(slots=True)
 class Movie:
     id: MovieId
-    title: str
+    eng_title: str
+    original_title: str
     release_date: date
     countries: Sequence[Country]
     genres: Sequence[Genre]

@@ -19,7 +19,8 @@ from contribution.domain.value_objects import (
     PhotoUrl,
 )
 from contribution.domain.validators import (
-    ValidateMovieTitle,
+    ValidateMovieEngTitle,
+    ValidateMovieOriginalTitle,
     ValidateMovieDuration,
 )
 from contribution.domain.exceptions import (
@@ -37,10 +38,12 @@ from contribution.domain.maybe import Maybe
 class EditMovie:
     def __init__(
         self,
-        validate_title: ValidateMovieTitle,
+        validate_eng_title: ValidateMovieEngTitle,
+        validate_original_title: ValidateMovieOriginalTitle,
         valudate_duration: ValidateMovieDuration,
     ):
-        self._validate_title = validate_title
+        self._validate_eng_title = validate_eng_title
+        self._validate_original_title = validate_original_title
         self._validate_duration = valudate_duration
 
     def __call__(
@@ -49,7 +52,8 @@ class EditMovie:
         id: EditMovieContributionId,
         author: User,
         movie: Movie,
-        title: Maybe[str],
+        eng_title: Maybe[str],
+        original_title: Maybe[str],
         release_date: Maybe[date],
         countries: Maybe[Sequence[Country]],
         genres: Maybe[Sequence[Genre]],
@@ -69,14 +73,17 @@ class EditMovie:
         if not author.is_active:
             raise UserIsNotActiveError()
 
-        if title.is_set:
-            self._validate_title(title.value)
+        if eng_title.is_set:
+            self._validate_eng_title(eng_title.value)
+        if original_title.is_set:
+            self._validate_original_title(original_title.value)
         if duration.is_set:
             self._validate_duration(duration.value)
 
         self._ensure_contribution_does_not_duplicate_movie_fields_values(
             movie=movie,
-            title=title,
+            eng_title=eng_title,
+            original_title=original_title,
             release_date=release_date,
             countries=countries,
             genres=genres,
@@ -90,7 +97,8 @@ class EditMovie:
             id=id,
             author_id=author.id,
             movie_id=movie.id,
-            title=title,
+            eng_title=eng_title,
+            original_title=original_title,
             release_date=release_date,
             countries=countries,
             genres=genres,
@@ -114,7 +122,8 @@ class EditMovie:
         self,
         *,
         movie: Movie,
-        title: Maybe[str],
+        eng_title: Maybe[str],
+        original_title: Maybe[str],
         release_date: Maybe[date],
         countries: Maybe[Sequence[Country]],
         genres: Maybe[Sequence[Genre]],
@@ -125,8 +134,13 @@ class EditMovie:
     ) -> None:
         fields_with_duplicates = []
 
-        if title.is_set and title.value == movie.title:
-            fields_with_duplicates.append("title")
+        if eng_title.is_set and eng_title.value == movie.eng_title:
+            fields_with_duplicates.append("eng_title")
+        if (
+            original_title.is_set
+            and original_title.value == movie.original_title
+        ):
+            fields_with_duplicates.append("original_title")
         if release_date.is_set and release_date.value == movie.release_date:
             fields_with_duplicates.append("release_date")
         if countries.is_set and countries.value == movie.countries:

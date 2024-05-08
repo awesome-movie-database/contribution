@@ -10,7 +10,8 @@ from contribution.domain.value_objects import (
     Money,
 )
 from contribution.domain.validators import (
-    ValidateMovieTitle,
+    ValidateMovieEngTitle,
+    ValidateMovieOriginalTitle,
     ValidateMovieDuration,
 )
 from contribution.domain.entities import Movie
@@ -20,17 +21,20 @@ from contribution.domain.maybe import Maybe
 class UpdateMovie:
     def __init__(
         self,
-        validate_title: ValidateMovieTitle,
+        validate_eng_title: ValidateMovieEngTitle,
+        validate_original_title: ValidateMovieOriginalTitle,
         valudate_duration: ValidateMovieDuration,
     ):
-        self._validate_title = validate_title
+        self._validate_eng_title = validate_eng_title
+        self._validate_original_title = validate_original_title
         self._validate_duration = valudate_duration
 
     def __call__(
         self,
         movie: Movie,
         *,
-        title: Maybe[str],
+        eng_title: Maybe[str],
+        original_title: Maybe[str],
         release_date: Maybe[date],
         countries: Maybe[Sequence[Country]],
         genres: Maybe[Sequence[Genre]],
@@ -39,9 +43,12 @@ class UpdateMovie:
         budget: Maybe[Optional[Money]],
         revenue: Maybe[Optional[Money]],
     ) -> None:
-        if title.is_set:
-            self._validate_title(title.value)
-            movie.title = title.value
+        if eng_title.is_set:
+            self._validate_eng_title(eng_title.value)
+            movie.eng_title = eng_title.value
+        if original_title.is_set:
+            self._validate_original_title(original_title.value)
+            movie.original_title = original_title.value
         if release_date.is_set:
             movie.release_date = release_date.value
         if countries.is_set:

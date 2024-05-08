@@ -1,7 +1,11 @@
 from .base import DomainError
 
 
-class InvalidMovieTitleError(DomainError):
+class InvalidMovieEngTitleError(DomainError):
+    ...
+
+
+class InvalidMovieOriginalTitleError(DomainError):
     ...
 
 

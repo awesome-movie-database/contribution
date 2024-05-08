@@ -16,7 +16,8 @@ from contribution.domain.value_objects import (
     PhotoUrl,
 )
 from contribution.domain.validators import (
-    ValidateMovieTitle,
+    ValidateMovieEngTitle,
+    ValidateMovieOriginalTitle,
     ValidateMovieDuration,
 )
 from contribution.domain.exceptions import UserIsNotActiveError
@@ -29,10 +30,12 @@ from contribution.domain.entities import (
 class AddMovie:
     def __init__(
         self,
-        validate_title: ValidateMovieTitle,
+        validate_eng_title: ValidateMovieEngTitle,
+        validate_original_title: ValidateMovieOriginalTitle,
         valudate_duration: ValidateMovieDuration,
     ):
-        self._validate_title = validate_title
+        self._validate_eng_title = validate_eng_title
+        self._validate_original_title = validate_original_title
         self._validate_duration = valudate_duration
 
     def __call__(
@@ -40,7 +43,8 @@ class AddMovie:
         *,
         id: AddMovieContributionId,
         author: User,
-        title: str,
+        eng_title: str,
+        original_title: str,
         release_date: date,
         countries: Sequence[Country],
         genres: Sequence[Genre],
@@ -57,13 +61,15 @@ class AddMovie:
         if not author.is_active:
             raise UserIsNotActiveError()
 
-        self._validate_title(title)
+        self._validate_eng_title(eng_title)
+        self._validate_original_title(original_title)
         self._validate_duration(duration)
 
         return AddMovieContribution(
             id=id,
             author_id=author.id,
-            title=title,
+            eng_title=eng_title,
+            original_title=original_title,
             release_date=release_date,
             countries=countries,
             genres=genres,

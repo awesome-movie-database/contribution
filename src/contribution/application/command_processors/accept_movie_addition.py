@@ -122,7 +122,8 @@ class AcceptMovieAdditionProcessor:
 
         new_movie = self._create_movie(
             id=command.movie_id,
-            title=contribution.title,
+            eng_title=contribution.eng_title,
+            original_title=contribution.original_title,
             release_date=contribution.release_date,
             countries=contribution.countries,
             genres=contribution.genres,

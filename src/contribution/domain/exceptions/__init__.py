@@ -4,7 +4,8 @@ __all__ = (
     "InvalidTelegramError",
     "MoneyAmountLessThanZeroError",
     "MoneyCurrenciesDoesNotMatchError",
-    "InvalidMovieTitleError",
+    "InvalidMovieEngTitleError",
+    "InvalidMovieOriginalTitleError",
     "InvalidMovieDurationError",
     "InvalidUserNameError",
     "UserIsNotActiveError",
@@ -24,7 +25,8 @@ from .money import (
     MoneyCurrenciesDoesNotMatchError,
 )
 from .movie import (
-    InvalidMovieTitleError,
+    InvalidMovieEngTitleError,
+    InvalidMovieOriginalTitleError,
     InvalidMovieDurationError,
 )
 from .user import (

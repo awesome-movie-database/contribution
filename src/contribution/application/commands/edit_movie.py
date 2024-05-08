@@ -23,7 +23,8 @@ from contribution.domain.maybe import Maybe
 @dataclass(frozen=True, slots=True)
 class EditMovieCommand:
     movie_id: MovieId
-    title: Maybe[str]
+    eng_title: Maybe[str]
+    original_title: Maybe[str]
     release_date: Maybe[date]
     countries: Maybe[Sequence[Country]]
     genres: Maybe[Sequence[Genre]]

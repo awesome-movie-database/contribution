@@ -121,7 +121,8 @@ class AcceptMovieEditingProcessor:
 
         self._update_movie(
             movie,
-            title=contribution.title,
+            eng_title=contribution.eng_title,
+            original_title=contribution.original_title,
             release_date=contribution.release_date,
             countries=contribution.countries,
             genres=contribution.genres,
