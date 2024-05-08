@@ -10,7 +10,12 @@ from contribution.domain.value_objects import (
     WriterId,
     CrewMemberId,
 )
-from contribution.domain.exceptions import UserIsNotActiveError
+from contribution.domain.exceptions import (
+    UserIsNotActiveError,
+    InvalidMovieEngTitleError,
+    InvalidMovieOriginalTitleError,
+    InvalidMovieDurationError,
+)
 from contribution.domain.services import EditMovie
 from contribution.application.common.services import (
     AccessConcern,
@@ -409,6 +414,24 @@ class LoggingProcessor:
                     "processing_id": command_processing_id,
                     "ids_of_missing_persons": e.ids_of_missing_persons,
                 },
+            )
+            raise e
+        except InvalidMovieEngTitleError as e:
+            logger.error(
+                "Unexpected error occurred: Invalid movie eng title",
+                extra={"processing_id": command_processing_id},
+            )
+            raise e
+        except InvalidMovieOriginalTitleError as e:
+            logger.error(
+                "Unexpected error occurred: Invalid movie original title",
+                extra={"processing_id": command_processing_id},
+            )
+            raise e
+        except InvalidMovieDurationError as e:
+            logger.error(
+                "Unexpected error occurred: Invalid movie duration",
+                extra={"processing_id": command_processing_id},
             )
             raise e
         except Exception as e:

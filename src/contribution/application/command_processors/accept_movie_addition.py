@@ -4,6 +4,11 @@ from typing import Optional
 from uuid_extensions import uuid7
 
 from contribution.domain.value_objects import AchievementId
+from contribution.domain.exceptions import (
+    InvalidMovieEngTitleError,
+    InvalidMovieOriginalTitleError,
+    InvalidMovieDurationError,
+)
 from contribution.domain.services import (
     AcceptContribution,
     CreateMovie,
@@ -173,6 +178,24 @@ class LoggingProcessor:
         except MovieIdIsAlreadyTakenError as e:
             logger.error(
                 "Unexpected error occurred: Movie id is already taken",
+                extra={"processing_id": command_processing_id},
+            )
+            raise e
+        except InvalidMovieEngTitleError as e:
+            logger.error(
+                "Unexpected error occurred: Invalid movie eng title",
+                extra={"processing_id": command_processing_id},
+            )
+            raise e
+        except InvalidMovieOriginalTitleError as e:
+            logger.error(
+                "Unexpected error occurred: Invalid movie original title",
+                extra={"processing_id": command_processing_id},
+            )
+            raise e
+        except InvalidMovieDurationError as e:
+            logger.error(
+                "Unexpected error occurred: Invalid movie duration",
                 extra={"processing_id": command_processing_id},
             )
             raise e
