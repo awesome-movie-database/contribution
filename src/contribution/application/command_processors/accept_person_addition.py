@@ -4,6 +4,11 @@ from typing import Optional
 from uuid_extensions import uuid7
 
 from contribution.domain.value_objects import AchievementId
+from contribution.domain.exceptions import (
+    InvalidPersonFirstNameError,
+    InvalidPersonLastNameError,
+    InvalidPersonBirthOrDeathDateError,
+)
 from contribution.domain.services import (
     AcceptContribution,
     CreatePerson,
@@ -166,6 +171,24 @@ class LoggingProcessor:
         except PersonIdIsAlreadyTakenError as e:
             logger.error(
                 "Unexpected error occurred: Person id is already taken",
+                extra={"processing_id": command_processing_id},
+            )
+            raise e
+        except InvalidPersonFirstNameError as e:
+            logger.error(
+                "Unexpected error occurred: Invalid person first name",
+                extra={"processing_id": command_processing_id},
+            )
+            raise e
+        except InvalidPersonLastNameError as e:
+            logger.error(
+                "Unexpected error occurred: Invalid person last name",
+                extra={"processing_id": command_processing_id},
+            )
+            raise e
+        except InvalidPersonBirthOrDeathDateError as e:
+            logger.error(
+                "Unexpected error occurred: Invalid person birth or death date",
                 extra={"processing_id": command_processing_id},
             )
             raise e

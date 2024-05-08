@@ -4,6 +4,11 @@ from typing import Optional
 from uuid_extensions import uuid7
 
 from contribution.domain.value_objects import AchievementId
+from contribution.domain.exceptions import (
+    InvalidPersonFirstNameError,
+    InvalidPersonLastNameError,
+    InvalidPersonBirthOrDeathDateError,
+)
 from contribution.domain.services import (
     AcceptContribution,
     UpdatePerson,
@@ -171,6 +176,24 @@ class LoggingProcessor:
             logger.error(
                 "Unexpected error occurred: Contribution has person id,"
                 "using which person gateway returns None",
+                extra={"processing_id": command_processing_id},
+            )
+            raise e
+        except InvalidPersonFirstNameError as e:
+            logger.error(
+                "Unexpected error occurred: Invalid person first name",
+                extra={"processing_id": command_processing_id},
+            )
+            raise e
+        except InvalidPersonLastNameError as e:
+            logger.error(
+                "Unexpected error occurred: Invalid person last name",
+                extra={"processing_id": command_processing_id},
+            )
+            raise e
+        except InvalidPersonBirthOrDeathDateError as e:
+            logger.error(
+                "Unexpected error occurred: Invalid person birth or death date",
                 extra={"processing_id": command_processing_id},
             )
             raise e
