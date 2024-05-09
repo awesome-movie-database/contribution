@@ -38,14 +38,10 @@ class EditMovieContribution(Contribution):
     duration: Maybe[int]
     budget: Maybe[Optional[Money]]
     revenue: Maybe[Optional[Money]]
-
     add_roles: Sequence[ContributionRole]
     remove_roles: Sequence[RoleId]
-
     add_writers: Sequence[ContributionWriter]
     remove_writers: Sequence[WriterId]
-
     add_crew: Sequence[ContributionCrewMember]
     remove_crew: Sequence[CrewMemberId]
-
     add_photos: Sequence[PhotoUrl]
