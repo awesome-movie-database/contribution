@@ -10,8 +10,11 @@ __all__ = (
     "PersonIdIsAlreadyTakenError",
     "PersonDoesNotExistError",
     "PersonsDoNotExistError",
+    "RolesAlreadyExistError",
     "RolesDoNotExistError",
+    "WritersAlreadyExistError",
     "WritersDoNotExistError",
+    "CrewMembersAlreadyExistError",
     "CrewMembersDoNotExistError",
     "ContributionDoesNotExistError",
     "AchievementDoesNotExistError",
@@ -35,9 +38,18 @@ from .person import (
     PersonDoesNotExistError,
     PersonsDoNotExistError,
 )
-from .role import RolesDoNotExistError
-from .writer import WritersDoNotExistError
-from .crew import CrewMembersDoNotExistError
+from .role import (
+    RolesAlreadyExistError,
+    RolesDoNotExistError,
+)
+from .writer import (
+    WritersAlreadyExistError,
+    WritersDoNotExistError,
+)
+from .crew import (
+    CrewMembersAlreadyExistError,
+    CrewMembersDoNotExistError,
+)
 from .contribution import ContributionDoesNotExistError
 from .achievement import AchievementDoesNotExistError
 from .permissions import NotEnoughPermissionsError
