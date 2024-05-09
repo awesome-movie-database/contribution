@@ -115,23 +115,23 @@ class CreateMovieProcessor:
         )
         await self._movie_gateway.save(new_movie)
 
-        roles_for_saving = await self._create_roles(
+        roles = await self._create_roles(
             movie=movie,
             movie_roles=command.roles,
         )
-        await self._role_gateway.save_seq(roles_for_saving)
+        await self._role_gateway.save_seq(roles)
 
-        writers_for_saving = await self._create_writers(
+        writers = await self._create_writers(
             movie=movie,
             movie_writers=command.writers,
         )
-        await self._writer_gateway.save_seq(writers_for_saving)
+        await self._writer_gateway.save_seq(writers)
 
-        crew_for_saving = await self._create_crew(
+        crew = await self._create_crew(
             movie=movie,
             movie_crew=command.crew,
         )
-        await self._crew_member_gateway.save_seq(crew_for_saving)
+        await self._crew_member_gateway.save_seq(crew)
 
 
 class LoggingProcessor:
