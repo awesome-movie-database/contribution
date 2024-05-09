@@ -16,3 +16,6 @@ class WriterGateway(Protocol):
 
     async def update(self, writer: Writer) -> None:
         raise NotImplementedError
+
+    async def delete_seq(self, writers: Sequence[Writer]) -> None:
+        raise NotImplementedError

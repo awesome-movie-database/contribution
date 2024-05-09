@@ -16,3 +16,6 @@ class CrewMemberGateway(Protocol):
 
     async def update(self, crew_member: CrewMember) -> None:
         raise NotImplementedError
+
+    async def delete_seq(self, crew_members: Sequence[CrewMember]) -> None:
+        raise NotImplementedError

@@ -16,3 +16,6 @@ class RoleGateway(Protocol):
 
     async def update(self, role: Role) -> None:
         raise NotImplementedError
+
+    async def delete_seq(self, roles: Sequence[Role]) -> None:
+        raise NotImplementedError
