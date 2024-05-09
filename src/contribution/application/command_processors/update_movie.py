@@ -8,33 +8,16 @@ from contribution.domain.value_objects import (
     WriterId,
     CrewMemberId,
 )
-from contribution.domain.entities import (
-    Movie,
-    Role,
-    Writer,
-    CrewMember,
-)
 from contribution.domain.exceptions import (
     InvalidMovieEngTitleError,
     InvalidMovieOriginalTitleError,
     InvalidMovieDurationError,
 )
-from contribution.domain.services import (
-    UpdateMovie,
-    CreateRole,
-    CreateWriter,
-    CreateCrewMember,
-)
-from contribution.application.common.value_objects import (
-    MovieRole,
-    MovieWriter,
-    MovieCrewMember,
-)
+from contribution.domain.services import UpdateMovie
 from contribution.application.common.services import (
-    EnsurePersonsExist,
-    EnsureRolesDoNotExist,
-    EnsureWritersDoNotExist,
-    EnsureCrewMembersDoNotExist,
+    CreateRoles,
+    CreateWriters,
+    CreateCrew,
 )
 from contribution.application.common.command_processors import (
     CommandProcessor,
@@ -66,13 +49,9 @@ logger = logging.getLogger(__name__)
 
 def update_movie_factory(
     update_movie: UpdateMovie,
-    create_role: CreateRole,
-    create_writer: CreateWriter,
-    create_crew_member: CreateCrewMember,
-    ensure_persons_exist: EnsurePersonsExist,
-    ensure_roles_do_not_exist: EnsureRolesDoNotExist,
-    ensure_writers_do_not_exist: EnsureWritersDoNotExist,
-    ensure_crew_members_do_not_exist: EnsureCrewMembersDoNotExist,
+    create_roles: CreateRoles,
+    create_writers: CreateWriters,
+    create_crew: CreateCrew,
     movie_gateway: MovieGateway,
     person_gateway: PersonGateway,
     role_gateway: RoleGateway,
@@ -82,19 +61,14 @@ def update_movie_factory(
 ) -> CommandProcessor[UpdateMovieCommand, None]:
     update_movie_processor = UpdateMovieProcessor(
         update_movie=update_movie,
-        create_role=create_role,
-        create_writer=create_writer,
-        create_crew_member=create_crew_member,
-        ensure_persons_exist=ensure_persons_exist,
-        ensure_roles_do_not_exist=ensure_roles_do_not_exist,
-        ensure_writers_do_not_exist=ensure_writers_do_not_exist,
-        ensure_crew_members_do_not_exist=ensure_crew_members_do_not_exist,
+        create_roles=create_roles,
+        create_writers=create_writers,
+        create_crew=create_crew,
         movie_gateway=movie_gateway,
         person_gateway=person_gateway,
         role_gateway=role_gateway,
         writer_gateway=writer_gateway,
         crew_member_gateway=crew_member_gateway,
-        unit_of_work=unit_of_work,
     )
     tx_processor = TransactionProcessor(
         processor=update_movie_processor,
@@ -112,13 +86,9 @@ class UpdateMovieProcessor:
         self,
         *,
         update_movie: UpdateMovie,
-        create_role: CreateRole,
-        create_writer: CreateWriter,
-        create_crew_member: CreateCrewMember,
-        ensure_persons_exist: EnsurePersonsExist,
-        ensure_roles_do_not_exist: EnsureRolesDoNotExist,
-        ensure_writers_do_not_exist: EnsureWritersDoNotExist,
-        ensure_crew_members_do_not_exist: EnsureCrewMembersDoNotExist,
+        create_roles: CreateRoles,
+        create_writers: CreateWriters,
+        create_crew: CreateCrew,
         movie_gateway: MovieGateway,
         person_gateway: PersonGateway,
         role_gateway: RoleGateway,
@@ -126,13 +96,9 @@ class UpdateMovieProcessor:
         crew_member_gateway: CrewMemberGateway,
     ):
         self._update_movie = update_movie
-        self._create_role = create_role
-        self._create_writer = create_writer
-        self._create_crew_member = create_crew_member
-        self._ensure_persons_exist = ensure_persons_exist
-        self._ensure_roles_do_not_exist = ensure_roles_do_not_exist
-        self._ensure_writers_do_not_exist = ensure_writers_do_not_exist
-        self._ensure_crew_members_do_not_exist = ensure_crew_members_do_not_exist
+        self._create_roles = create_roles
+        self._create_writers = create_writers
+        self._create_crew = create_crew
         self._movie_gateway = movie_gateway
         self._person_gateway = person_gateway
         self._role_gateway = role_gateway
@@ -158,43 +124,27 @@ class UpdateMovieProcessor:
         )
         await self._movie_gateway.update(movie)
 
-        await self._ensure_persons_exist(
-            *(role.person_id for role in command.add_roles),
-            *(writer.person_id for writer in command.add_writers),
-            *(crew_member.person_id for crew_member in command.add_crew),
-        )
-
-        await self._ensure_roles_do_not_exist(
-            *(role.id for role in command.add_roles),
-        )
-        await self._ensure_writers_do_not_exist(
-            *(writer.id for writer in command.add_writers),
-        )
-        await self._ensure_crew_members_do_not_exist(
-            *(crew_member.id for crew_member in command.add_crew),
-        )
-
-        await self._ensure_roles_exist(*command.remove_roles)
-        await self._ensure_writers_exist(*command.remove_writers)
-        await self._ensure_crew_exist(*command.remove_crew)
-
-        roles = await self._create_roles(
+        roles_for_saving = await self._create_roles(
             movie=movie,
             movie_roles=command.add_roles,
         )
-        await self._role_gateway.save_seq(roles)
+        await self._role_gateway.save_seq(roles_for_saving)
 
-        writers = await self._create_writers(
+        writers_for_saving = await self._create_writers(
             movie=movie,
             movie_writers=command.add_writers,
         )
-        await self._writer_gateway.save_seq(writers)
+        await self._writer_gateway.save_seq(writers_for_saving)
 
-        crew_members = await self._create_crew_members(
+        crew_for_saving = await self._create_crew(
             movie=movie,
-            movie_crew_members=command.add_crew,
+            movie_crew=command.add_crew,
         )
-        await self._crew_member_gateway.save_seq(crew_members)
+        await self._crew_member_gateway.save_seq(crew_for_saving)
+
+        await self._ensure_roles_exist(command.remove_roles)
+        await self._ensure_writers_exist(command.remove_writers)
+        await self._ensure_crew_exist(command.remove_crew)
 
         roles = await self._role_gateway.list_with_ids(
             *command.remove_roles,
@@ -210,83 +160,6 @@ class UpdateMovieProcessor:
             *command.remove_crew,
         )
         await self._crew_member_gateway.delete_seq(crew_members)
-
-    async def _create_roles(
-        self,
-        *,
-        movie: Movie,
-        movie_roles: Sequence[MovieRole],
-    ) -> list[Role]:
-        persons = await self._person_gateway.list_with_ids(
-            *(movie_role.person_id for movie_role in movie_roles),
-        )
-
-        roles = []
-        for movie_role, person in zip(movie_roles, persons):
-            role = self._create_role(
-                id=movie_role.id,
-                movie=movie,
-                person=person,
-                character=movie_role.character,
-                importance=movie_role.importance,
-                is_spoiler=movie_role.is_spoiler,
-            )
-            roles.append(role)
-
-        return roles
-
-    async def _create_writers(
-        self,
-        *,
-        movie: Movie,
-        movie_writers: Sequence[MovieWriter],
-    ) -> list[Writer]:
-        persons = await self._person_gateway.list_with_ids(
-            *(
-                movie_writer.person_id
-                for movie_writer in movie_writers
-            ),
-        )
-
-        writers = []
-        for movie_writer, person in zip(movie_writers, persons):
-            writer = self._create_writer(
-                id=movie_writer.id,
-                movie=movie,
-                person=person,
-                writing=movie_writer.writing,
-            )
-            writers.append(writer)
-
-        return writers
-
-    async def _create_crew_members(
-        self,
-        *,
-        movie: Movie,
-        movie_crew_members: Sequence[MovieCrewMember],
-    ) -> list[CrewMember]:
-        persons = await self._person_gateway.list_with_ids(
-            *(
-                movie_crew_member.person_id
-                for movie_crew_member in movie_crew_members
-            ),
-        )
-
-        crew_members = []
-        for movie_crew_member, person in zip(
-            movie_crew_members,
-            persons,
-        ):
-            crew_member = self._create_crew_member(
-                id=movie_crew_member.id,
-                movie=movie,
-                person=person,
-                membership=movie_crew_member.membership,
-            )
-            crew_members.append(crew_member)
-
-        return crew_members
 
     async def _ensure_roles_exist(
         self,
