@@ -13,6 +13,11 @@ from contribution.domain.services import (
     AcceptContribution,
     CreateMovie,
 )
+from contribution.application.common.services import (
+    CreateRoles,
+    CreateWriters,
+    CreateCrew,
+)
 from contribution.application.common.command_processors import (
     CommandProcessor,
     TransactionProcessor,
@@ -22,11 +27,17 @@ from contribution.application.common.exceptions import (
     MovieIdIsAlreadyTakenError,
     UserDoesNotExistError,
     ContributionDoesNotExistError,
+    RolesAlreadyExistError,
+    WritersAlreadyExistError,
+    CrewMembersAlreadyExistError,
     AchievementDoesNotExistError,
 )
 from contribution.application.common.gateways import (
     AddMovieContributionGateway,
     MovieGateway,
+    RoleGateway,
+    WriterGateway,
+    CrewMemberGateway,
     UserGateway,
     AchievementGateway,
 )
@@ -41,9 +52,15 @@ logger = logging.getLogger(__name__)
 def accept_movie_addition_factory(
     accept_contribution: AcceptContribution,
     create_movie: CreateMovie,
+    create_roles: CreateRoles,
+    create_writers: CreateWriters,
+    create_crew: CreateCrew,
     add_movie_contribution_gateway: AddMovieContributionGateway,
     user_gateway: UserGateway,
     movie_gateway: MovieGateway,
+    role_gateway: RoleGateway,
+    writer_gateway: WriterGateway,
+    crew_member_gateway: CrewMemberGateway,
     achievement_gateway: AchievementGateway,
     unit_of_work: UnitOfWork,
     on_achievement_earned: OnAchievementEarned,
@@ -51,9 +68,15 @@ def accept_movie_addition_factory(
     accept_movie_addition_processor = AcceptMovieAdditionProcessor(
         accept_contribution=accept_contribution,
         create_movie=create_movie,
+        create_roles=create_roles,
+        create_writers=create_writers,
+        create_crew=create_crew,
         add_movie_contribution_gateway=add_movie_contribution_gateway,
         user_gateway=user_gateway,
         movie_gateway=movie_gateway,
+        role_gateway=role_gateway,
+        writer_gateway=writer_gateway,
+        crew_member_gateway=crew_member_gateway,
         achievement_gateway=achievement_gateway,
         on_achievement_earned=on_achievement_earned,
     )
@@ -79,17 +102,29 @@ class AcceptMovieAdditionProcessor:
         *,
         accept_contribution: AcceptContribution,
         create_movie: CreateMovie,
+        create_roles: CreateRoles,
+        create_writers: CreateWriters,
+        create_crew: CreateCrew,
         add_movie_contribution_gateway: AddMovieContributionGateway,
         user_gateway: UserGateway,
         movie_gateway: MovieGateway,
+        role_gateway: RoleGateway,
+        writer_gateway: WriterGateway,
+        crew_member_gateway: CrewMemberGateway,
         achievement_gateway: AchievementGateway,
         on_achievement_earned: OnAchievementEarned,
     ):
         self._accept_contribution = accept_contribution
         self._create_movie = create_movie
+        self._create_roles = create_roles
+        self._create_writers = create_writers
+        self._create_crew = create_crew
         self._add_movie_contribution_gateway = add_movie_contribution_gateway
         self._user_gateway = user_gateway
         self._movie_gateway = movie_gateway
+        self._role_gateway = role_gateway
+        self._writer_gateway = writer_gateway
+        self._crew_member_gateway = crew_member_gateway
         self._achievement_gateway = achievement_gateway
         self._on_achievement_earned = on_achievement_earned
 
@@ -138,6 +173,24 @@ class AcceptMovieAdditionProcessor:
             revenue=contribution.revenue,
         )
         await self._movie_gateway.save(new_movie)
+
+        roles = await self._create_roles(
+            movie=new_movie,
+            movie_roles=command.roles,
+        )
+        await self._role_gateway.save_seq(roles)
+
+        writers = await self._create_writers(
+            movie=new_movie,
+            movie_writers=command.writers,
+        )
+        await self._writer_gateway.save_seq(writers)
+
+        crew = await self._create_crew(
+            movie=new_movie,
+            movie_crew=command.crew,
+        )
+        await self._crew_member_gateway.save_seq(crew)
 
         return achievement.id if achievement else None
 
@@ -197,6 +250,36 @@ class LoggingProcessor:
             logger.error(
                 "Unexpected error occurred: Invalid movie duration",
                 extra={"processing_id": command_processing_id},
+            )
+            raise e
+        except RolesAlreadyExistError as e:
+            logger.error(
+                "Unexpected error occurred: "
+                "Role ids already belong to some roles",
+                extra={
+                    "processing_id": command_processing_id,
+                    "ids_of_existing_roles": e.ids_of_existing_roles,
+                },
+            )
+            raise e
+        except WritersAlreadyExistError as e:
+            logger.error(
+                "Unexpected error occurred: "
+                "Writer ids already belong to some writers",
+                extra={
+                    "processing_id": command_processing_id,
+                    "ids_of_existing_writers": e.ids_of_existing_writers,
+                },
+            )
+            raise e
+        except CrewMembersAlreadyExistError as e:
+            logger.error(
+                "Unexpected error occurred: "
+                "Crew member ids already belong to some crew members",
+                extra={
+                    "processing_id": command_processing_id,
+                    "ids_of_existing_crew_members": e.ids_of_existing_crew_members,
+                },
             )
             raise e
         except AchievementDoesNotExistError as e:
