@@ -25,9 +25,7 @@ class CreateRoles:
         movie: Movie,
         movie_roles: Sequence[MovieRole],
     ) -> list[Role]:
-        movie_roles_ids = [
-            movie_role.id for movie_role in movie_roles
-        ]
+        movie_roles_ids = [movie_role.id for movie_role in movie_roles]
         await self._ensure_roles_do_not_exist(*movie_roles_ids)
 
         person_ids_of_movie_roles = [

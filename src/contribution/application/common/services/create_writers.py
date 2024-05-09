@@ -5,7 +5,10 @@ from contribution.domain.entities import Movie, Writer
 from contribution.domain.services import CreateWriter
 from contribution.application.common.value_objects import MovieWriter
 from contribution.application.common.exceptions import WritersAlreadyExistError
-from contribution.application.common.gateways import PersonGateway, WriterGateway
+from contribution.application.common.gateways import (
+    PersonGateway,
+    WriterGateway,
+)
 
 
 class CreateWriters:
@@ -25,9 +28,7 @@ class CreateWriters:
         movie: Movie,
         movie_writers: Sequence[MovieWriter],
     ) -> list[Writer]:
-        movie_writers_ids = [
-            movie_writer.id for movie_writer in movie_writers
-        ]
+        movie_writers_ids = [movie_writer.id for movie_writer in movie_writers]
         await self._ensure_writers_do_not_exist(*movie_writers_ids)
 
         person_ids_of_movie_writers = [
@@ -49,7 +50,10 @@ class CreateWriters:
 
         return writers
 
-    async def _ensure_writers_do_not_exist(self, *writers_ids: WriterId) -> None:
+    async def _ensure_writers_do_not_exist(
+        self,
+        *writers_ids: WriterId,
+    ) -> None:
         writers = await self._writer_gateway.list_with_ids(*writers_ids)
         if writers:
             raise WritersAlreadyExistError([writer.id for writer in writers])

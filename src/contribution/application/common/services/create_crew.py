@@ -4,8 +4,13 @@ from contribution.domain.value_objects import CrewMemberId
 from contribution.domain.entities import Movie, CrewMember
 from contribution.domain.services import CreateCrewMember
 from contribution.application.common.value_objects import MovieCrewMember
-from contribution.application.common.exceptions import CrewMembersAlreadyExistError
-from contribution.application.common.gateways import PersonGateway, CrewMemberGateway
+from contribution.application.common.exceptions import (
+    CrewMembersAlreadyExistError,
+)
+from contribution.application.common.gateways import (
+    PersonGateway,
+    CrewMemberGateway,
+)
 
 
 class CreateCrew:
@@ -26,16 +31,14 @@ class CreateCrew:
         movie_crew: Sequence[MovieCrewMember],
     ) -> list[CrewMember]:
         movie_crew_members_ids = [
-            movie_crew_member.id
-            for movie_crew_member in movie_crew
+            movie_crew_member.id for movie_crew_member in movie_crew
         ]
         await self._ensure_crew_members_do_not_exist(
             *movie_crew_members_ids,
         )
 
         person_ids_of_movie_crew_members = [
-            movie_crew_member.person_id
-            for movie_crew_member in movie_crew
+            movie_crew_member.person_id for movie_crew_member in movie_crew
         ]
         persons = await self._person_gateway.list_with_ids(
             *person_ids_of_movie_crew_members,
