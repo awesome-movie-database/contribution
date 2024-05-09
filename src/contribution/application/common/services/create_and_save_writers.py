@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from contribution.domain.value_objects import WriterId
-from contribution.domain.entities import Movie, Writer
+from contribution.domain.entities import Movie
 from contribution.domain.services import CreateWriter
 from contribution.application.common.value_objects import MovieWriter
 from contribution.application.common.exceptions import WritersAlreadyExistError
@@ -11,7 +11,7 @@ from contribution.application.common.gateways import (
 )
 
 
-class CreateWriters:
+class CreateAndSaveWriters:
     def __init__(
         self,
         create_writer: CreateWriter,
@@ -27,7 +27,7 @@ class CreateWriters:
         *,
         movie: Movie,
         movie_writers: Sequence[MovieWriter],
-    ) -> list[Writer]:
+    ) -> None:
         movie_writers_ids = [movie_writer.id for movie_writer in movie_writers]
         await self._ensure_writers_do_not_exist(*movie_writers_ids)
 
@@ -48,7 +48,7 @@ class CreateWriters:
             )
             writers.append(writer)
 
-        return writers
+        await self._writer_gateway.save_seq(writers)
 
     async def _ensure_writers_do_not_exist(
         self,

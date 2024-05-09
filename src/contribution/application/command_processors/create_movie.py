@@ -9,9 +9,9 @@ from contribution.domain.exceptions import (
 )
 from contribution.domain.services import CreateMovie
 from contribution.application.common.services import (
-    CreateRoles,
-    CreateWriters,
-    CreateCrew,
+    CreateAndSaveRoles,
+    CreateAndSaveWriters,
+    CreateAndSaveCrew,
 )
 from contribution.application.common.command_processors import (
     CommandProcessor,
@@ -27,9 +27,6 @@ from contribution.application.common.exceptions import (
 from contribution.application.common.gateways import (
     MovieGateway,
     PersonGateway,
-    RoleGateway,
-    WriterGateway,
-    CrewMemberGateway,
 )
 from contribution.application.common.unit_of_work import UnitOfWork
 from contribution.application.commands import CreateMovieCommand
@@ -40,26 +37,20 @@ logger = logging.getLogger(__name__)
 
 def create_movie_factory(
     create_movie: CreateMovie,
-    create_roles: CreateRoles,
-    create_writers: CreateWriters,
-    create_crew: CreateCrew,
+    create_and_save_roles: CreateAndSaveRoles,
+    create_and_save_writers: CreateAndSaveWriters,
+    create_and_save_crew: CreateAndSaveCrew,
     movie_gateway: MovieGateway,
     person_gateway: PersonGateway,
-    role_gateway: RoleGateway,
-    writer_gateway: WriterGateway,
-    crew_member_gateway: CrewMemberGateway,
     unit_of_work: UnitOfWork,
 ) -> CommandProcessor[CreateMovieCommand, None]:
     create_movie_processor = CreateMovieProcessor(
         create_movie=create_movie,
-        create_roles=create_roles,
-        create_writers=create_writers,
-        create_crew=create_crew,
+        create_and_save_roles=create_and_save_roles,
+        create_and_save_writers=create_and_save_writers,
+        create_and_save_crew=create_and_save_crew,
         movie_gateway=movie_gateway,
         person_gateway=person_gateway,
-        role_gateway=role_gateway,
-        writer_gateway=writer_gateway,
-        crew_member_gateway=crew_member_gateway,
     )
     tx_processor = TransactionProcessor(
         processor=create_movie_processor,
@@ -77,24 +68,18 @@ class CreateMovieProcessor:
         self,
         *,
         create_movie: CreateMovie,
-        create_roles: CreateRoles,
-        create_writers: CreateWriters,
-        create_crew: CreateCrew,
+        create_and_save_roles: CreateAndSaveRoles,
+        create_and_save_writers: CreateAndSaveWriters,
+        create_and_save_crew: CreateAndSaveCrew,
         movie_gateway: MovieGateway,
         person_gateway: PersonGateway,
-        role_gateway: RoleGateway,
-        writer_gateway: WriterGateway,
-        crew_member_gateway: CrewMemberGateway,
     ):
         self._create_movie = create_movie
-        self._create_roles = create_roles
-        self._create_writers = create_writers
-        self._create_crew = create_crew
+        self._create_and_save_roles = create_and_save_roles
+        self._create_and_save_writers = create_and_save_writers
+        self._create_and_save_crew = create_and_save_crew
         self._movie_gateway = movie_gateway
         self._person_gateway = person_gateway
-        self._role_gateway = role_gateway
-        self._writer_gateway = writer_gateway
-        self._crew_member_gateway = crew_member_gateway
 
     async def process(self, command: CreateMovieCommand) -> None:
         movie = await self._movie_gateway.with_id(command.id)
@@ -115,23 +100,18 @@ class CreateMovieProcessor:
         )
         await self._movie_gateway.save(new_movie)
 
-        roles = await self._create_roles(
-            movie=movie,
+        await self._create_and_save_roles(
+            movie=new_movie,
             movie_roles=command.roles,
         )
-        await self._role_gateway.save_seq(roles)
-
-        writers = await self._create_writers(
-            movie=movie,
+        await self._create_and_save_writers(
+            movie=new_movie,
             movie_writers=command.writers,
         )
-        await self._writer_gateway.save_seq(writers)
-
-        crew = await self._create_crew(
-            movie=movie,
+        await self._create_and_save_crew(
+            movie=new_movie,
             movie_crew=command.crew,
         )
-        await self._crew_member_gateway.save_seq(crew)
 
 
 class LoggingProcessor:

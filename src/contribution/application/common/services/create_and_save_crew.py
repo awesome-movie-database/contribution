@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from contribution.domain.value_objects import CrewMemberId
-from contribution.domain.entities import Movie, CrewMember
+from contribution.domain.entities import Movie
 from contribution.domain.services import CreateCrewMember
 from contribution.application.common.value_objects import MovieCrewMember
 from contribution.application.common.exceptions import (
@@ -13,7 +13,7 @@ from contribution.application.common.gateways import (
 )
 
 
-class CreateCrew:
+class CreateAndSaveCrew:
     def __init__(
         self,
         create_crew_member: CreateCrewMember,
@@ -29,7 +29,7 @@ class CreateCrew:
         *,
         movie: Movie,
         movie_crew: Sequence[MovieCrewMember],
-    ) -> list[CrewMember]:
+    ) -> None:
         movie_crew_members_ids = [
             movie_crew_member.id for movie_crew_member in movie_crew
         ]
@@ -54,7 +54,7 @@ class CreateCrew:
             )
             crew.append(crew_member)
 
-        return crew
+        await self._crew_member_gateway.save_seq(crew)
 
     async def _ensure_crew_members_do_not_exist(
         self,

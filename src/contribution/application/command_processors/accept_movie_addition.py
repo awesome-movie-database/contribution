@@ -14,9 +14,9 @@ from contribution.domain.services import (
     CreateMovie,
 )
 from contribution.application.common.services import (
-    CreateRoles,
-    CreateWriters,
-    CreateCrew,
+    CreateAndSaveRoles,
+    CreateAndSaveWriters,
+    CreateAndSaveCrew,
 )
 from contribution.application.common.command_processors import (
     CommandProcessor,
@@ -35,9 +35,6 @@ from contribution.application.common.exceptions import (
 from contribution.application.common.gateways import (
     AddMovieContributionGateway,
     MovieGateway,
-    RoleGateway,
-    WriterGateway,
-    CrewMemberGateway,
     UserGateway,
     AchievementGateway,
 )
@@ -52,15 +49,12 @@ logger = logging.getLogger(__name__)
 def accept_movie_addition_factory(
     accept_contribution: AcceptContribution,
     create_movie: CreateMovie,
-    create_roles: CreateRoles,
-    create_writers: CreateWriters,
-    create_crew: CreateCrew,
+    create_and_save_roles: CreateAndSaveRoles,
+    create_and_save_writers: CreateAndSaveWriters,
+    create_and_save_crew: CreateAndSaveCrew,
     add_movie_contribution_gateway: AddMovieContributionGateway,
     user_gateway: UserGateway,
     movie_gateway: MovieGateway,
-    role_gateway: RoleGateway,
-    writer_gateway: WriterGateway,
-    crew_member_gateway: CrewMemberGateway,
     achievement_gateway: AchievementGateway,
     unit_of_work: UnitOfWork,
     on_achievement_earned: OnAchievementEarned,
@@ -68,17 +62,13 @@ def accept_movie_addition_factory(
     accept_movie_addition_processor = AcceptMovieAdditionProcessor(
         accept_contribution=accept_contribution,
         create_movie=create_movie,
-        create_roles=create_roles,
-        create_writers=create_writers,
-        create_crew=create_crew,
+        create_and_save_roles=create_and_save_roles,
+        create_and_save_writers=create_and_save_writers,
+        create_and_save_crew=create_and_save_crew,
         add_movie_contribution_gateway=add_movie_contribution_gateway,
         user_gateway=user_gateway,
         movie_gateway=movie_gateway,
-        role_gateway=role_gateway,
-        writer_gateway=writer_gateway,
-        crew_member_gateway=crew_member_gateway,
         achievement_gateway=achievement_gateway,
-        on_achievement_earned=on_achievement_earned,
     )
     callback_processor = AchievementEearnedCallbackProcessor(
         processor=accept_movie_addition_processor,
@@ -102,31 +92,23 @@ class AcceptMovieAdditionProcessor:
         *,
         accept_contribution: AcceptContribution,
         create_movie: CreateMovie,
-        create_roles: CreateRoles,
-        create_writers: CreateWriters,
-        create_crew: CreateCrew,
+        create_and_save_roles: CreateAndSaveRoles,
+        create_and_save_writers: CreateAndSaveWriters,
+        create_and_save_crew: CreateAndSaveCrew,
         add_movie_contribution_gateway: AddMovieContributionGateway,
         user_gateway: UserGateway,
         movie_gateway: MovieGateway,
-        role_gateway: RoleGateway,
-        writer_gateway: WriterGateway,
-        crew_member_gateway: CrewMemberGateway,
         achievement_gateway: AchievementGateway,
-        on_achievement_earned: OnAchievementEarned,
     ):
         self._accept_contribution = accept_contribution
         self._create_movie = create_movie
-        self._create_roles = create_roles
-        self._create_writers = create_writers
-        self._create_crew = create_crew
+        self._create_and_save_roles = create_and_save_roles
+        self._create_and_save_writers = create_and_save_writers
+        self._create_and_save_crew = create_and_save_crew
         self._add_movie_contribution_gateway = add_movie_contribution_gateway
         self._user_gateway = user_gateway
         self._movie_gateway = movie_gateway
-        self._role_gateway = role_gateway
-        self._writer_gateway = writer_gateway
-        self._crew_member_gateway = crew_member_gateway
         self._achievement_gateway = achievement_gateway
-        self._on_achievement_earned = on_achievement_earned
 
     async def process(
         self,
@@ -174,23 +156,18 @@ class AcceptMovieAdditionProcessor:
         )
         await self._movie_gateway.save(new_movie)
 
-        roles = await self._create_roles(
+        await self._create_and_save_roles(
             movie=new_movie,
             movie_roles=command.roles,
         )
-        await self._role_gateway.save_seq(roles)
-
-        writers = await self._create_writers(
+        await self._create_and_save_writers(
             movie=new_movie,
             movie_writers=command.writers,
         )
-        await self._writer_gateway.save_seq(writers)
-
-        crew = await self._create_crew(
+        await self._create_and_save_crew(
             movie=new_movie,
             movie_crew=command.crew,
         )
-        await self._crew_member_gateway.save_seq(crew)
 
         return achievement.id if achievement else None
 

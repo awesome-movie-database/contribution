@@ -1,14 +1,14 @@
 from typing import Sequence
 
 from contribution.domain.value_objects import RoleId
-from contribution.domain.entities import Movie, Role
+from contribution.domain.entities import Movie
 from contribution.domain.services import CreateRole
 from contribution.application.common.value_objects import MovieRole
 from contribution.application.common.exceptions import RolesAlreadyExistError
 from contribution.application.common.gateways import PersonGateway, RoleGateway
 
 
-class CreateRoles:
+class CreateAndSaveRoles:
     def __init__(
         self,
         create_role: CreateRole,
@@ -24,7 +24,7 @@ class CreateRoles:
         *,
         movie: Movie,
         movie_roles: Sequence[MovieRole],
-    ) -> list[Role]:
+    ) -> None:
         movie_roles_ids = [movie_role.id for movie_role in movie_roles]
         await self._ensure_roles_do_not_exist(*movie_roles_ids)
 
@@ -47,7 +47,7 @@ class CreateRoles:
             )
             roles.append(role)
 
-        return roles
+        await self._role_gateway.save_seq(roles)
 
     async def _ensure_roles_do_not_exist(self, *roles_ids: RoleId) -> None:
         roles = await self._role_gateway.list_with_ids(*roles_ids)
