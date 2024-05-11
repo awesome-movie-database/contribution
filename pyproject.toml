@@ -13,6 +13,8 @@ dependencies = [
     "uuid7==0.1.*",
     "aio-pika==9.4.*",
     "dishka==1.1.*",
+    "fastapi==0.111.*",
+    "uvicorn==0.29.*",
 ]
 
 [project.optional-dependencies]
