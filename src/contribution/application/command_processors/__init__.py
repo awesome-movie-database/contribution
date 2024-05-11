@@ -3,11 +3,12 @@ __all__ = (
     "update_user_factory",
     "create_movie_factory",
     "update_movie_factory",
+    "create_person_factory",
+    "update_person_factory",
     "add_movie_factory",
     "edit_movie_factory",
     "add_person_factory",
     "edit_person_factory",
-    "create_person_factory",
     "accept_movie_addition_factory",
     "accept_movie_editing_factory",
     "reject_movie_addition_factory",
@@ -23,6 +24,7 @@ from .update_user import update_user_factory
 from .create_movie import create_movie_factory
 from .update_movie import update_movie_factory
 from .create_person import create_person_factory
+from .update_person import update_person_factory
 from .add_movie import add_movie_factory
 from .edit_movie import edit_movie_factory
 from .add_person import add_person_factory
