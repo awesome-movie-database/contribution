@@ -77,7 +77,7 @@ class LoggingProcessor:
         command_processing_id = uuid7()
 
         logger.debug(
-            msg="'Create Person' processing command started",
+            msg="'Create Person' command processing started",
             extra={
                 "processing_id": command_processing_id,
                 "command": command,

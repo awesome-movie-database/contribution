@@ -155,7 +155,7 @@ class LoggingProcessor:
             result = await self._processor.process(command)
         except MovieDoesNotExistError as e:
             logger.error(
-                "Unexpected error occurred: Movie id doesn't exist",
+                "Unexpected error occurred: Movie doesn't exist",
                 extra={"processing_id": command_processing_id},
             )
             raise e
