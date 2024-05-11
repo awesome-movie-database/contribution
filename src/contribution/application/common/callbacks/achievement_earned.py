@@ -16,5 +16,5 @@ class OnAchievementEarned(Protocol):
         user_id: UserId,
         achieved: Achieved,
         achieved_at: datetime,
-    ):
+    ) -> None:
         raise NotImplementedError
