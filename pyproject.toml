@@ -12,6 +12,7 @@ requires-python = "==3.10.*"
 dependencies = [
     "uuid7==0.1.*",
     "aio-pika==9.4.*",
+    "dishka==1.1.*",
 ]
 
 [project.optional-dependencies]
