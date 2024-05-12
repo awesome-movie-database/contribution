@@ -21,7 +21,7 @@ from contribution.presentation.web_api.schemas import (
     AddPersonSchema,
     EditPersonSchema,
 )
-from contribution.presentation.web_api.maybe_value_from_mapping import (
+from contribution.presentation.maybe_value_from_mapping import (
     maybe_value_from_mapping,
 )
 
