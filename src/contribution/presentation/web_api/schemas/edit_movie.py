@@ -1,5 +1,4 @@
-from typing_extensions import TypedDict, Required
-from typing import Sequence, Optional
+from typing import Sequence, Optional, TypedDict, Required
 from datetime import date
 
 from contribution.domain.constants import (

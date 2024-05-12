@@ -1,4 +1,4 @@
-from typing import Annotated, Sequence, cast
+from typing import Annotated, Sequence, Optional, cast
 from datetime import date
 
 from fastapi import APIRouter, File
@@ -77,7 +77,7 @@ async def add_movie(
     return await command_processor.process(command)
 
 
-@router.patch("/to-edit")
+@router.post("/to-edit")
 @inject
 async def edit_movie(
     *,
@@ -99,8 +99,8 @@ async def edit_movie(
     genres = maybe_value_from_mapping[Sequence[Genre]](schema, "genres")
     mpaa = maybe_value_from_mapping[MPAA](schema, "mpaa")
     duration = maybe_value_from_mapping[int](schema, "duration")
-    budget = maybe_value_from_mapping[Money](schema, "budget")
-    revenue = maybe_value_from_mapping[Money](schema, "revenue")
+    budget = maybe_value_from_mapping[Optional[Money]](schema, "budget")
+    revenue = maybe_value_from_mapping[Optional[Money]](schema, "revenue")
 
     command = EditMovieCommand(
         movie_id=cast(MovieId, schema.get("movie_id")),
