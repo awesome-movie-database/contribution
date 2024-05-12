@@ -1,12 +1,19 @@
-from typing import Annotated, cast
+from typing import Annotated, Sequence, cast
+from datetime import date
 
 from fastapi import APIRouter, File
 from dishka.integrations.fastapi import FromDishka, inject
 
+from contribution.domain.constants import (
+    Genre,
+    MPAA,
+)
 from contribution.domain.value_objects import (
     MovieId,
     AddMovieContributionId,
     EditMovieContributionId,
+    Country,
+    Money,
 )
 from contribution.application.common.command_processors import (
     CommandProcessor,
@@ -82,15 +89,18 @@ async def edit_movie(
     Creates request to edit movie on **amdb** and returns
     its id.
     """
-    eng_title = maybe_value_from_mapping(schema, "eng_title")
-    original_title = maybe_value_from_mapping(schema, "original_title")
-    release_date = maybe_value_from_mapping(schema, "release_date")
-    countries = maybe_value_from_mapping(schema, "countries")
-    genres = maybe_value_from_mapping(schema, "genres")
-    mpaa = maybe_value_from_mapping(schema, "mpaa")
-    duration = maybe_value_from_mapping(schema, "duration")
-    budget = maybe_value_from_mapping(schema, "budget")
-    revenue = maybe_value_from_mapping(schema, "revenue")
+    eng_title = maybe_value_from_mapping[str](schema, "eng_title")
+    original_title = maybe_value_from_mapping[str](schema, "original_title")
+    release_date = maybe_value_from_mapping[date](schema, "release_date")
+    countries = maybe_value_from_mapping[Sequence[Country]](
+        mapping=schema,
+        key="countries",
+    )
+    genres = maybe_value_from_mapping[Sequence[Genre]](schema, "genres")
+    mpaa = maybe_value_from_mapping[MPAA](schema, "mpaa")
+    duration = maybe_value_from_mapping[int](schema, "duration")
+    budget = maybe_value_from_mapping[Money](schema, "budget")
+    revenue = maybe_value_from_mapping[Money](schema, "revenue")
 
     command = EditMovieCommand(
         movie_id=cast(MovieId, schema.get("movie_id")),

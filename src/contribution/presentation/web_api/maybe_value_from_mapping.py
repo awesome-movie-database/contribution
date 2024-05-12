@@ -1,18 +1,16 @@
-from typing import Mapping, TypeVar, get_type_hints
+from typing import Mapping, Any
 
 from contribution.domain.maybe import Maybe
 
 
-_K = TypeVar("_K")
-_V = TypeVar("_V")
-
-
-def maybe_value_from_mapping(mapping: Mapping[_K, _V], key: _K) -> Maybe:
+def maybe_value_from_mapping[T](
+    mapping: Mapping,
+    key: Any,
+) -> Maybe[T]:
     """
     Returns wrapped in Maybe value from mapping by key
     if value exists in mapping, otherwise returns Maybe
-    without value. Raises ValueError if mapping has no
-    annotation for value retrieved by key.
+    without value.
 
     Basic usage::
 
@@ -32,13 +30,10 @@ def maybe_value_from_mapping(mapping: Mapping[_K, _V], key: _K) -> Maybe:
         print(b.is_set)  # False
         print(b.value)  # Raises ValueError
     """
-    value_type = get_type_hints(mapping).get(key)  # type: ignore
-    if not value_type:
-        message = f"Mapping has no type hints for key {key}"
-        raise ValueError(message)
+    no_value = Maybe[T].without_value()
 
-    value = mapping.get(key)
-    if value:
-        return Maybe.with_value(value)
+    value = mapping.get(key, no_value)
+    if isinstance(value, Maybe):
+        return value
 
-    return Maybe.without_value()
+    return Maybe[T].with_value(value)
