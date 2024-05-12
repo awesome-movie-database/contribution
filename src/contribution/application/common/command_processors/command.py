@@ -1,10 +1,6 @@
-from typing import TypeVar, Protocol
+from typing import Protocol
 
 
-C = TypeVar("C", contravariant=True)
-R = TypeVar("R", covariant=True)
-
-
-class CommandProcessor(Protocol[C, R]):
+class CommandProcessor[C, R](Protocol):
     async def process(self, command: C) -> R:
         raise NotImplementedError

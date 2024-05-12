@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar, Optional
+from typing import Optional
 
 from contribution.domain.value_objects import AchievementId
 from contribution.application.common.exceptions import (
@@ -9,10 +9,7 @@ from contribution.application.common.callbacks import OnAchievementEarned
 from .command import CommandProcessor
 
 
-C = TypeVar("C", contravariant=True)
-
-
-class AchievementEearnedCallbackProcessor(Generic[C]):
+class AchievementEearnedCallbackProcessor[C]:
     def __init__(
         self,
         *,
