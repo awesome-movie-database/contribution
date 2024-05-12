@@ -13,9 +13,13 @@ repos:
       - id: ruff-format
       - id: ruff
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.7.1
+    rev: v1.10.0
     hooks:
       - id: mypy
+        args: [
+          "--config-file=.mypy.ini",
+          "--disable-error-code=valid-type",
+        ]
         files: ^src/
         additional_dependencies:
           - types-redis

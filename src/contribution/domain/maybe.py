@@ -1,15 +1,12 @@
-from typing import TypeVar, Generic, Union, cast
+from typing import Union, cast
 from enum import IntEnum, auto
-
-
-_T = TypeVar("_T")
 
 
 class _Unset(IntEnum):
     UNSET = auto()
 
 
-class Maybe(Generic[_T]):
+class Maybe[T]:
     """
     Class for representing value that can be
     not set.
@@ -27,15 +24,15 @@ class Maybe(Generic[_T]):
                 foo.bar = bar
     """
 
-    def __init__(self, value: Union[_T, _Unset]) -> None:
+    def __init__(self, value: Union[T, _Unset]) -> None:
         self._value = value
 
     @classmethod
-    def without_value(cls) -> "Maybe[_T]":
+    def without_value(cls) -> "Maybe[T]":
         return Maybe(_Unset.UNSET)
 
     @classmethod
-    def with_value(cls, value: _T) -> "Maybe[_T]":
+    def with_value(cls, value: T) -> "Maybe[T]":
         return Maybe(value)
 
     @property
@@ -43,7 +40,7 @@ class Maybe(Generic[_T]):
         return not isinstance(self._value, _Unset)
 
     @property
-    def value(self) -> _T:
+    def value(self) -> T:
         """
         Returns value if value is set, otherwise
         raises ValueError.
@@ -51,4 +48,4 @@ class Maybe(Generic[_T]):
         if not self.is_set:
             message = "Value is unset"
             raise ValueError(message)
-        return cast(_T, self.value)
+        return cast(T, self.value)

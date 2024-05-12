@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools>=64.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,7 +7,7 @@ name = "contribution"
 description = "Awesome Movie Database Contribution Service"
 version = "0.1.0"
 license = { file = "LICENSE" }
-requires-python = "==3.10.*"
+requires-python = "==3.12.3"
 
 dependencies = [
     "uuid7==0.1.*",
