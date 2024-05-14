@@ -27,7 +27,8 @@ from contribution.application.common.gateways import (
 from contribution.application.common.object_storage import ObjectStorage
 from contribution.application.common.unit_of_work import UnitOfWork
 from contribution.application.common.identity_provider import IdentityProvider
-from contribution.application.common.callbacks import OnPersonAdded
+from contribution.application.common.event_callback import OnEventOccurred
+from contribution.application.common.events import PersonAddedEvent
 from contribution.application.commands import AddPersonCommand
 
 
@@ -44,7 +45,7 @@ def add_person_factory(
     unit_of_work: UnitOfWork,
     object_storage: ObjectStorage,
     identity_provider: IdentityProvider,
-    on_person_added: OnPersonAdded,
+    on_person_added: OnEventOccurred[PersonAddedEvent],
 ) -> CommandProcessor[AddPersonCommand, AddPersonContributionId]:
     current_timestamp = datetime.now(timezone.utc)
 
@@ -139,7 +140,7 @@ class CallbackProcessor:
         processor: AuthorizationProcessor,
         create_photo_from_obj: CreatePhotoFromObj,
         identity_provider: IdentityProvider,
-        on_person_added: OnPersonAdded,
+        on_person_added: OnEventOccurred[PersonAddedEvent],
         current_timestamp: datetime,
     ):
         self._processor = processor
@@ -156,8 +157,8 @@ class CallbackProcessor:
         current_user_id = await self._identity_provider.user_id()
         photos = [self._create_photo_from_obj(obj) for obj in command.photos]
 
-        await self._on_person_added(
-            id=result,
+        event = PersonAddedEvent(
+            contribtion_id=result,
             author_id=current_user_id,
             first_name=command.first_name,
             last_name=command.last_name,
@@ -167,6 +168,7 @@ class CallbackProcessor:
             photos=[photo.url for photo in photos],
             added_at=self._current_timestamp,
         )
+        await self._on_person_added(event)
 
         return result
 

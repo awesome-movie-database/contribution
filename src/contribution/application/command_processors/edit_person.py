@@ -28,7 +28,8 @@ from contribution.application.common.gateways import (
 from contribution.application.common.object_storage import ObjectStorage
 from contribution.application.common.unit_of_work import UnitOfWork
 from contribution.application.common.identity_provider import IdentityProvider
-from contribution.application.common.callbacks import OnPersonEdited
+from contribution.application.common.event_callback import OnEventOccurred
+from contribution.application.common.events import PersonEditedEvent
 from contribution.application.commands import EditPersonCommand
 
 
@@ -46,7 +47,7 @@ def edit_person_factory(
     unit_of_work: UnitOfWork,
     object_storage: ObjectStorage,
     identity_provider: IdentityProvider,
-    on_person_edited: OnPersonEdited,
+    on_person_edited: OnEventOccurred[PersonEditedEvent],
 ) -> CommandProcessor[EditPersonCommand, EditPersonContributionId]:
     current_timestamp = datetime.now(timezone.utc)
 
@@ -153,7 +154,7 @@ class CallbackProcessor:
         processor: AuthorizationProcessor,
         create_photo_from_obj: CreatePhotoFromObj,
         identity_provider: IdentityProvider,
-        on_person_edited: OnPersonEdited,
+        on_person_edited: OnEventOccurred[PersonEditedEvent],
         current_timestamp: datetime,
     ):
         self._processor = processor
@@ -172,8 +173,8 @@ class CallbackProcessor:
             self._create_photo_from_obj(obj) for obj in command.add_photos
         ]
 
-        await self._on_person_edited(
-            id=result,
+        event = PersonEditedEvent(
+            contribution_id=result,
             author_id=current_user_id,
             person_id=command.person_id,
             first_name=command.first_name,
@@ -184,6 +185,7 @@ class CallbackProcessor:
             add_photos=[photo.url for photo in add_photos],
             edited_at=self._current_timestamp,
         )
+        await self._on_person_edited(event)
 
         return result
 

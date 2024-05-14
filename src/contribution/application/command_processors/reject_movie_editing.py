@@ -21,7 +21,8 @@ from contribution.application.common.gateways import (
     AchievementGateway,
 )
 from contribution.application.common.unit_of_work import UnitOfWork
-from contribution.application.common.callbacks import OnAchievementEarned
+from contribution.application.common.event_callback import OnEventOccurred
+from contribution.application.common.events import AchievementEarnedEvent
 from contribution.application.commands import RejectMovieEditingCommand
 
 
@@ -34,7 +35,7 @@ def reject_movie_editing_factory(
     user_gateway: UserGateway,
     achievement_gateway: AchievementGateway,
     unit_of_work: UnitOfWork,
-    on_achievement_earned: OnAchievementEarned,
+    on_achievement_earned: OnEventOccurred[AchievementEarnedEvent],
 ) -> CommandProcessor[RejectMovieEditingCommand, Optional[AchievementId]]:
     accept_movie_addition_processor = RejectMovieEditingProcessor(
         reject_contribution=reject_contribution,

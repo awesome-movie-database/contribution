@@ -31,7 +31,8 @@ from contribution.application.common.gateways import (
     AchievementGateway,
 )
 from contribution.application.common.unit_of_work import UnitOfWork
-from contribution.application.common.callbacks import OnAchievementEarned
+from contribution.application.common.event_callback import OnEventOccurred
+from contribution.application.common.events import AchievementEarnedEvent
 from contribution.application.commands import AcceptPersonAdditionCommand
 
 
@@ -46,7 +47,7 @@ def accept_person_addition_factory(
     person_gateway: PersonGateway,
     achievement_gateway: AchievementGateway,
     unit_of_work: UnitOfWork,
-    on_achievement_earned: OnAchievementEarned,
+    on_achievement_earned: OnEventOccurred[AchievementEarnedEvent],
 ) -> CommandProcessor[AcceptPersonAdditionCommand, Optional[AchievementId]]:
     accept_person_addition_processor = AcceptPersonAdditionProcessor(
         accept_contribution=accept_contribution,

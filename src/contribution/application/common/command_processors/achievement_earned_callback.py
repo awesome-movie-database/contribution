@@ -5,7 +5,8 @@ from contribution.application.common.exceptions import (
     AchievementDoesNotExistError,
 )
 from contribution.application.common.gateways import AchievementGateway
-from contribution.application.common.callbacks import OnAchievementEarned
+from contribution.application.common.event_callback import OnEventOccurred
+from contribution.application.common.events import AchievementEarnedEvent
 from .command import CommandProcessor
 
 
@@ -15,7 +16,7 @@ class AchievementEearnedCallbackProcessor[C]:
         *,
         processor: CommandProcessor[C, Optional[AchievementId]],
         achievement_gateway: AchievementGateway,
-        on_achievement_earned: OnAchievementEarned,
+        on_achievement_earned: OnEventOccurred[AchievementEarnedEvent],
     ):
         self._processor = processor
         self._achievement_gateway = achievement_gateway
@@ -31,11 +32,12 @@ class AchievementEearnedCallbackProcessor[C]:
         if not achievement:
             raise AchievementDoesNotExistError()
 
-        await self._on_achievement_earned(
-            id=achievement.id,
+        event = AchievementEarnedEvent(
+            achievement_id=achievement.id,
             user_id=achievement.user_id,
             achieved=achievement.achieved,
             achieved_at=achievement.achieved_at,
         )
+        await self._on_achievement_earned(event)
 
         return result

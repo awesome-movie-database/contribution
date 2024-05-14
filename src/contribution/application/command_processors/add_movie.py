@@ -29,7 +29,8 @@ from contribution.application.common.gateways import (
 from contribution.application.common.object_storage import ObjectStorage
 from contribution.application.common.unit_of_work import UnitOfWork
 from contribution.application.common.identity_provider import IdentityProvider
-from contribution.application.common.callbacks import OnMovieAdded
+from contribution.application.common.event_callback import OnEventOccurred
+from contribution.application.common.events import MovieAddedEvent
 from contribution.application.commands import AddMovieCommand
 
 
@@ -47,7 +48,7 @@ def add_movie_factory(
     object_storage: ObjectStorage,
     unit_of_work: UnitOfWork,
     identity_provider: IdentityProvider,
-    on_movie_added: OnMovieAdded,
+    on_movie_added: OnEventOccurred[MovieAddedEvent],
 ) -> CommandProcessor[AddMovieCommand, AddMovieContributionId]:
     current_timestamp = datetime.now(timezone.utc)
 
@@ -158,7 +159,7 @@ class CallbackProcessor:
         processor: AuthorizationProcessor,
         create_photo_from_obj: CreatePhotoFromObj,
         identity_provider: IdentityProvider,
-        on_movie_added: OnMovieAdded,
+        on_movie_added: OnEventOccurred[MovieAddedEvent],
         current_timestamp: datetime,
     ):
         self._processor = processor
@@ -175,8 +176,8 @@ class CallbackProcessor:
         current_user_id = await self._identity_provider.user_id()
         photos = [self._create_photo_from_obj(obj) for obj in command.photos]
 
-        await self._on_movie_added(
-            id=result,
+        event = MovieAddedEvent(
+            contribution_id=result,
             author_id=current_user_id,
             eng_title=command.eng_title,
             original_title=command.original_title,
@@ -193,6 +194,7 @@ class CallbackProcessor:
             photos=[photo.url for photo in photos],
             added_at=self._current_timestamp,
         )
+        await self._on_movie_added(event)
 
         return result
 
