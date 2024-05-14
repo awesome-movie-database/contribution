@@ -1,13 +1,8 @@
 import json
-from datetime import datetime
 
 from aio_pika import Exchange, Message
 
-from contribution.domain.constants import Achieved
-from contribution.domain.value_objects import (
-    UserId,
-    AchievementId,
-)
+from contribution.application.common.events import AchievementEarnedEvent
 
 
 class PublishAchievementEarnedEvent:
@@ -19,20 +14,13 @@ class PublishAchievementEarnedEvent:
         self._exchange = exchange
         self._routing_key = routing_key
 
-    async def __call__(
-        self,
-        *,
-        id: AchievementId,
-        user_id: UserId,
-        achieved: Achieved,
-        achieved_at: datetime,
-    ) -> None:
+    async def __call__(self, event: AchievementEarnedEvent) -> None:
         message_body_as_dict = (
             {
-                "achievement_id": str(id),
-                "user_id": str(user_id),
-                "type": achieved.value,
-                "achieved_at": achieved_at.isoformat(),
+                "achievement_id": str(event.achievement_id),
+                "user_id": str(event.user_id),
+                "type": event.achieved.value,
+                "achieved_at": event.achieved_at.isoformat(),
             },
         )
         message_body = json.dumps(message_body_as_dict).encode()

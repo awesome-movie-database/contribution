@@ -1,25 +1,10 @@
 # mypy: disable-error-code="assignment"
 
 import json
-from typing import Optional, Sequence
-from datetime import date, datetime
 
 from aio_pika import Exchange, Message
 
-from contribution.domain.constants import (
-    Genre,
-    MPAA,
-)
-from contribution.domain.value_objects import (
-    AddMovieContributionId,
-    UserId,
-    Country,
-    Money,
-    ContributionRole,
-    ContributionWriter,
-    ContributionCrewMember,
-    PhotoUrl,
-)
+from contribution.application.common.events import MovieAddedEvent
 
 
 class PublishMovieAddedEvent:
@@ -31,52 +16,33 @@ class PublishMovieAddedEvent:
         self._exchange = exchange
         self._routing_key = routing_key
 
-    async def __call__(
-        self,
-        *,
-        id: AddMovieContributionId,
-        author_id: UserId,
-        eng_title: str,
-        original_title: str,
-        release_date: date,
-        countries: Sequence[Country],
-        genres: Sequence[Genre],
-        mpaa: MPAA,
-        duration: int,
-        budget: Optional[Money],
-        revenue: Optional[Money],
-        roles: Sequence[ContributionRole],
-        writers: Sequence[ContributionWriter],
-        crew: Sequence[ContributionCrewMember],
-        photos: Sequence[PhotoUrl],
-        added_at: datetime,
-    ) -> None:
+    async def __call__(self, event: MovieAddedEvent) -> None:
         message_body_as_dict = {
-            "contribution_id": str(id),
-            "author_id": str(author_id),
-            "eng_title": eng_title,
-            "original_title": original_title,
-            "release_date": release_date.isoformat(),
-            "countries": countries,
-            "genres": [genre.value for genre in genres],
-            "mpaa": mpaa.value,
-            "duration": duration,
-            "photos": list(photos),
-            "added_at": added_at.isoformat(),
+            "contribution_id": str(event.contribution_id),
+            "author_id": str(event.author_id),
+            "eng_title": event.eng_title,
+            "original_title": event.original_title,
+            "release_date": event.release_date.isoformat(),
+            "countries": event.countries,
+            "genres": [genre.value for genre in event.genres],
+            "mpaa": event.mpaa.value,
+            "duration": event.duration,
+            "photos": list(event.photos),
+            "added_at": event.added_at.isoformat(),
         }
 
-        if budget:
+        if event.budget:
             message_body_as_dict["budget"] = {
-                "amount": str(budget.amount),
-                "currency": budget.currency,
+                "amount": str(event.budget.amount),
+                "currency": event.budget.currency,
             }
         else:
             message_body_as_dict["budget"] = None
 
-        if revenue:
+        if event.revenue:
             message_body_as_dict["revenue"] = {
-                "amount": str(revenue.amount),
-                "currency": revenue.currency,
+                "amount": str(event.revenue.amount),
+                "currency": event.revenue.currency,
             }
         else:
             message_body_as_dict["revenue"] = None
@@ -88,21 +54,21 @@ class PublishMovieAddedEvent:
                 "importance": role.importance,
                 "is_spoiler": role.is_spoiler,
             }
-            for role in roles
+            for role in event.roles
         ]
         message_body_as_dict["writers"] = [
             {
                 "person_id": str(writer.person_id),
                 "writing": writer.writing.value,
             }
-            for writer in writers
+            for writer in event.writers
         ]
         message_body_as_dict["crew"] = [
             {
                 "person_id": str(crew_member.person_id),
                 "membership": crew_member.membership.value,
             }
-            for crew_member in crew
+            for crew_member in event.crew
         ]
 
         message_body = json.dumps(message_body_as_dict).encode()
