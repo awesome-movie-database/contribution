@@ -7,7 +7,7 @@ from .providers import (
 )
 
 
-def di_container_factory() -> AsyncContainer:
+def ioc_container_factory() -> AsyncContainer:
     di_container = make_async_container(
         domain_validators_provider_factory(),
         domain_services_provider_factrory(),

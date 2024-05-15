@@ -1,3 +1,3 @@
-__all__ = ("di_container_factory",)
+__all__ = ("ioc_container_factory",)
 
-from .container_factory import di_container_factory
+from .ioc_container_factory import ioc_container_factory
