@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from contribution.domain.value_objects import (
+from contribution.domain import (
     UserId,
     Email,
     Telegram,

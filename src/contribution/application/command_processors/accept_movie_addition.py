@@ -3,13 +3,11 @@ from typing import Optional
 
 from uuid_extensions import uuid7
 
-from contribution.domain.value_objects import AchievementId
-from contribution.domain.exceptions import (
+from contribution.domain import (
+    AchievementId,
     InvalidMovieEngTitleError,
     InvalidMovieOriginalTitleError,
     InvalidMovieDurationError,
-)
-from contribution.domain.services import (
     AcceptContribution,
     CreateMovie,
 )

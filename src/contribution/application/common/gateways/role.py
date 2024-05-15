@@ -1,7 +1,6 @@
 from typing import Protocol, Optional, Sequence
 
-from contribution.domain.value_objects import RoleId
-from contribution.domain.entities import Role
+from contribution.domain import RoleId, Role
 
 
 class RoleGateway(Protocol):

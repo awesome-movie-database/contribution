@@ -2,12 +2,12 @@ import logging
 
 from uuid_extensions import uuid7
 
-from contribution.domain.exceptions import (
+from contribution.domain import (
     InvalidPersonFirstNameError,
     InvalidPersonLastNameError,
     InvalidPersonBirthOrDeathDateError,
+    UpdatePerson,
 )
-from contribution.domain.services import UpdatePerson
 from contribution.application.common.command_processors import (
     CommandProcessor,
     TransactionProcessor,

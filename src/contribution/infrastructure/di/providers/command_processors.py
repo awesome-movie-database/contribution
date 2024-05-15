@@ -1,6 +1,6 @@
 from dishka import Provider, Scope
 
-from contribution.domain.value_objects import (
+from contribution.domain import (
     AddMovieContributionId,
     EditMovieContributionId,
     AddPersonContributionId,

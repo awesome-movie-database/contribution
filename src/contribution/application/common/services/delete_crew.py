@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from contribution.domain.value_objects import CrewMemberId
+from contribution.domain import CrewMemberId
 from contribution.application.common.exceptions import (
     CrewMembersDoNotExistError,
 )

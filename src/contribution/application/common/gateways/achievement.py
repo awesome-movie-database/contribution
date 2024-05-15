@@ -1,7 +1,6 @@
 from typing import Protocol, Optional
 
-from contribution.domain.value_objects import AchievementId
-from contribution.domain.entities import Achievement
+from contribution.domain import AchievementId, Achievement
 
 
 class AchievementGateway(Protocol):

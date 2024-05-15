@@ -2,7 +2,7 @@ import logging
 
 from uuid_extensions import uuid7
 
-from contribution.domain.services import CreateUser
+from contribution.domain import CreateUser
 from contribution.application.common.command_processors import (
     CommandProcessor,
     TransactionProcessor,

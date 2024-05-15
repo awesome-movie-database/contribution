@@ -1,11 +1,9 @@
 from typing import Sequence, Optional, TypedDict, Required
 from datetime import date
 
-from contribution.domain.constants import (
+from contribution.domain import (
     Genre,
     MPAA,
-)
-from contribution.domain.value_objects import (
     MovieId,
     RoleId,
     WriterId,

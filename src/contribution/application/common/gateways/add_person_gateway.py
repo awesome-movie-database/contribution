@@ -1,7 +1,9 @@
 from typing import Protocol, Optional
 
-from contribution.domain.value_objects import AddPersonContributionId
-from contribution.domain.entities import AddPersonContribution
+from contribution.domain import (
+    AddPersonContributionId,
+    AddPersonContribution,
+)
 
 
 class AddPersonContributionGateway(Protocol):

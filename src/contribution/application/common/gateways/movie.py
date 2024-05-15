@@ -1,7 +1,6 @@
 from typing import Protocol, Optional
 
-from contribution.domain.value_objects import MovieId
-from contribution.domain.entities import Movie
+from contribution.domain import MovieId, Movie
 
 
 class MovieGateway(Protocol):

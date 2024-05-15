@@ -1,7 +1,6 @@
 from typing import Protocol, Optional, Sequence
 
-from contribution.domain.value_objects import WriterId
-from contribution.domain.entities import Writer
+from contribution.domain import WriterId, Writer
 
 
 class WriterGateway(Protocol):

@@ -1,6 +1,6 @@
 from dishka import Provider, Scope
 
-from contribution.domain.services import (
+from contribution.domain import (
     CreateMovie,
     UpdateMovie,
     CreateUser,

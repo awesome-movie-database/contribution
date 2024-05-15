@@ -1,6 +1,6 @@
 from typing import Protocol, Optional
 
-from contribution.domain.value_objects import UserId
+from contribution.domain import UserId
 
 
 class IdentityProvider(Protocol):

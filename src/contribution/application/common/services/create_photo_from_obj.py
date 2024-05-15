@@ -1,7 +1,7 @@
 from uuid import uuid4
 from functools import cache
 
-from contribution.domain.value_objects import PhotoUrl
+from contribution.domain import PhotoUrl
 from contribution.application.common.value_objects import Photo
 
 

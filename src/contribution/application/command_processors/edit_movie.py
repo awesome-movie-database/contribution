@@ -4,14 +4,14 @@ from typing import Sequence
 
 from uuid_extensions import uuid7
 
-from contribution.domain.value_objects import (
+from contribution.domain import (
     EditMovieContributionId,
     RoleId,
     WriterId,
     CrewMemberId,
+    UserIsNotActiveError,
+    EditMovie,
 )
-from contribution.domain.exceptions import UserIsNotActiveError
-from contribution.domain.services import EditMovie
 from contribution.application.common.services import (
     AccessConcern,
     EnsurePersonsExist,

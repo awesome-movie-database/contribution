@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Sequence
 
-from contribution.domain.value_objects import (
+from contribution.domain import (
     AddMovieContributionId,
     MovieId,
 )

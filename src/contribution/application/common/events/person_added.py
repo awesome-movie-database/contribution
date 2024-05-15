@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from typing import Optional, Sequence
 from datetime import date, datetime
 
-from contribution.domain.constants import Sex
-from contribution.domain.value_objects import (
+from contribution.domain import (
+    Sex,
     AddPersonContributionId,
     UserId,
     PhotoUrl,

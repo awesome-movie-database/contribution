@@ -2,9 +2,11 @@ from dataclasses import dataclass
 from typing import Optional, Sequence
 from datetime import date
 
-from contribution.domain.constants import Sex
-from contribution.domain.value_objects import PersonId
-from contribution.domain.maybe import Maybe
+from contribution.domain import (
+    Sex,
+    PersonId,
+    Maybe,
+)
 
 
 @dataclass(frozen=True, slots=True)

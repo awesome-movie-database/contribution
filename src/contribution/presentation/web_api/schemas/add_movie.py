@@ -2,11 +2,9 @@ from dataclasses import dataclass
 from typing import Optional, Sequence
 from datetime import date
 
-from contribution.domain.constants import (
+from contribution.domain import (
     Genre,
     MPAA,
-)
-from contribution.domain.value_objects import (
     ContributionRole,
     ContributionWriter,
     ContributionCrewMember,

@@ -1,8 +1,10 @@
 from typing import Sequence
 
-from contribution.domain.value_objects import CrewMemberId
-from contribution.domain.entities import Movie
-from contribution.domain.services import CreateCrewMember
+from contribution.domain import (
+    CrewMemberId,
+    Movie,
+    CreateCrewMember,
+)
 from contribution.application.common.value_objects import MovieCrewMember
 from contribution.application.common.exceptions import (
     CrewMembersAlreadyExistError,

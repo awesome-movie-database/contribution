@@ -1,7 +1,9 @@
 from typing import Protocol, Optional, Sequence
 
-from contribution.domain.value_objects import CrewMemberId
-from contribution.domain.entities import CrewMember
+from contribution.domain import (
+    CrewMemberId,
+    CrewMember,
+)
 
 
 class CrewMemberGateway(Protocol):

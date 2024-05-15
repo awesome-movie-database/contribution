@@ -3,13 +3,11 @@ from typing import Optional
 
 from uuid_extensions import uuid7
 
-from contribution.domain.value_objects import AchievementId
-from contribution.domain.exceptions import (
+from contribution.domain import (
+    AchievementId,
     InvalidPersonFirstNameError,
     InvalidPersonLastNameError,
     InvalidPersonBirthOrDeathDateError,
-)
-from contribution.domain.services import (
     AcceptContribution,
     UpdatePerson,
 )

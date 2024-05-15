@@ -2,11 +2,9 @@ from dataclasses import dataclass
 from typing import Sequence, Optional
 from datetime import date
 
-from contribution.domain.constants import (
+from contribution.domain import (
     Genre,
     MPAA,
-)
-from contribution.domain.value_objects import (
     MovieId,
     RoleId,
     WriterId,
@@ -16,8 +14,8 @@ from contribution.domain.value_objects import (
     ContributionCrewMember,
     Country,
     Money,
+    Maybe,
 )
-from contribution.domain.maybe import Maybe
 
 
 @dataclass(frozen=True, slots=True)

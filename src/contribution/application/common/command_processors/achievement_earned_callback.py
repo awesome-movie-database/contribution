@@ -1,6 +1,6 @@
 from typing import Optional
 
-from contribution.domain.value_objects import AchievementId
+from contribution.domain import AchievementId
 from contribution.application.common.exceptions import (
     AchievementDoesNotExistError,
 )

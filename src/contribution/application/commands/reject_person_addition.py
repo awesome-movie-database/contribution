@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from contribution.domain.value_objects import AddPersonContributionId
+from contribution.domain import AddPersonContributionId
 
 
 @dataclass(frozen=True, slots=True)

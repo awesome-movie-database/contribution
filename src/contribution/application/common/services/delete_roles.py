@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from contribution.domain.value_objects import RoleId
+from contribution.domain import RoleId
 from contribution.application.common.exceptions import RolesDoNotExistError
 from contribution.application.common.gateways import RoleGateway
 

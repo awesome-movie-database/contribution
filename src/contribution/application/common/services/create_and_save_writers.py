@@ -1,8 +1,10 @@
 from typing import Sequence
 
-from contribution.domain.value_objects import WriterId
-from contribution.domain.entities import Movie
-from contribution.domain.services import CreateWriter
+from contribution.domain import (
+    WriterId,
+    Movie,
+    CreateWriter,
+)
 from contribution.application.common.value_objects import MovieWriter
 from contribution.application.common.exceptions import WritersAlreadyExistError
 from contribution.application.common.gateways import (

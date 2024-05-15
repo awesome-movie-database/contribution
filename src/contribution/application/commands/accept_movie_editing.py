@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Sequence
 
-from contribution.domain.value_objects import EditMovieContributionId
+from contribution.domain import EditMovieContributionId
 from contribution.application.common.value_objects import (
     MovieRole,
     MovieWriter,

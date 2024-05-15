@@ -2,12 +2,12 @@ import logging
 
 from uuid_extensions import uuid7
 
-from contribution.domain.exceptions import (
+from contribution.domain import (
     InvalidMovieEngTitleError,
     InvalidMovieOriginalTitleError,
     InvalidMovieDurationError,
+    CreateMovie,
 )
-from contribution.domain.services import CreateMovie
 from contribution.application.common.services import (
     CreateAndSaveRoles,
     CreateAndSaveWriters,

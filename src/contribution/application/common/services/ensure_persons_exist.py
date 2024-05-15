@@ -1,4 +1,4 @@
-from contribution.domain.value_objects import PersonId
+from contribution.domain import PersonId
 from contribution.application.common.exceptions import PersonsDoNotExistError
 from contribution.application.common.gateways import PersonGateway
 

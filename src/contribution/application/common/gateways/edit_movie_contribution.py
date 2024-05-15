@@ -1,7 +1,9 @@
 from typing import Protocol, Optional
 
-from contribution.domain.value_objects import EditMovieContributionId
-from contribution.domain.entities import EditMovieContribution
+from contribution.domain import (
+    EditMovieContributionId,
+    EditMovieContribution,
+)
 
 
 class EditMovieContributionGateway(Protocol):

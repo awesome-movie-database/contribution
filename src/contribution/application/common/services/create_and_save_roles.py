@@ -1,8 +1,10 @@
 from typing import Sequence
 
-from contribution.domain.value_objects import RoleId
-from contribution.domain.entities import Movie
-from contribution.domain.services import CreateRole
+from contribution.domain import (
+    RoleId,
+    Movie,
+    CreateRole,
+)
 from contribution.application.common.value_objects import MovieRole
 from contribution.application.common.exceptions import RolesAlreadyExistError
 from contribution.application.common.gateways import PersonGateway, RoleGateway

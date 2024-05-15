@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from contribution.domain.constants import Writing
-from contribution.domain.value_objects import (
+from contribution.domain import (
+    Writing,
     WriterId,
     PersonId,
 )

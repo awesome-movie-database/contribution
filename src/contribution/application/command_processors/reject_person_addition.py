@@ -3,8 +3,10 @@ from typing import Optional
 
 from uuid_extensions import uuid7
 
-from contribution.domain.value_objects import AchievementId
-from contribution.domain.services import RejectContribution
+from contribution.domain import (
+    AchievementId,
+    RejectContribution,
+)
 from contribution.application.common.command_processors import (
     CommandProcessor,
     TransactionProcessor,

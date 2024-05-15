@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from contribution.domain.value_objects import WriterId
+from contribution.domain import WriterId
 from contribution.application.common.exceptions import WritersDoNotExistError
 from contribution.application.common.gateways import WriterGateway
 

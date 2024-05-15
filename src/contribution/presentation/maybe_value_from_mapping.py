@@ -1,6 +1,6 @@
 from typing import Mapping, Any
 
-from contribution.domain.maybe import Maybe
+from contribution.domain import Maybe
 
 
 def maybe_value_from_mapping[T](

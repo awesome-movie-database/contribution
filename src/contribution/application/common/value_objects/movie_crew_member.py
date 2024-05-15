@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from contribution.domain.constants import CrewMembership
-from contribution.domain.value_objects import (
+from contribution.domain import (
+    CrewMembership,
     CrewMemberId,
     PersonId,
 )

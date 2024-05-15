@@ -1,6 +1,6 @@
 from typing import Union, cast
 
-from contribution.domain.value_objects import (
+from contribution.domain import (
     UserId,
     Email,
     Telegram,

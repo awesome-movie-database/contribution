@@ -3,9 +3,11 @@ from datetime import datetime, timezone
 
 from uuid_extensions import uuid7
 
-from contribution.domain.value_objects import AddPersonContributionId
-from contribution.domain.exceptions import UserIsNotActiveError
-from contribution.domain.services import AddPerson
+from contribution.domain import (
+    AddPersonContributionId,
+    UserIsNotActiveError,
+    AddPerson,
+)
 from contribution.application.common.services import (
     AccessConcern,
     CreatePhotoFromObj,

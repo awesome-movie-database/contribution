@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional, Sequence
 from datetime import date
 
-from contribution.domain.constants import Sex
+from contribution.domain import Sex
 
 
 @dataclass(frozen=True, slots=True)

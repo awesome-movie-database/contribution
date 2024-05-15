@@ -2,19 +2,17 @@ from dataclasses import dataclass
 from typing import Sequence, Optional
 from datetime import date
 
-from contribution.domain.constants import (
+from contribution.domain import (
     Genre,
     MPAA,
-)
-from contribution.domain.value_objects import (
     MovieId,
     RoleId,
     WriterId,
     CrewMemberId,
     Country,
     Money,
+    Maybe,
 )
-from contribution.domain.maybe import Maybe
 from contribution.application.common.value_objects import (
     MovieRole,
     MovieWriter,

@@ -1,6 +1,6 @@
 from dishka import Provider, Scope
 
-from contribution.domain.validators import (
+from contribution.domain import (
     ValidateMovieEngTitle,
     ValidateMovieOriginalTitle,
     ValidateMovieDuration,

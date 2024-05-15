@@ -3,8 +3,10 @@ from datetime import datetime, timezone
 
 from uuid_extensions import uuid7
 
-from contribution.domain.value_objects import EditPersonContributionId
-from contribution.domain.services import EditPerson
+from contribution.domain import (
+    EditPersonContributionId,
+    EditPerson,
+)
 from contribution.application.common.services import (
     AccessConcern,
     CreatePhotoFromObj,

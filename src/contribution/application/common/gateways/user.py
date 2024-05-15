@@ -1,11 +1,11 @@
 from typing import Protocol, Optional
 
-from contribution.domain.value_objects import (
+from contribution.domain import (
     UserId,
     Email,
     Telegram,
+    User,
 )
-from contribution.domain.entities import User
 
 
 class UserGateway(Protocol):

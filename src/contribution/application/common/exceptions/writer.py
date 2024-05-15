@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from contribution.domain.value_objects import WriterId
+from contribution.domain import WriterId
 from .base import ApplicationError
 
 

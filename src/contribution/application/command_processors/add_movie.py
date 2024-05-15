@@ -3,9 +3,11 @@ from datetime import datetime, timezone
 
 from uuid_extensions import uuid7
 
-from contribution.domain.value_objects import AddMovieContributionId
-from contribution.domain.exceptions import UserIsNotActiveError
-from contribution.domain.services import AddMovie
+from contribution.domain import (
+    AddMovieContributionId,
+    UserIsNotActiveError,
+    AddMovie,
+)
 from contribution.application.common.services import (
     AccessConcern,
     EnsurePersonsExist,
