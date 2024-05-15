@@ -7,24 +7,20 @@ from contribution.domain import (
     AchievementId,
     RejectContribution,
 )
-from contribution.application.common.command_processors import (
+from contribution.application.common import (
     CommandProcessor,
     TransactionProcessor,
     AchievementEearnedCallbackProcessor,
-)
-from contribution.application.common.exceptions import (
     UserDoesNotExistError,
     ContributionDoesNotExistError,
     AchievementDoesNotExistError,
-)
-from contribution.application.common.gateways import (
     AddPersonContributionGateway,
     UserGateway,
     AchievementGateway,
+    UnitOfWork,
+    OnEventOccurred,
+    AchievementEarnedEvent,
 )
-from contribution.application.common.unit_of_work import UnitOfWork
-from contribution.application.common.event_callback import OnEventOccurred
-from contribution.application.common.events import AchievementEarnedEvent
 from contribution.application.commands import RejectPersonAdditionCommand
 
 

@@ -7,31 +7,25 @@ from contribution.domain import (
     EditPersonContributionId,
     EditPerson,
 )
-from contribution.application.common.services import (
+from contribution.application.common import (
     AccessConcern,
     CreatePhotoFromObj,
-)
-from contribution.application.common.command_processors import (
     CommandProcessor,
     AuthorizationProcessor,
     TransactionProcessor,
-)
-from contribution.application.common.exceptions import (
     UserDoesNotExistError,
     PersonDoesNotExistError,
     NotEnoughPermissionsError,
-)
-from contribution.application.common.gateways import (
     EditPersonContributionGateway,
     UserGateway,
     PersonGateway,
     PermissionsGateway,
+    ObjectStorage,
+    UnitOfWork,
+    IdentityProvider,
+    OnEventOccurred,
+    PersonEditedEvent,
 )
-from contribution.application.common.object_storage import ObjectStorage
-from contribution.application.common.unit_of_work import UnitOfWork
-from contribution.application.common.identity_provider import IdentityProvider
-from contribution.application.common.event_callback import OnEventOccurred
-from contribution.application.common.events import PersonEditedEvent
 from contribution.application.commands import EditPersonCommand
 
 

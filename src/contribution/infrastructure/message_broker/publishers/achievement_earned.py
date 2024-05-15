@@ -2,7 +2,7 @@ import json
 
 from aio_pika import Exchange, Message
 
-from contribution.application.common.events import AchievementEarnedEvent
+from contribution.application import AchievementEarnedEvent
 
 
 class PublishAchievementEarnedEvent:

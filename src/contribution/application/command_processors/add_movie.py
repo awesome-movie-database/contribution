@@ -8,31 +8,25 @@ from contribution.domain import (
     UserIsNotActiveError,
     AddMovie,
 )
-from contribution.application.common.services import (
+from contribution.application.common import (
     AccessConcern,
     EnsurePersonsExist,
     CreatePhotoFromObj,
-)
-from contribution.application.common.command_processors import (
     CommandProcessor,
     AuthorizationProcessor,
     TransactionProcessor,
-)
-from contribution.application.common.exceptions import (
     UserDoesNotExistError,
     PersonsDoNotExistError,
     NotEnoughPermissionsError,
-)
-from contribution.application.common.gateways import (
     AddMovieContributionGateway,
     UserGateway,
     PermissionsGateway,
+    ObjectStorage,
+    UnitOfWork,
+    IdentityProvider,
+    OnEventOccurred,
+    MovieAddedEvent,
 )
-from contribution.application.common.object_storage import ObjectStorage
-from contribution.application.common.unit_of_work import UnitOfWork
-from contribution.application.common.identity_provider import IdentityProvider
-from contribution.application.common.event_callback import OnEventOccurred
-from contribution.application.common.events import MovieAddedEvent
 from contribution.application.commands import AddMovieCommand
 
 

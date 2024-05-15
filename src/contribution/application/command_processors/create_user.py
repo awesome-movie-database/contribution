@@ -3,18 +3,16 @@ import logging
 from uuid_extensions import uuid7
 
 from contribution.domain import CreateUser
-from contribution.application.common.command_processors import (
+from contribution.application.common import (
     CommandProcessor,
     TransactionProcessor,
-)
-from contribution.application.common.exceptions import (
     UserIdIsAlreadyTakenError,
     UserNameIsAlreadyTakenError,
     UserEmailIsAlreadyTakenError,
     UserTelegramIsAlreadyTakenError,
+    UserGateway,
+    UnitOfWork,
 )
-from contribution.application.common.gateways import UserGateway
-from contribution.application.common.unit_of_work import UnitOfWork
 from contribution.application.commands import CreateUserCommand
 
 

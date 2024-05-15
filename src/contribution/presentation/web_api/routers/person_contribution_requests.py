@@ -4,16 +4,14 @@ from datetime import date
 from fastapi import APIRouter, File
 from dishka.integrations.fastapi import FromDishka, inject
 
-from contribution.domain.constants import Sex
-from contribution.domain.value_objects import (
+from contribution.domain import (
+    Sex,
     PersonId,
     AddPersonContributionId,
     EditPersonContributionId,
 )
-from contribution.application.common.command_processors import (
+from contribution.application import (
     CommandProcessor,
-)
-from contribution.application.commands import (
     AddPersonCommand,
     EditPersonCommand,
 )

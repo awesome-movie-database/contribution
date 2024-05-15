@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Sequence
 
 from contribution.domain import EditMovieContributionId
-from contribution.application.common.value_objects import (
+from contribution.application.common import (
     MovieRole,
     MovieWriter,
     MovieCrewMember,

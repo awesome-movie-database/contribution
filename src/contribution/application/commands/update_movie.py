@@ -13,7 +13,7 @@ from contribution.domain import (
     Money,
     Maybe,
 )
-from contribution.application.common.value_objects import (
+from contribution.application.common import (
     MovieRole,
     MovieWriter,
     MovieCrewMember,

@@ -12,17 +12,13 @@ from contribution.domain import (
     UserIsNotActiveError,
     EditMovie,
 )
-from contribution.application.common.services import (
+from contribution.application.common import (
     AccessConcern,
     EnsurePersonsExist,
     CreatePhotoFromObj,
-)
-from contribution.application.common.command_processors import (
     CommandProcessor,
     AuthorizationProcessor,
     TransactionProcessor,
-)
-from contribution.application.common.exceptions import (
     UserDoesNotExistError,
     MovieDoesNotExistError,
     RolesDoNotExistError,
@@ -30,8 +26,6 @@ from contribution.application.common.exceptions import (
     CrewMembersDoNotExistError,
     PersonsDoNotExistError,
     NotEnoughPermissionsError,
-)
-from contribution.application.common.gateways import (
     EditMovieContributionGateway,
     MovieGateway,
     UserGateway,
@@ -39,12 +33,12 @@ from contribution.application.common.gateways import (
     WriterGateway,
     CrewMemberGateway,
     PermissionsGateway,
+    ObjectStorage,
+    UnitOfWork,
+    IdentityProvider,
+    OnEventOccurred,
+    MovieEditedEvent,
 )
-from contribution.application.common.object_storage import ObjectStorage
-from contribution.application.common.unit_of_work import UnitOfWork
-from contribution.application.common.identity_provider import IdentityProvider
-from contribution.application.common.event_callback import OnEventOccurred
-from contribution.application.common.events import MovieEditedEvent
 from contribution.application.commands import EditMovieCommand
 
 

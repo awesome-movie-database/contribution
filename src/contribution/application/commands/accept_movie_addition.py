@@ -6,7 +6,7 @@ from contribution.domain import (
     AddMovieContributionId,
     MovieId,
 )
-from contribution.application.common.value_objects import (
+from contribution.application.common import (
     MovieRole,
     MovieWriter,
     MovieCrewMember,

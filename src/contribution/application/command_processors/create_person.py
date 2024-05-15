@@ -8,15 +8,13 @@ from contribution.domain import (
     InvalidPersonBirthOrDeathDateError,
     CreatePerson,
 )
-from contribution.application.common.command_processors import (
+from contribution.application.common import (
     CommandProcessor,
     TransactionProcessor,
-)
-from contribution.application.common.exceptions import (
     PersonIdIsAlreadyTakenError,
+    PersonGateway,
+    UnitOfWork,
 )
-from contribution.application.common.gateways import PersonGateway
-from contribution.application.common.unit_of_work import UnitOfWork
 from contribution.application.commands import CreatePersonCommand
 
 

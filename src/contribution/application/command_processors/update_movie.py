@@ -8,19 +8,15 @@ from contribution.domain import (
     InvalidMovieDurationError,
     UpdateMovie,
 )
-from contribution.application.common.services import (
+from contribution.application.common import (
     CreateAndSaveRoles,
     DeleteRoles,
     CreateAndSaveWriters,
     DeleteWriters,
     CreateAndSaveCrew,
     DeleteCrew,
-)
-from contribution.application.common.command_processors import (
     CommandProcessor,
     TransactionProcessor,
-)
-from contribution.application.common.exceptions import (
     MovieDoesNotExistError,
     PersonsDoNotExistError,
     RolesAlreadyExistError,
@@ -29,12 +25,10 @@ from contribution.application.common.exceptions import (
     WritersDoNotExistError,
     CrewMembersAlreadyExistError,
     CrewMembersDoNotExistError,
-)
-from contribution.application.common.gateways import (
     MovieGateway,
     PersonGateway,
+    UnitOfWork,
 )
-from contribution.application.common.unit_of_work import UnitOfWork
 from contribution.application.commands import UpdateMovieCommand
 
 

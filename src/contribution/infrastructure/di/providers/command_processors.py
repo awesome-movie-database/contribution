@@ -7,10 +7,8 @@ from contribution.domain import (
     EditPersonContributionId,
     AchievementId,
 )
-from contribution.application.common.command_processors import (
+from contribution.application import (
     CommandProcessor,
-)
-from contribution.application.command_processors import (
     create_user_factory,
     update_user_factory,
     create_movie_factory,
@@ -29,8 +27,6 @@ from contribution.application.command_processors import (
     accept_person_editing_factory,
     reject_person_addition_factory,
     reject_person_editing_factory,
-)
-from contribution.application.commands import (
     CreateUserCommand,
     UpdateUserCommand,
     CreateMovieCommand,

@@ -4,21 +4,17 @@ from datetime import date
 from fastapi import APIRouter, File
 from dishka.integrations.fastapi import FromDishka, inject
 
-from contribution.domain.constants import (
+from contribution.domain import (
     Genre,
     MPAA,
-)
-from contribution.domain.value_objects import (
     MovieId,
     AddMovieContributionId,
     EditMovieContributionId,
     Country,
     Money,
 )
-from contribution.application.common.command_processors import (
+from contribution.application import (
     CommandProcessor,
-)
-from contribution.application.commands import (
     AddMovieCommand,
     EditMovieCommand,
 )

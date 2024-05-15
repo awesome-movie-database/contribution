@@ -4,7 +4,7 @@ import json
 
 from aio_pika import Exchange, Message
 
-from contribution.application.common.events import MovieEditedEvent
+from contribution.application import MovieEditedEvent
 
 
 class PublishMovieEditedEvent:
