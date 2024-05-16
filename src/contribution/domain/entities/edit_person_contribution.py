@@ -1,4 +1,4 @@
-from typing import Optional, Sequence
+from typing import Iterable, Optional
 from dataclasses import dataclass
 from datetime import date
 
@@ -23,4 +23,4 @@ class EditPersonContribution(Contribution):
     sex: Maybe[Sex]
     birth_date: Maybe[date]
     death_date: Maybe[Optional[date]]
-    add_photos: Sequence[PhotoUrl]
+    add_photos: Iterable[PhotoUrl]

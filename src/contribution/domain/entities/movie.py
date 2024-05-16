@@ -1,4 +1,4 @@
-from typing import Sequence, Optional
+from typing import Iterable, Optional
 from dataclasses import dataclass
 from datetime import date
 
@@ -19,8 +19,8 @@ class Movie:
     eng_title: str
     original_title: str
     release_date: date
-    countries: Sequence[Country]
-    genres: Sequence[Genre]
+    countries: Iterable[Country]
+    genres: Iterable[Genre]
     mpaa: MPAA
     duration: int
     budget: Optional[Money]

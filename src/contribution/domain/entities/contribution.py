@@ -1,8 +1,8 @@
-from contribution.domain.constants import ContributionStatus
-
 from dataclasses import dataclass
 from typing import Optional
 from datetime import datetime
+
+from contribution.domain.constants import ContributionStatus
 
 
 @dataclass
