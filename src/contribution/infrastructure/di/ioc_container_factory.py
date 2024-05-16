@@ -4,6 +4,7 @@ from .providers import (
     domain_validators_provider_factory,
     domain_services_provider_factrory,
     command_processors_provider_factory,
+    identity_maps_provider_factory,
 )
 
 
@@ -12,5 +13,6 @@ def ioc_container_factory() -> AsyncContainer:
         domain_validators_provider_factory(),
         domain_services_provider_factrory(),
         command_processors_provider_factory(),
+        identity_maps_provider_factory(),
     )
     return di_container
