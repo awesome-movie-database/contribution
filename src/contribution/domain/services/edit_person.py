@@ -1,4 +1,4 @@
-from typing import Optional, Sequence
+from typing import Iterable, Optional
 from datetime import date, datetime
 
 from contribution.domain.constants import (
@@ -46,7 +46,7 @@ class EditPerson:
         sex: Maybe[Sex],
         birth_date: Maybe[date],
         death_date: Maybe[Optional[date]],
-        add_photos: Sequence[PhotoUrl],
+        add_photos: Iterable[PhotoUrl],
         current_timestamp: datetime,
     ) -> EditPersonContribution:
         if not author.is_active:

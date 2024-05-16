@@ -1,4 +1,4 @@
-from typing import Sequence, Optional
+from typing import Iterable, Optional
 from datetime import date
 
 from contribution.domain.constants import (
@@ -36,8 +36,8 @@ class UpdateMovie:
         eng_title: Maybe[str],
         original_title: Maybe[str],
         release_date: Maybe[date],
-        countries: Maybe[Sequence[Country]],
-        genres: Maybe[Sequence[Genre]],
+        countries: Maybe[Iterable[Country]],
+        genres: Maybe[Iterable[Genre]],
         mpaa: Maybe[MPAA],
         duration: Maybe[int],
         budget: Maybe[Optional[Money]],

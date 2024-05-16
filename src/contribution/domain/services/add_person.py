@@ -1,4 +1,4 @@
-from typing import Optional, Sequence
+from typing import Iterable, Optional
 from datetime import date, datetime
 
 from contribution.domain.constants import (
@@ -42,7 +42,7 @@ class AddPerson:
         sex: Sex,
         birth_date: date,
         death_date: Optional[date],
-        photos: Sequence[PhotoUrl],
+        photos: Iterable[PhotoUrl],
         current_timestamp: datetime,
     ) -> AddPersonContribution:
         if not author.is_active:
