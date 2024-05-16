@@ -8,7 +8,7 @@ from contribution.domain.value_objects import (
 )
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, unsafe_hash=True)
 class Achievement:
     id: AchievementId
     user_id: UserId

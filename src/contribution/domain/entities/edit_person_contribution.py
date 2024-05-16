@@ -13,7 +13,7 @@ from contribution.domain.maybe import Maybe
 from .contribution import Contribution
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, unsafe_hash=True)
 class EditPersonContribution(Contribution):
     id: EditPersonContributionId
     author_id: UserId

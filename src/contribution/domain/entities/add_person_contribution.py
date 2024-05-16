@@ -11,7 +11,7 @@ from contribution.domain.value_objects import (
 from .contribution import Contribution
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, unsafe_hash=True)
 class AddPersonContribution(Contribution):
     id: AddPersonContributionId
     author_id: UserId

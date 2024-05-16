@@ -13,7 +13,7 @@ from contribution.domain.value_objects import (
 )
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, unsafe_hash=True)
 class Movie:
     id: MovieId
     eng_title: str
