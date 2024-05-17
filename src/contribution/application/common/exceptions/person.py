@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Collection
 
 from contribution.domain import PersonId
 from .base import ApplicationError
@@ -15,6 +15,6 @@ class PersonDoesNotExistError(ApplicationError):
 class PersonsDoNotExistError(ApplicationError):
     def __init__(
         self,
-        ids_of_missing_persons: Sequence[PersonId],
+        ids_of_missing_persons: Collection[PersonId],
     ):
         self.ids_of_missing_persons = ids_of_missing_persons

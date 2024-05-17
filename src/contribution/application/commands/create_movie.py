@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, Sequence
+from typing import Iterable, Optional
 from datetime import date
 
 from contribution.domain import (
@@ -22,12 +22,12 @@ class CreateMovieCommand:
     eng_title: str
     original_title: str
     release_date: date
-    countries: Sequence[Country]
-    genres: Sequence[Genre]
+    countries: Iterable[Country]
+    genres: Iterable[Genre]
     mpaa: MPAA
     duration: int
     budget: Optional[Money]
     revenue: Optional[Money]
-    roles: Sequence[MovieRole]
-    writers: Sequence[MovieWriter]
-    crew: Sequence[MovieCrewMember]
+    roles: Iterable[MovieRole]
+    writers: Iterable[MovieWriter]
+    crew: Iterable[MovieCrewMember]

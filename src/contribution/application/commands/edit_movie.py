@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Sequence, Optional
+from typing import Collection, Iterable, Optional
 from datetime import date
 
 from contribution.domain import (
@@ -24,16 +24,16 @@ class EditMovieCommand:
     eng_title: Maybe[str]
     original_title: Maybe[str]
     release_date: Maybe[date]
-    countries: Maybe[Sequence[Country]]
-    genres: Maybe[Sequence[Genre]]
+    countries: Maybe[Iterable[Country]]
+    genres: Maybe[Iterable[Genre]]
     mpaa: Maybe[MPAA]
     duration: Maybe[int]
     budget: Maybe[Optional[Money]]
     revenue: Maybe[Optional[Money]]
-    add_roles: Sequence[ContributionRole]
-    remove_roles: Sequence[RoleId]
-    add_writers: Sequence[ContributionWriter]
-    remove_writers: Sequence[WriterId]
-    add_crew: Sequence[ContributionCrewMember]
-    remove_crew: Sequence[CrewMemberId]
-    add_photos: Sequence[bytes]
+    add_roles: Iterable[ContributionRole]
+    remove_roles: Collection[RoleId]
+    add_writers: Iterable[ContributionWriter]
+    remove_writers: Collection[WriterId]
+    add_crew: Iterable[ContributionCrewMember]
+    remove_crew: Collection[CrewMemberId]
+    add_photos: Iterable[bytes]

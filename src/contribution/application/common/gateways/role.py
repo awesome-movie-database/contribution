@@ -1,4 +1,4 @@
-from typing import Protocol, Optional, Sequence
+from typing import Iterable, Protocol, Optional
 
 from contribution.domain import RoleId, Role
 
@@ -7,14 +7,17 @@ class RoleGateway(Protocol):
     async def with_id(self, id: RoleId) -> Optional[Role]:
         raise NotImplementedError
 
-    async def list_with_ids(self, *ids: RoleId) -> list[Role]:
+    async def list_with_ids(
+        self,
+        ids: Iterable[RoleId],
+    ) -> list[Role]:
         raise NotImplementedError
 
-    async def save_seq(self, roles: Sequence[Role]) -> None:
+    async def save_many(self, roles: Iterable[Role]) -> None:
         raise NotImplementedError
 
     async def update(self, role: Role) -> None:
         raise NotImplementedError
 
-    async def delete_seq(self, roles: Sequence[Role]) -> None:
+    async def delete_many(self, roles: Iterable[Role]) -> None:
         raise NotImplementedError

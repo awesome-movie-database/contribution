@@ -115,11 +115,12 @@ class AddMovieProcessor:
         if not author:
             raise UserDoesNotExistError(current_user_id)
 
-        await self._ensure_persons_exist(
+        person_ids = [
             *(role.person_id for role in command.roles),
             *(writer.person_id for writer in command.writers),
             *(crew_member.person_id for crew_member in command.crew),
-        )
+        ]
+        await self._ensure_persons_exist(person_ids)
 
         photos = [self._create_photo_from_obj(obj) for obj in command.photos]
 
@@ -143,7 +144,7 @@ class AddMovieProcessor:
         )
         await self._add_movie_contribution_gateway.save(contribution)
 
-        await self._object_storage.save_photo_seq(photos)
+        await self._object_storage.save_photos(photos)
 
         return contribution.id
 

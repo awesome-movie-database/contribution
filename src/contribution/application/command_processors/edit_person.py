@@ -138,7 +138,7 @@ class EditPersonProcessor:
         )
         await self._edit_person_contribution_gateway.save(contribution)
 
-        await self._object_storage.save_photo_seq(add_photos)
+        await self._object_storage.save_photos(add_photos)
 
         return contribution.id
 

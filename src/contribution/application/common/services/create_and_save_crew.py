@@ -1,13 +1,15 @@
-from typing import Sequence
+from typing import Iterable
 
 from contribution.domain import (
     CrewMemberId,
     Movie,
+    Person,
     CreateCrewMember,
 )
 from contribution.application.common.value_objects import MovieCrewMember
 from contribution.application.common.exceptions import (
     CrewMembersAlreadyExistError,
+    PersonsDoNotExistError,
 )
 from contribution.application.common.gateways import (
     PersonGateway,
@@ -30,21 +32,12 @@ class CreateAndSaveCrew:
         self,
         *,
         movie: Movie,
-        movie_crew: Sequence[MovieCrewMember],
+        movie_crew: Iterable[MovieCrewMember],
     ) -> None:
-        movie_crew_members_ids = [
-            movie_crew_member.id for movie_crew_member in movie_crew
-        ]
-        await self._ensure_crew_members_do_not_exist(
-            *movie_crew_members_ids,
-        )
+        crew_member_ids = [crew_member.id for crew_member in movie_crew]
+        await self._ensure_crew_members_do_not_exist(crew_member_ids)
 
-        person_ids_of_movie_crew_members = [
-            movie_crew_member.person_id for movie_crew_member in movie_crew
-        ]
-        persons = await self._person_gateway.list_with_ids(
-            *person_ids_of_movie_crew_members,
-        )
+        persons = await self._list_persons_of_movie_crew(movie_crew)
 
         crew = []
         for movie_crew_member, person in zip(movie_crew, persons):
@@ -56,16 +49,34 @@ class CreateAndSaveCrew:
             )
             crew.append(crew_member)
 
-        await self._crew_member_gateway.save_seq(crew)
+        await self._crew_member_gateway.save_many(crew)
 
     async def _ensure_crew_members_do_not_exist(
         self,
-        *crew_members_ids: CrewMemberId,
+        crew_member_ids: Iterable[CrewMemberId],
     ) -> None:
         crew_members = await self._crew_member_gateway.list_with_ids(
-            *crew_members_ids,
+            crew_member_ids,
         )
         if crew_members:
             raise CrewMembersAlreadyExistError(
                 [crew_member.id for crew_member in crew_members],
             )
+
+    async def _list_persons_of_movie_crew(
+        self,
+        movie_crew: Iterable[MovieCrewMember],
+    ) -> list[Person]:
+        person_ids = [crew_member.person_id for crew_member in movie_crew]
+        persons = await self._person_gateway.list_with_ids(person_ids)
+
+        some_persons_are_missing = len(person_ids) != len(persons)
+
+        if some_persons_are_missing:
+            ids_of_persons_from_gateway = [person for person in persons]
+            ids_of_missing_persons = set(person_ids).difference(
+                ids_of_persons_from_gateway,
+            )
+            raise PersonsDoNotExistError(ids_of_missing_persons)
+
+        return persons

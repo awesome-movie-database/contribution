@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, Sequence
+from typing import Iterable, Optional
 from datetime import date
 
 from contribution.domain import (
@@ -17,4 +17,4 @@ class UpdatePersonCommand:
     sex: Maybe[Sex]
     birth_date: Maybe[date]
     death_date: Maybe[Optional[date]]
-    add_photos: Sequence[bytes]
+    add_photos: Iterable[bytes]

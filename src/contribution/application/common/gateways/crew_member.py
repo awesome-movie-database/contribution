@@ -1,4 +1,4 @@
-from typing import Protocol, Optional, Sequence
+from typing import Iterable, Protocol, Optional
 
 from contribution.domain import (
     CrewMemberId,
@@ -10,14 +10,17 @@ class CrewMemberGateway(Protocol):
     async def with_id(self, id: CrewMemberId) -> Optional[CrewMember]:
         raise NotImplementedError
 
-    async def list_with_ids(self, *ids: CrewMemberId) -> list[CrewMember]:
+    async def list_with_ids(
+        self,
+        ids: Iterable[CrewMemberId],
+    ) -> list[CrewMember]:
         raise NotImplementedError
 
-    async def save_seq(self, crew_members: Sequence[CrewMember]) -> None:
+    async def save_many(self, crew_members: Iterable[CrewMember]) -> None:
         raise NotImplementedError
 
     async def update(self, crew_member: CrewMember) -> None:
         raise NotImplementedError
 
-    async def delete_seq(self, crew_members: Sequence[CrewMember]) -> None:
+    async def delete_many(self, crew_members: Iterable[CrewMember]) -> None:
         raise NotImplementedError

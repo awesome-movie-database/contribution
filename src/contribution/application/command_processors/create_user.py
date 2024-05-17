@@ -68,7 +68,6 @@ class CreateUserProcessor:
             )
             if user_with_same_email:
                 raise UserEmailIsAlreadyTakenError()
-
         if command.telegram:
             user_with_same_telegram = await self._user_gateway.with_telegram(
                 telegram=command.telegram,

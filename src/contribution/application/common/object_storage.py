@@ -1,8 +1,8 @@
-from typing import Protocol, Sequence
+from typing import Iterable, Protocol
 
 from contribution.application.common.value_objects import Photo
 
 
 class ObjectStorage(Protocol):
-    async def save_photo_seq(self, photos: Sequence[Photo]) -> None:
+    async def save_photos(self, photos: Iterable[Photo]) -> None:
         raise NotImplementedError

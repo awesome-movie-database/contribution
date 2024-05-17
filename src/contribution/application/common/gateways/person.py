@@ -1,4 +1,4 @@
-from typing import Protocol, Optional
+from typing import Iterable, Protocol, Optional
 
 from contribution.domain import PersonId, Person
 
@@ -10,7 +10,10 @@ class PersonGateway(Protocol):
     async def acquire_with_id(self, id: PersonId) -> Optional[Person]:
         raise NotImplementedError
 
-    async def list_with_ids(self, *ids: PersonId) -> list[Person]:
+    async def list_with_ids(
+        self,
+        ids: Iterable[PersonId],
+    ) -> list[Person]:
         raise NotImplementedError
 
     async def save(self, person: Person) -> None:

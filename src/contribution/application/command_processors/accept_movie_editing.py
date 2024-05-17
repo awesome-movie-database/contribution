@@ -182,9 +182,9 @@ class AcceptMovieEditingProcessor:
             movie_crew=command.add_crew,
         )
 
-        await self._delete_roles(contribution.remove_roles)
-        await self._delete_writers(contribution.remove_writers)
-        await self._delete_crew(contribution.remove_crew)
+        await self._delete_roles(list(contribution.remove_roles))
+        await self._delete_writers(list(contribution.remove_writers))
+        await self._delete_crew(list(contribution.remove_crew))
 
         return achievement.id if achievement else None
 

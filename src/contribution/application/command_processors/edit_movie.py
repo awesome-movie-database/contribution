@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime, timezone
-from typing import Sequence
+from typing import Collection
 
 from uuid_extensions import uuid7
 
@@ -151,11 +151,12 @@ class EditMovieProcessor:
         await self._ensure_writers_exist(command.remove_writers)
         await self._ensure_crew_exist(command.remove_crew)
 
-        await self._ensure_persons_exist(
+        person_ids = [
             *(role.person_id for role in command.add_roles),
             *(writer.person_id for writer in command.add_writers),
             *(crew_member.person_id for crew_member in command.add_crew),
-        )
+        ]
+        await self._ensure_persons_exist(person_ids)
 
         add_photos = [
             self._create_photo_from_obj(obj) for obj in command.add_photos
@@ -185,71 +186,50 @@ class EditMovieProcessor:
         )
         await self._edit_movie_contribution_gateway.save(contribution)
 
-        await self._object_storage.save_photo_seq(add_photos)
+        await self._object_storage.save_photos(add_photos)
 
         return contribution.id
 
     async def _ensure_roles_exist(
         self,
-        roles_ids: Sequence[RoleId],
+        role_ids: Collection[RoleId],
     ) -> None:
-        roles_from_gateway = await self._role_gateway.list_with_ids(
-            *roles_ids,
-        )
-        some_of_roles_do_not_exist = len(roles_ids) != len(
-            roles_from_gateway,
-        )
+        roles = await self._role_gateway.list_with_ids(role_ids)
+        some_roles_are_missing = len(role_ids) != len(roles)
 
-        if some_of_roles_do_not_exist:
-            ids_of_roles_from_gateway = [
-                role_from_gateway.id
-                for role_from_gateway in roles_from_gateway
-            ]
-            ids_of_missing_roles = set(roles_ids).difference(
+        if some_roles_are_missing:
+            ids_of_roles_from_gateway = [role.id for role in roles]
+            ids_of_missing_roles = set(role_ids).difference(
                 ids_of_roles_from_gateway,
             )
             raise RolesDoNotExistError(list(ids_of_missing_roles))
 
     async def _ensure_writers_exist(
         self,
-        writers_ids: Sequence[WriterId],
+        writer_ids: Collection[WriterId],
     ) -> None:
-        writers_from_gateway = await self._writer_gateway.list_with_ids(
-            *writers_ids,
-        )
-        some_of_writers_do_not_exist = len(writers_ids) != len(
-            writers_from_gateway,
-        )
+        writers = await self._writer_gateway.list_with_ids(writer_ids)
+        some_writers_are_missing = len(writer_ids) != len(writers)
 
-        if some_of_writers_do_not_exist:
-            ids_of_writers_from_gateway = [
-                writer_from_gateway.id
-                for writer_from_gateway in writers_from_gateway
-            ]
-            ids_of_missing_writers = set(writers_ids).difference(
+        if some_writers_are_missing:
+            ids_of_writers_from_gateway = [writer.id for writer in writers]
+            ids_of_missing_writers = set(writer_ids).difference(
                 ids_of_writers_from_gateway,
             )
             raise WritersDoNotExistError(list(ids_of_missing_writers))
 
     async def _ensure_crew_exist(
         self,
-        crew_members_ids: Sequence[CrewMemberId],
+        crew_member_ids: Collection[CrewMemberId],
     ) -> None:
-        crew_members_from_gateway = (
-            await self._crew_member_gateway.list_with_ids(
-                *crew_members_ids,
-            )
-        )
-        some_of_crew_members_do_not_exist = len(crew_members_ids) != len(
-            crew_members_from_gateway,
-        )
+        crew = await self._crew_member_gateway.list_with_ids(crew_member_ids)
+        some_crew_members_are_missing = len(crew_member_ids) != len(crew)
 
-        if some_of_crew_members_do_not_exist:
+        if some_crew_members_are_missing:
             ids_of_crew_members_from_gateway = [
-                crew_member_from_gateway.id
-                for crew_member_from_gateway in crew_members_from_gateway
+                crew_member.id for crew_member in crew
             ]
-            ids_of_missing_crew_members = set(crew_members_ids).difference(
+            ids_of_missing_crew_members = set(crew_member_ids).difference(
                 ids_of_crew_members_from_gateway,
             )
             raise CrewMembersDoNotExistError(list(ids_of_missing_crew_members))

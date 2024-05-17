@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Sequence
+from typing import Iterable
 
 from contribution.domain import (
     AddMovieContributionId,
@@ -18,6 +18,6 @@ class AcceptMovieAdditionCommand:
     contribution_id: AddMovieContributionId
     movie_id: MovieId
     accepted_at: datetime
-    roles: Sequence[MovieRole]
-    writers: Sequence[MovieWriter]
-    crew: Sequence[MovieCrewMember]
+    roles: Iterable[MovieRole]
+    writers: Iterable[MovieWriter]
+    crew: Iterable[MovieCrewMember]

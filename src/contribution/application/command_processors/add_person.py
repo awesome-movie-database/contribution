@@ -124,7 +124,7 @@ class AddPersonProcessor:
         )
         await self._add_person_contribution_gateway.save(contribution)
 
-        await self._object_storage.save_photo_seq(photos)
+        await self._object_storage.save_photos(photos)
 
         return contribution.id
 
