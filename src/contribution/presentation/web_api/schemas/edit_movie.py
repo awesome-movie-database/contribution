@@ -1,4 +1,10 @@
-from typing import Sequence, Optional, TypedDict, Required
+from typing import (
+    Collection,
+    Iterable,
+    Optional,
+    TypedDict,
+    Required,
+)
 from datetime import date
 
 from contribution.domain import (
@@ -21,15 +27,15 @@ class EditMovieSchema(TypedDict, total=False):
     eng_title: str
     original_title: str
     release_date: date
-    countries: Sequence[Country]
-    genres: Sequence[Genre]
+    countries: Iterable[Country]
+    genres: Iterable[Genre]
     mpaa: MPAA
     duration: int
     budget: Optional[Money]
     revenue: Optional[Money]
-    add_roles: Sequence[ContributionRole]
-    remove_roles: Sequence[RoleId]
-    add_writers: Sequence[ContributionWriter]
-    remove_writers: Sequence[WriterId]
-    add_crew: Sequence[ContributionCrewMember]
-    remove_crew: Sequence[CrewMemberId]
+    add_roles: Iterable[ContributionRole]
+    remove_roles: Collection[RoleId]
+    add_writers: Iterable[ContributionWriter]
+    remove_writers: Collection[WriterId]
+    add_crew: Iterable[ContributionCrewMember]
+    remove_crew: Collection[CrewMemberId]

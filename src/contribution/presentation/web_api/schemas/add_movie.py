@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, Sequence
+from typing import Optional, Iterable
 from datetime import date
 
 from contribution.domain import (
@@ -18,12 +18,12 @@ class AddMovieSchema:
     eng_title: str
     original_title: str
     release_date: date
-    countries: Sequence[Country]
-    genres: Sequence[Genre]
+    countries: Iterable[Country]
+    genres: Iterable[Genre]
     mpaa: MPAA
     duration: int
     budget: Optional[Money]
     revenue: Optional[Money]
-    roles: Sequence[ContributionRole]
-    writers: Sequence[ContributionWriter]
-    crew: Sequence[ContributionCrewMember]
+    roles: Iterable[ContributionRole]
+    writers: Iterable[ContributionWriter]
+    crew: Iterable[ContributionCrewMember]

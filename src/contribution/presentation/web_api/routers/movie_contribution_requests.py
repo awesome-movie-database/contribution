@@ -1,4 +1,4 @@
-from typing import Annotated, Sequence, Optional, cast
+from typing import Annotated, Iterable, Optional, cast
 from datetime import date
 
 from fastapi import APIRouter, File
@@ -88,11 +88,11 @@ async def edit_movie(
     eng_title = maybe_value_from_mapping[str](schema, "eng_title")
     original_title = maybe_value_from_mapping[str](schema, "original_title")
     release_date = maybe_value_from_mapping[date](schema, "release_date")
-    countries = maybe_value_from_mapping[Sequence[Country]](
+    countries = maybe_value_from_mapping[Iterable[Country]](
         mapping=schema,
         key="countries",
     )
-    genres = maybe_value_from_mapping[Sequence[Genre]](schema, "genres")
+    genres = maybe_value_from_mapping[Iterable[Genre]](schema, "genres")
     mpaa = maybe_value_from_mapping[MPAA](schema, "mpaa")
     duration = maybe_value_from_mapping[int](schema, "duration")
     budget = maybe_value_from_mapping[Optional[Money]](schema, "budget")
