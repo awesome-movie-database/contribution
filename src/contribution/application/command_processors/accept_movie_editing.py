@@ -30,6 +30,7 @@ from contribution.application.common import (
     WritersDoNotExistError,
     CrewMembersAlreadyExistError,
     CrewMembersDoNotExistError,
+    PersonsDoNotExistError,
     AchievementDoesNotExistError,
     EditMovieContributionGateway,
     MovieGateway,
@@ -304,6 +305,17 @@ class LoggingProcessor:
                 extra={
                     "processing_id": command_processing_id,
                     "ids_of_missing_crew_members": e.ids_of_missing_crew_members,
+                },
+            )
+            raise e
+        except PersonsDoNotExistError as e:
+            logger.error(
+                "Unexpected error occurred: "
+                "Person ids referenced in contribution roles, writers or crew"
+                "are do not belong to any persons",
+                extra={
+                    "processing_id": command_processing_id,
+                    "ids_of_missing_persons": e.ids_of_missing_persons,
                 },
             )
             raise e
