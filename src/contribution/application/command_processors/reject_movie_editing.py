@@ -17,6 +17,7 @@ from contribution.application.common import (
     EditMovieContributionGateway,
     UserGateway,
     AchievementGateway,
+    ObjectStorage,
     UnitOfWork,
     OnEventOccurred,
     AchievementEarnedEvent,
@@ -32,6 +33,7 @@ def reject_movie_editing_factory(
     edit_movie_contribution_gateway: EditMovieContributionGateway,
     user_gateway: UserGateway,
     achievement_gateway: AchievementGateway,
+    object_storage: ObjectStorage,
     unit_of_work: UnitOfWork,
     on_achievement_earned: OnEventOccurred[AchievementEarnedEvent],
 ) -> CommandProcessor[RejectMovieEditingCommand, Optional[AchievementId]]:
@@ -40,6 +42,7 @@ def reject_movie_editing_factory(
         edit_movie_contribution_gateway=edit_movie_contribution_gateway,
         user_gateway=user_gateway,
         achievement_gateway=achievement_gateway,
+        object_storage=object_storage,
     )
     callback_processor = AchievementEearnedCallbackProcessor(
         processor=accept_movie_addition_processor,
@@ -65,11 +68,13 @@ class RejectMovieEditingProcessor:
         edit_movie_contribution_gateway: EditMovieContributionGateway,
         user_gateway: UserGateway,
         achievement_gateway: AchievementGateway,
+        object_storage: ObjectStorage,
     ):
         self._reject_contribution = reject_contribution
         self._edit_movie_contribution_gateway = edit_movie_contribution_gateway
         self._user_gateway = user_gateway
         self._achievement_gateway = achievement_gateway
+        self._object_storage = object_storage
 
     async def process(
         self,
@@ -98,6 +103,10 @@ class RejectMovieEditingProcessor:
 
         await self._user_gateway.update(author)
         await self._edit_movie_contribution_gateway.update(contribution)
+
+        await self._object_storage.delete_photos_with_urls(
+            contribution.add_photos,
+        )
 
         return achievement.id if achievement else None
 
