@@ -23,15 +23,3 @@ class WriterMap:
             message = "Writer already exists in identity map"
             raise ValueError(message)
         self._writers.add(writer)
-
-    def update(self, writer: Writer) -> None:
-        """
-        Updates writer in identity map if writer exists,
-        otherwise raises ValueError.
-        """
-        writer_from_map = self.with_id(writer.id)
-        if not writer_from_map:
-            message = "Writer doesn't exist in identity map"
-            raise ValueError(message)
-        self._writers.remove(writer_from_map)
-        self._writers.add(writer)

@@ -23,15 +23,3 @@ class MovieMap:
             message = "Movie already exists in identity map"
             raise ValueError(message)
         self._movies.add(movie)
-
-    def update(self, movie: Movie) -> None:
-        """
-        Updates movie in identity map if movie exists,
-        otherwise raises ValueError.
-        """
-        movie_from_map = self.with_id(movie.id)
-        if not movie_from_map:
-            message = "Movie doesn't exist in identity map"
-            raise ValueError(message)
-        self._movies.remove(movie_from_map)
-        self._movies.add(movie)

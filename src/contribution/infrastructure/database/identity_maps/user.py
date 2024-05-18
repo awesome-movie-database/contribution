@@ -46,15 +46,3 @@ class UserMap:
             message = "User already exists in identity map"
             raise ValueError(message)
         self._users.add(user)
-
-    def update(self, user: User) -> None:
-        """
-        Updates user in identity map if user exists,
-        otherwise raises ValueError.
-        """
-        user_from_map = self.with_id(user.id)
-        if not user_from_map:
-            message = "User doesn't exist in identity map"
-            raise ValueError(message)
-        self._users.remove(user_from_map)
-        self._users.add(user)

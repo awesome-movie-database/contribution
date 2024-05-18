@@ -23,15 +23,3 @@ class RoleMap:
             message = "Role already exists in identity map"
             raise ValueError(message)
         self._roles.add(role)
-
-    def update(self, role: Role) -> None:
-        """
-        Updates role in identity map if role exists,
-        otherwise raises ValueError.
-        """
-        role_from_map = self.with_id(role.id)
-        if not role_from_map:
-            message = "Role doesn't exist in identity map"
-            raise ValueError(message)
-        self._roles.remove(role_from_map)
-        self._roles.add(role)

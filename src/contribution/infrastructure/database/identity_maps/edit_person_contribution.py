@@ -29,15 +29,3 @@ class EditPersonContributionMap:
             message = "Edit person contribution already exists in identity map"
             raise ValueError(message)
         self._contributions.add(contribution)
-
-    def update(self, contribution: EditPersonContribution) -> None:
-        """
-        Updates contribution in identity map if contribution exists,
-        otherwise raises ValueError.
-        """
-        contribution_from_map = self.with_id(contribution.id)
-        if not contribution_from_map:
-            message = "Edit person contribution doesn't exist in identity map"
-            raise ValueError(message)
-        self._contributions.remove(contribution_from_map)
-        self._contributions.add(contribution)
