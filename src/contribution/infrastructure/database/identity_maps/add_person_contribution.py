@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Optional
 
 from contribution.domain import (
@@ -6,17 +7,23 @@ from contribution.domain import (
 )
 
 
+@dataclass(slots=True, unsafe_hash=True)
+class AddPersonContributionMapUnit:
+    contribution: AddPersonContribution
+    is_acquired: bool
+
+
 class AddPersonContributionMap:
     def __init__(self):
-        self._contributions: set[AddPersonContribution] = set()
+        self._units: set[AddPersonContributionMapUnit] = set()
 
     def with_id(
         self,
         id: AddPersonContributionId,
     ) -> Optional[AddPersonContribution]:
-        for contribution in self._contributions:
-            if contribution.id == id:
-                return contribution
+        for unit in self._units:
+            if unit.contribution.id == id:
+                return unit.contribution
         return None
 
     def save(self, contribution: AddPersonContribution) -> None:
@@ -26,6 +33,49 @@ class AddPersonContributionMap:
         """
         contribution_from_map = self.with_id(contribution.id)
         if contribution_from_map:
-            message = "Add person contribution already exists in identity map"
+            message = "Add movie contribution already exists in identity map"
             raise ValueError(message)
-        self._contributions.add(contribution)
+
+        unit = AddPersonContributionMapUnit(
+            contribution=contribution,
+            is_acquired=False,
+        )
+        self._units.add(unit)
+
+    def save_acquired(self, contribution: AddPersonContribution) -> None:
+        """
+        Saves contribution as acquired in identity map if contribution
+        doesn't exist or already exist and not marked as
+        acquired, otherwise raises ValueError.
+        """
+        contribution_from_map = self.with_id(contribution.id)
+        if not contribution_from_map:
+            unit = AddPersonContributionMapUnit(
+                contribution=contribution,
+                is_acquired=True,
+            )
+            self._units.add(unit)
+
+        contribution_is_acquired = self.is_acquired(contribution)
+        if contribution_is_acquired:
+            message = (
+                "AddPersonContribution already exists in identity map"
+                "and marked as acquired"
+            )
+            raise ValueError(message)
+
+        for unit in self._units:
+            if unit.contribution == contribution:
+                unit.is_acquired = True
+                return
+
+    def is_acquired(self, contribution: AddPersonContribution) -> bool:
+        """
+        Returns whether contribution is acquired if contribution exists
+        in identity map, otherwise raises ValueError.
+        """
+        for unit in self._units:
+            if unit.contribution == contribution:
+                return unit.is_acquired
+        message = "AddPersonContribution doesn't exist in identity map"
+        raise ValueError(message)
