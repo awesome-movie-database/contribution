@@ -82,8 +82,10 @@ class RejectPersonEditingProcessor:
         self,
         command: RejectPersonEditingCommand,
     ) -> Optional[AchievementId]:
-        contribution = await self._edit_person_contribution_gateway.with_id(
-            id=command.contribution_id,
+        contribution = (
+            await self._edit_person_contribution_gateway.acquire_with_id(
+                id=command.contribution_id,
+            )
         )
         if not contribution:
             raise ContributionDoesNotExistError()

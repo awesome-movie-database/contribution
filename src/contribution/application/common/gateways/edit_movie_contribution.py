@@ -7,7 +7,7 @@ from contribution.domain import (
 
 
 class EditMovieContributionGateway(Protocol):
-    async def with_id(
+    async def acquire_with_id(
         self,
         id: EditMovieContributionId,
     ) -> Optional[EditMovieContribution]:
