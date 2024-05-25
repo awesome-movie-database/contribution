@@ -16,18 +16,14 @@ from contribution.application import (
 def application_services_provider_factory() -> Provider:
     provider = Provider(scope=Scope.REQUEST)
 
-    provider.provide(
-        AccessConcern,
-        scope=Scope.APP,
-        provides=AccessConcern,
-    )
-    provider.provide(EnsurePersonsExist, provides=EnsurePersonsExist)
-    provider.provide(CreateAndSaveRoles, provides=CreateAndSaveRoles)
-    provider.provide(DeleteRoles, provides=DeleteRoles)
-    provider.provide(CreateAndSaveWriters, provides=CreateAndSaveWriters)
-    provider.provide(DeleteWriters, provides=DeleteWriters)
-    provider.provide(CreateAndSaveCrew, provides=CreateAndSaveCrew)
-    provider.provide(DeleteCrew, provides=DeleteCrew)
-    provider.provide(CreatePhotoFromObj, provides=CreatePhotoFromObj)
+    provider.provide(AccessConcern, scope=Scope.APP)
+    provider.provide(EnsurePersonsExist)
+    provider.provide(CreateAndSaveRoles)
+    provider.provide(DeleteRoles)
+    provider.provide(CreateAndSaveWriters)
+    provider.provide(DeleteWriters)
+    provider.provide(CreateAndSaveCrew)
+    provider.provide(DeleteCrew)
+    provider.provide(CreatePhotoFromObj)
 
     return provider

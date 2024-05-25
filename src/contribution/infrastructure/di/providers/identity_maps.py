@@ -18,25 +18,16 @@ from contribution.infrastructure.database import (
 def identity_maps_provider_factory() -> Provider:
     provider = Provider(scope=Scope.REQUEST)
 
-    provider.provide(MovieMap, provides=MovieMap)
-    provider.provide(UserMap, provides=UserMap)
-    provider.provide(PersonMap, provides=PersonMap)
-    provider.provide(RoleMap, provides=RoleMap)
-    provider.provide(WriterMap, provides=WriterMap)
-    provider.provide(CrewMemberMap, provides=CrewMemberMap)
-    provider.provide(AchievementMap, provides=AchievementMap)
-    provider.provide(AddMovieContributionMap, provides=AddMovieContributionMap)
-    provider.provide(
-        EditMovieContributionMap,
-        provides=EditMovieContributionMap,
-    )
-    provider.provide(
-        AddPersonContributionMap,
-        provides=AddPersonContributionMap,
-    )
-    provider.provide(
-        EditPersonContributionMap,
-        provides=EditPersonContributionMap,
-    )
+    provider.provide(MovieMap)
+    provider.provide(UserMap)
+    provider.provide(PersonMap)
+    provider.provide(RoleMap)
+    provider.provide(WriterMap)
+    provider.provide(CrewMemberMap)
+    provider.provide(AchievementMap)
+    provider.provide(AddMovieContributionMap)
+    provider.provide(EditMovieContributionMap)
+    provider.provide(AddPersonContributionMap)
+    provider.provide(EditPersonContributionMap)
 
     return provider
