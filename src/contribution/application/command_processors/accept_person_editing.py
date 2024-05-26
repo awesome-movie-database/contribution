@@ -92,20 +92,20 @@ class AcceptPersonEditingProcessor:
         command: AcceptPersonEditingCommand,
     ) -> Optional[AchievementId]:
         contribution = (
-            await self._edit_person_contribution_gateway.acquire_with_id(
+            await self._edit_person_contribution_gateway.acquire_by_id(
                 id=command.contribution_id,
             )
         )
         if not contribution:
             raise ContributionDoesNotExistError()
 
-        author = await self._user_gateway.acquire_with_id(
+        author = await self._user_gateway.acquire_by_id(
             id=contribution.author_id,
         )
         if not author:
-            raise UserDoesNotExistError(contribution.author_id)
+            raise UserDoesNotExistError()
 
-        person = await self._person_gateway.acquire_with_id(
+        person = await self._person_gateway.acquire_by_id(
             id=contribution.person_id,
         )
         if not person:

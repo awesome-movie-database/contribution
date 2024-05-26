@@ -14,7 +14,7 @@ class PersonMap:
     def __init__(self):
         self._units: set[PersonMapUnit] = set()
 
-    def with_id(self, id: PersonId) -> Optional[Person]:
+    def by_id(self, id: PersonId) -> Optional[Person]:
         for unit in self._units:
             if unit.person.id == id:
                 return unit.person
@@ -25,7 +25,7 @@ class PersonMap:
         Saves person in identity map if person doesn't
         exist, otherwise raises ValueError.
         """
-        person_from_map = self.with_id(person.id)
+        person_from_map = self.by_id(person.id)
         if person_from_map:
             message = "Person already exists in identity map"
             raise ValueError(message)
@@ -38,7 +38,7 @@ class PersonMap:
         doesn't exist or already exist and not marked as
         acquired, otherwise raises ValueError.
         """
-        person_from_map = self.with_id(person.id)
+        person_from_map = self.by_id(person.id)
         if not person_from_map:
             unit = PersonMapUnit(person=person, is_acquired=True)
             self._units.add(unit)

@@ -55,7 +55,7 @@ class CreateAndSaveCrew:
         self,
         crew_member_ids: Iterable[CrewMemberId],
     ) -> None:
-        crew_members = await self._crew_member_gateway.list_with_ids(
+        crew_members = await self._crew_member_gateway.list_by_ids(
             crew_member_ids,
         )
         if crew_members:
@@ -68,7 +68,7 @@ class CreateAndSaveCrew:
         movie_crew: Iterable[MovieCrewMember],
     ) -> list[Person]:
         person_ids = [crew_member.person_id for crew_member in movie_crew]
-        persons = await self._person_gateway.list_with_ids(person_ids)
+        persons = await self._person_gateway.list_by_ids(person_ids)
 
         some_persons_are_missing = len(person_ids) != len(persons)
 

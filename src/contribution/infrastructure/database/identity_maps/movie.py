@@ -14,7 +14,7 @@ class MovieMap:
     def __init__(self):
         self._units: set[MovieMapUnit] = set()
 
-    def with_id(self, id: MovieId) -> Optional[Movie]:
+    def by_id(self, id: MovieId) -> Optional[Movie]:
         for unit in self._units:
             if unit.movie.id == id:
                 return unit.movie
@@ -25,7 +25,7 @@ class MovieMap:
         Saves movie in identity map if movie doesn't
         exist, otherwise raises ValueError.
         """
-        movie_from_map = self.with_id(movie.id)
+        movie_from_map = self.by_id(movie.id)
         if movie_from_map:
             message = "Movie already exists in identity map"
             raise ValueError(message)
@@ -38,7 +38,7 @@ class MovieMap:
         doesn't exist or already exist and not marked as
         acquired, otherwise raises ValueError.
         """
-        movie_from_map = self.with_id(movie.id)
+        movie_from_map = self.by_id(movie.id)
         if not movie_from_map:
             unit = MovieMapUnit(movie=movie, is_acquired=True)
             self._units.add(unit)

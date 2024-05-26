@@ -90,20 +90,20 @@ class AcceptPersonAdditionProcessor:
         command: AcceptPersonAdditionCommand,
     ) -> Optional[AchievementId]:
         contribution = (
-            await self._add_person_contribution_gateway.acquire_with_id(
+            await self._add_person_contribution_gateway.acquire_by_id(
                 id=command.contribution_id,
             )
         )
         if not contribution:
             raise ContributionDoesNotExistError()
 
-        author = await self._user_gateway.acquire_with_id(
+        author = await self._user_gateway.acquire_by_id(
             id=contribution.author_id,
         )
         if not author:
-            raise UserDoesNotExistError(contribution.author_id)
+            raise UserDoesNotExistError()
 
-        person = await self._person_gateway.with_id(command.person_id)
+        person = await self._person_gateway.by_id(command.person_id)
         if person:
             raise PersonIdIsAlreadyTakenError()
 

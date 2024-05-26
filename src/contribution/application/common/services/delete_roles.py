@@ -12,14 +12,14 @@ class DeleteRoles:
     async def __call__(self, role_ids: Collection[RoleId]) -> None:
         await self._ensure_roles_exist(role_ids)
 
-        roles = await self._role_gateway.list_with_ids(role_ids)
+        roles = await self._role_gateway.list_by_ids(role_ids)
         await self._role_gateway.delete_many(roles)
 
     async def _ensure_roles_exist(
         self,
         role_ids: Collection[RoleId],
     ) -> None:
-        roles = await self._role_gateway.list_with_ids(role_ids)
+        roles = await self._role_gateway.list_by_ids(role_ids)
         some_of_roles_are_missing = len(role_ids) != len(roles)
 
         if some_of_roles_are_missing:

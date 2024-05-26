@@ -112,11 +112,11 @@ class EditPersonProcessor:
     ) -> EditPersonContributionId:
         current_user_id = await self._identity_provider.user_id()
 
-        author = await self._user_gateway.with_id(current_user_id)
+        author = await self._user_gateway.by_id(current_user_id)
         if not author:
             raise UserDoesNotExistError()
 
-        person = await self._person_gateway.with_id(command.person_id)
+        person = await self._person_gateway.by_id(command.person_id)
         if not person:
             raise PersonDoesNotExistError()
 

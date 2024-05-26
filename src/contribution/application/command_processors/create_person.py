@@ -52,7 +52,7 @@ class CreatePersonProcessor:
         self._person_gateway = person_gateway
 
     async def process(self, command: CreatePersonCommand) -> None:
-        person = await self._person_gateway.with_id(command.id)
+        person = await self._person_gateway.by_id(command.id)
         if person:
             raise PersonIdIsAlreadyTakenError()
 

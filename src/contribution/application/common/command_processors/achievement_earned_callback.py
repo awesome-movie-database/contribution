@@ -28,7 +28,7 @@ class AchievementEearnedCallbackProcessor[C]:
         if not result:
             return result
 
-        achievement = await self._achievement_gateway.with_id(result)
+        achievement = await self._achievement_gateway.by_id(result)
         if not achievement:
             raise AchievementDoesNotExistError()
 

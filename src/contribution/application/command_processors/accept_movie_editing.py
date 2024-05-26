@@ -127,20 +127,20 @@ class AcceptMovieEditingProcessor:
         command: AcceptMovieEditingCommand,
     ) -> Optional[AchievementId]:
         contribution = (
-            await self._edit_movie_contribution_gateway.acquire_with_id(
+            await self._edit_movie_contribution_gateway.acquire_by_id(
                 id=command.contribution_id,
             )
         )
         if not contribution:
             raise ContributionDoesNotExistError()
 
-        author = await self._user_gateway.acquire_with_id(
+        author = await self._user_gateway.acquire_by_id(
             id=contribution.author_id,
         )
         if not author:
-            raise UserDoesNotExistError(contribution.author_id)
+            raise UserDoesNotExistError()
 
-        movie = await self._movie_gateway.acquire_with_id(
+        movie = await self._movie_gateway.acquire_by_id(
             id=contribution.movie_id,
         )
         if not movie:

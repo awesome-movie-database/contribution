@@ -4,10 +4,10 @@ from contribution.domain import RoleId, Role
 
 
 class RoleGateway(Protocol):
-    async def with_id(self, id: RoleId) -> Optional[Role]:
+    async def by_id(self, id: RoleId) -> Optional[Role]:
         raise NotImplementedError
 
-    async def list_with_ids(
+    async def list_by_ids(
         self,
         ids: Iterable[RoleId],
     ) -> list[Role]:

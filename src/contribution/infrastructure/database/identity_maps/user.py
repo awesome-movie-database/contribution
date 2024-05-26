@@ -14,25 +14,25 @@ class UserMap:
     def __init__(self):
         self._units: set[UserMapUnit] = set()
 
-    def with_id(self, id: UserId) -> Optional[User]:
+    def by_id(self, id: UserId) -> Optional[User]:
         for unit in self._units:
             if unit.user.id == id:
                 return unit.user
         return None
 
-    def with_name(self, name: str) -> Optional[User]:
+    def by_name(self, name: str) -> Optional[User]:
         for unit in self._units:
             if unit.user.name == name:
                 return unit.user
         return None
 
-    def with_email(self, email: str) -> Optional[User]:
+    def by_email(self, email: str) -> Optional[User]:
         for unit in self._units:
             if unit.user.email == email:
                 return unit.user
         return None
 
-    def with_telegram(self, telegram: str) -> Optional[User]:
+    def by_telegram(self, telegram: str) -> Optional[User]:
         for unit in self._units:
             if unit.user.telegram == telegram:
                 return unit.user
@@ -43,7 +43,7 @@ class UserMap:
         Saves user in identity map if user doesn't
         exist, otherwise raises ValueError.
         """
-        user_from_map = self.with_id(user.id)
+        user_from_map = self.by_id(user.id)
         if user_from_map:
             message = "User already exists in identity map"
             raise ValueError(message)
@@ -57,7 +57,7 @@ class UserMap:
         doesn't exist or already exist and not marked as
         acquired, otherwise raises ValueError.
         """
-        user_from_map = self.with_id(user.id)
+        user_from_map = self.by_id(user.id)
         if not user_from_map:
             unit = UserMapUnit(user=user, is_acquired=True)
             self._units.add(unit)

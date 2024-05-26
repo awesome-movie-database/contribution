@@ -52,7 +52,7 @@ class UpdatePersonProcessor:
         self._person_gateway = person_gateway
 
     async def process(self, command: UpdatePersonCommand) -> None:
-        person = await self._person_gateway.acquire_with_id(command.person_id)
+        person = await self._person_gateway.acquire_by_id(command.person_id)
         if not person:
             raise PersonDoesNotExistError()
 

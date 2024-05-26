@@ -4,13 +4,13 @@ from contribution.domain import PersonId, Person
 
 
 class PersonGateway(Protocol):
-    async def with_id(self, id: PersonId) -> Optional[Person]:
+    async def by_id(self, id: PersonId) -> Optional[Person]:
         raise NotImplementedError
 
-    async def acquire_with_id(self, id: PersonId) -> Optional[Person]:
+    async def acquire_by_id(self, id: PersonId) -> Optional[Person]:
         raise NotImplementedError
 
-    async def list_with_ids(
+    async def list_by_ids(
         self,
         ids: Iterable[PersonId],
     ) -> list[Person]:

@@ -8,7 +8,7 @@ class ObjectStorage(Protocol):
     async def save_photos(self, photos: Iterable[Photo]) -> None:
         raise NotImplementedError
 
-    async def delete_photos_with_urls(
+    async def delete_photos_by_urls(
         self,
         urls: Iterable[PhotoUrl],
     ) -> None:

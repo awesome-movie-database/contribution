@@ -7,7 +7,7 @@ from contribution.domain import (
 
 
 class AddPersonContributionGateway(Protocol):
-    async def acquire_with_id(
+    async def acquire_by_id(
         self,
         id: AddPersonContributionId,
     ) -> Optional[AddPersonContribution]:

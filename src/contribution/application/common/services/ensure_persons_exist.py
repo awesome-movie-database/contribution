@@ -10,7 +10,7 @@ class EnsurePersonsExist:
         self._person_gateway = person_gateway
 
     async def __call__(self, person_ids: Collection[PersonId]) -> None:
-        persons = await self._person_gateway.list_with_ids(person_ids)
+        persons = await self._person_gateway.list_by_ids(person_ids)
         some_persons_are_missing = len(persons) != len(person_ids)
 
         if some_persons_are_missing:

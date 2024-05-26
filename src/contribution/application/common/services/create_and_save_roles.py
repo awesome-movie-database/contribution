@@ -57,7 +57,7 @@ class CreateAndSaveRoles:
         self,
         role_ids: Iterable[RoleId],
     ) -> None:
-        roles = await self._role_gateway.list_with_ids(role_ids)
+        roles = await self._role_gateway.list_by_ids(role_ids)
         if roles:
             raise RolesAlreadyExistError([role.id for role in roles])
 
@@ -66,7 +66,7 @@ class CreateAndSaveRoles:
         movie_roles: Iterable[MovieRole],
     ) -> list[Person]:
         person_ids = [role.person_id for role in movie_roles]
-        persons = await self._person_gateway.list_with_ids(person_ids)
+        persons = await self._person_gateway.list_by_ids(person_ids)
 
         some_persons_are_missing = len(person_ids) != len(persons)
 

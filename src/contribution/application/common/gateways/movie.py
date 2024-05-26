@@ -4,10 +4,10 @@ from contribution.domain import MovieId, Movie
 
 
 class MovieGateway(Protocol):
-    async def with_id(self, id: MovieId) -> Optional[Movie]:
+    async def by_id(self, id: MovieId) -> Optional[Movie]:
         raise NotImplementedError
 
-    async def acquire_with_id(self, id: MovieId) -> Optional[Movie]:
+    async def acquire_by_id(self, id: MovieId) -> Optional[Movie]:
         raise NotImplementedError
 
     async def save(self, movie: Movie) -> None:

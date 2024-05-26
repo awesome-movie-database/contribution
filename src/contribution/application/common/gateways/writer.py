@@ -4,10 +4,10 @@ from contribution.domain import WriterId, Writer
 
 
 class WriterGateway(Protocol):
-    async def with_id(self, id: WriterId) -> Optional[Writer]:
+    async def by_id(self, id: WriterId) -> Optional[Writer]:
         raise NotImplementedError
 
-    async def list_with_ids(
+    async def list_by_ids(
         self,
         ids: Iterable[WriterId],
     ) -> list[Writer]:

@@ -139,11 +139,11 @@ class EditMovieProcessor:
     ) -> EditMovieContributionId:
         current_user_id = await self._identity_provider.user_id()
 
-        author = await self._user_gateway.with_id(current_user_id)
+        author = await self._user_gateway.by_id(current_user_id)
         if not author:
             raise UserDoesNotExistError()
 
-        movie = await self._movie_gateway.with_id(command.movie_id)
+        movie = await self._movie_gateway.by_id(command.movie_id)
         if not movie:
             raise MovieDoesNotExistError()
 
@@ -194,7 +194,7 @@ class EditMovieProcessor:
         self,
         role_ids: Collection[RoleId],
     ) -> None:
-        roles = await self._role_gateway.list_with_ids(role_ids)
+        roles = await self._role_gateway.list_by_ids(role_ids)
         some_roles_are_missing = len(role_ids) != len(roles)
 
         if some_roles_are_missing:
@@ -208,7 +208,7 @@ class EditMovieProcessor:
         self,
         writer_ids: Collection[WriterId],
     ) -> None:
-        writers = await self._writer_gateway.list_with_ids(writer_ids)
+        writers = await self._writer_gateway.list_by_ids(writer_ids)
         some_writers_are_missing = len(writer_ids) != len(writers)
 
         if some_writers_are_missing:
@@ -222,7 +222,7 @@ class EditMovieProcessor:
         self,
         crew_member_ids: Collection[CrewMemberId],
     ) -> None:
-        crew = await self._crew_member_gateway.list_with_ids(crew_member_ids)
+        crew = await self._crew_member_gateway.list_by_ids(crew_member_ids)
         some_crew_members_are_missing = len(crew_member_ids) != len(crew)
 
         if some_crew_members_are_missing:

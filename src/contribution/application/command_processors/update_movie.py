@@ -94,7 +94,7 @@ class UpdateMovieProcessor:
         self._person_gateway = person_gateway
 
     async def process(self, command: UpdateMovieCommand) -> None:
-        movie = await self._movie_gateway.acquire_with_id(command.movie_id)
+        movie = await self._movie_gateway.acquire_by_id(command.movie_id)
         if not movie:
             raise MovieDoesNotExistError()
 

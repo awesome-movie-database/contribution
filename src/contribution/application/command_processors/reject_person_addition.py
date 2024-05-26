@@ -81,18 +81,18 @@ class RejectPersonAdditionProcessor:
         command: RejectPersonAdditionCommand,
     ) -> Optional[AchievementId]:
         contribution = (
-            await self._add_person_contribution_gateway.acquire_with_id(
+            await self._add_person_contribution_gateway.acquire_by_id(
                 id=command.contribution_id,
             )
         )
         if not contribution:
             raise ContributionDoesNotExistError()
 
-        author = await self._user_gateway.acquire_with_id(
+        author = await self._user_gateway.acquire_by_id(
             id=contribution.author_id,
         )
         if not author:
-            raise UserDoesNotExistError(contribution.author_id)
+            raise UserDoesNotExistError()
 
         achievement = self._reject_contribution(
             achievement_id=AchievementId(uuid7()),
@@ -106,7 +106,7 @@ class RejectPersonAdditionProcessor:
         await self._user_gateway.update(author)
         await self._add_person_contribution_gateway.update(contribution)
 
-        await self._object_storage.delete_photos_with_urls(contribution.photos)
+        await self._object_storage.delete_photos_by_urls(contribution.photos)
 
         return achievement.id if achievement else None
 

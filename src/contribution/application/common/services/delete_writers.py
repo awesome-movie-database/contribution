@@ -12,14 +12,14 @@ class DeleteWriters:
     async def __call__(self, writer_ids: Collection[WriterId]) -> None:
         await self._ensure_writers_exist(writer_ids)
 
-        writers = await self._writer_gateway.list_with_ids(writer_ids)
+        writers = await self._writer_gateway.list_by_ids(writer_ids)
         await self._writer_gateway.delete_many(writers)
 
     async def _ensure_writers_exist(
         self,
         writer_ids: Collection[WriterId],
     ) -> None:
-        writers = await self._writer_gateway.list_with_ids(writer_ids)
+        writers = await self._writer_gateway.list_by_ids(writer_ids)
         some_of_writers_are_missing = len(writer_ids) != len(writers)
 
         if some_of_writers_are_missing:

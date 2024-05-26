@@ -17,7 +17,7 @@ class EditMovieContributionMap:
     def __init__(self):
         self._units: set[EditMovieContributionMapUnit] = set()
 
-    def with_id(
+    def by_id(
         self,
         id: EditMovieContributionId,
     ) -> Optional[EditMovieContribution]:
@@ -31,7 +31,7 @@ class EditMovieContributionMap:
         Saves contribution in identity map if contribution doesn't
         exist, otherwise raises ValueError.
         """
-        contribution_from_map = self.with_id(contribution.id)
+        contribution_from_map = self.by_id(contribution.id)
         if contribution_from_map:
             message = "Add movie contribution already exists in identity map"
             raise ValueError(message)
@@ -48,7 +48,7 @@ class EditMovieContributionMap:
         doesn't exist or already exist and not marked as
         acquired, otherwise raises ValueError.
         """
-        contribution_from_map = self.with_id(contribution.id)
+        contribution_from_map = self.by_id(contribution.id)
         if not contribution_from_map:
             unit = EditMovieContributionMapUnit(
                 contribution=contribution,

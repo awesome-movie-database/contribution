@@ -55,26 +55,26 @@ class CreateUserProcessor:
         self._user_gateway = user_gateway
 
     async def process(self, command: CreateUserCommand) -> None:
-        user_with_same_id = await self._user_gateway.with_id(
+        user_with_same_id = await self._user_gateway.by_id(
             id=command.user_id,
         )
         if user_with_same_id:
             raise UserIdIsAlreadyTakenError()
 
-        user_with_same_name = await self._user_gateway.with_name(
+        user_with_same_name = await self._user_gateway.by_name(
             name=command.name,
         )
         if user_with_same_name:
             raise UserNameIsAlreadyTakenError()
 
         if command.email:
-            user_with_same_email = await self._user_gateway.with_email(
+            user_with_same_email = await self._user_gateway.by_email(
                 email=command.email,
             )
             if user_with_same_email:
                 raise UserEmailIsAlreadyTakenError()
         if command.telegram:
-            user_with_same_telegram = await self._user_gateway.with_telegram(
+            user_with_same_telegram = await self._user_gateway.by_telegram(
                 telegram=command.telegram,
             )
             if user_with_same_telegram:

@@ -55,7 +55,7 @@ class CreateAndSaveWriters:
         self,
         writer_ids: Iterable[WriterId],
     ) -> None:
-        writers = await self._writer_gateway.list_with_ids(writer_ids)
+        writers = await self._writer_gateway.list_by_ids(writer_ids)
         if writers:
             raise WritersAlreadyExistError([writer.id for writer in writers])
 
@@ -64,7 +64,7 @@ class CreateAndSaveWriters:
         movie_writers: Iterable[MovieWriter],
     ) -> list[Person]:
         person_ids = [writer.person_id for writer in movie_writers]
-        persons = await self._person_gateway.list_with_ids(person_ids)
+        persons = await self._person_gateway.list_by_ids(person_ids)
 
         some_persons_are_missing = len(person_ids) != len(persons)
 

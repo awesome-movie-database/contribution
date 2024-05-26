@@ -7,10 +7,10 @@ from contribution.domain import (
 
 
 class CrewMemberGateway(Protocol):
-    async def with_id(self, id: CrewMemberId) -> Optional[CrewMember]:
+    async def by_id(self, id: CrewMemberId) -> Optional[CrewMember]:
         raise NotImplementedError
 
-    async def list_with_ids(
+    async def list_by_ids(
         self,
         ids: Iterable[CrewMemberId],
     ) -> list[CrewMember]:

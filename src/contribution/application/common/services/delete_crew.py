@@ -17,7 +17,7 @@ class DeleteCrew:
     ) -> None:
         await self._ensure_crew_members_exist(crew_member_ids)
 
-        crew_members = await self._crew_member_gateway.list_with_ids(
+        crew_members = await self._crew_member_gateway.list_by_ids(
             crew_member_ids,
         )
         await self._crew_member_gateway.delete_many(crew_members)
@@ -26,7 +26,7 @@ class DeleteCrew:
         self,
         crew_member_ids: Collection[CrewMemberId],
     ) -> None:
-        crew_members = await self._crew_member_gateway.list_with_ids(
+        crew_members = await self._crew_member_gateway.list_by_ids(
             crew_member_ids,
         )
         some_of_crew_members_are_missing = len(crew_member_ids) != len(

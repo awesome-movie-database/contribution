@@ -55,24 +55,24 @@ class UpdateUserProcessor:
         self._user_gateway = user_gateway
 
     async def process(self, command: UpdateUserCommand) -> None:
-        user = await self._user_gateway.with_id(command.user_id)
+        user = await self._user_gateway.by_id(command.user_id)
         if not user:
-            raise UserDoesNotExistError(command.user_id)
+            raise UserDoesNotExistError()
 
         if command.name.is_set:
-            user_with_same_name = await self._user_gateway.with_name(
+            user_with_same_name = await self._user_gateway.by_name(
                 name=command.name.value,
             )
             if user_with_same_name:
                 raise UserNameIsAlreadyTakenError()
         if command.email.is_set and command.email.value:
-            user_with_same_email = await self._user_gateway.with_email(
+            user_with_same_email = await self._user_gateway.by_email(
                 email=command.email.value,
             )
             if user_with_same_email:
                 raise UserEmailIsAlreadyTakenError()
         if command.telegram.is_set and command.telegram.value:
-            user_with_same_telegram = await self._user_gateway.with_telegram(
+            user_with_same_telegram = await self._user_gateway.by_telegram(
                 telegram=command.telegram.value,
             )
             if user_with_same_telegram:
