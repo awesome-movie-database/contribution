@@ -113,7 +113,7 @@ class AddMovieProcessor:
 
         author = await self._user_gateway.with_id(current_user_id)
         if not author:
-            raise UserDoesNotExistError(current_user_id)
+            raise UserDoesNotExistError()
 
         person_ids = [
             *(role.person_id for role in command.roles),

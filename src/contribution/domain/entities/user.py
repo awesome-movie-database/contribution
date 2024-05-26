@@ -1,19 +1,15 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from contribution.domain.value_objects import (
-    UserId,
-    Email,
-    Telegram,
-)
+from contribution.domain.value_objects import UserId
 
 
 @dataclass(slots=True, unsafe_hash=True)
 class User:
     id: UserId
     name: str
-    email: Optional[Email]
-    telegram: Optional[Telegram]
+    email: Optional[str]
+    telegram: Optional[str]
     is_active: bool
     rating: float
     accepted_contributions_count: int

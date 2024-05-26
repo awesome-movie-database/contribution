@@ -35,6 +35,8 @@ class CommitUserCollectionChanges:
         document = {
             "id": user.id.hex,
             "name": user.name,
+            "email": user.email,
+            "telegram": user.telegram,
             "is_active": user.is_active,
             "rating": user.rating,
             "accepted_contributions_count": (
@@ -44,17 +46,6 @@ class CommitUserCollectionChanges:
                 user.rejected_contributions_count
             ),
         }
-
-        if user.email:
-            document["email"] = user.email.value
-        else:
-            document["email"] = None
-
-        if user.telegram:
-            document["telegram"] = user.telegram.value
-        else:
-            document["telegram"] = None
-
         return document
 
     def _pipeline_to_update_user(
@@ -67,15 +58,9 @@ class CommitUserCollectionChanges:
         if clean.name != dirty.name:
             pipeline["$set"]["name"] = dirty.name
         if clean.email != dirty.email:
-            if dirty.email:
-                pipeline["$set"]["email"] = dirty.email.value
-            else:
-                pipeline["$set"]["email"] = None
+            pipeline["$set"]["email"] = dirty.email
         if clean.telegram != dirty.telegram:
-            if dirty.telegram:
-                pipeline["$set"]["telegram"] = dirty.telegram.value
-            else:
-                pipeline["$set"]["telegram"] = None
+            pipeline["$set"]["telegram"] = dirty.telegram
         if clean.is_active != dirty.is_active:
             pipeline["$set"]["is_active"] = dirty.is_active
         if clean.rating != dirty.rating:

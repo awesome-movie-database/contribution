@@ -1,11 +1,6 @@
 from typing import Protocol, Optional
 
-from contribution.domain import (
-    UserId,
-    Email,
-    Telegram,
-    User,
-)
+from contribution.domain import UserId, User
 
 
 class UserGateway(Protocol):
@@ -15,10 +10,10 @@ class UserGateway(Protocol):
     async def with_name(self, name: str) -> Optional[User]:
         raise NotImplementedError
 
-    async def with_email(self, email: Email) -> Optional[User]:
+    async def with_email(self, email: str) -> Optional[User]:
         raise NotImplementedError
 
-    async def with_telegram(self, telegram: Telegram) -> Optional[User]:
+    async def with_telegram(self, telegram: str) -> Optional[User]:
         raise NotImplementedError
 
     async def acquire_with_id(self, id: UserId) -> Optional[User]:

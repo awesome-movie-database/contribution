@@ -1,12 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from contribution.domain import (
-    UserId,
-    Email,
-    Telegram,
-    User,
-)
+from contribution.domain import UserId, User
 
 
 @dataclass(slots=True, unsafe_hash=True)
@@ -31,13 +26,13 @@ class UserMap:
                 return unit.user
         return None
 
-    def with_email(self, email: Email) -> Optional[User]:
+    def with_email(self, email: str) -> Optional[User]:
         for unit in self._units:
             if unit.user.email == email:
                 return unit.user
         return None
 
-    def with_telegram(self, telegram: Telegram) -> Optional[User]:
+    def with_telegram(self, telegram: str) -> Optional[User]:
         for unit in self._units:
             if unit.user.telegram == telegram:
                 return unit.user

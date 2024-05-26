@@ -141,7 +141,7 @@ class EditMovieProcessor:
 
         author = await self._user_gateway.with_id(current_user_id)
         if not author:
-            raise UserDoesNotExistError(current_user_id)
+            raise UserDoesNotExistError()
 
         movie = await self._movie_gateway.with_id(command.movie_id)
         if not movie:

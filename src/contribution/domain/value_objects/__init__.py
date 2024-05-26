@@ -16,8 +16,6 @@ __all__ = (
     "Currency",
     "Country",
     "Money",
-    "Email",
-    "Telegram",
     "PhotoUrl",
 )
 
@@ -38,6 +36,4 @@ from .contribution_crew_member import ContributionCrewMember
 from .currency import Currency
 from .country import Country
 from .money import Money
-from .email import Email
-from .telegram import Telegram
 from .photo_url import PhotoUrl

@@ -107,7 +107,7 @@ class AddPersonProcessor:
 
         author = await self._user_gateway.with_id(current_user_id)
         if not author:
-            raise UserDoesNotExistError(current_user_id)
+            raise UserDoesNotExistError()
 
         photos = [self._create_photo_from_obj(obj) for obj in command.photos]
 

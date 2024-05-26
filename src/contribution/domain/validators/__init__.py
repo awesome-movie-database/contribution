@@ -3,6 +3,8 @@ __all__ = (
     "ValidateMovieOriginalTitle",
     "ValidateMovieDuration",
     "ValidateUserName",
+    "ValidateEmail",
+    "ValidateTelegram",
     "ValidatePersonFirstName",
     "ValidatePersonLastName",
     "ValidateRoleCharacter",
@@ -14,7 +16,11 @@ from .movie import (
     ValidateMovieOriginalTitle,
     ValidateMovieDuration,
 )
-from .user import ValidateUserName
+from .user import (
+    ValidateUserName,
+    ValidateEmail,
+    ValidateTelegram,
+)
 from .person import (
     ValidatePersonFirstName,
     ValidatePersonLastName,

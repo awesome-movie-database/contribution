@@ -2,7 +2,12 @@ import logging
 
 from uuid_extensions import uuid7
 
-from contribution.domain import UpdateUser
+from contribution.domain import (
+    InvalidUserNameError,
+    InvalidEmailError,
+    InvalidTelegramError,
+    UpdateUser,
+)
 from contribution.application.common import (
     CommandProcessor,
     TransactionProcessor,
@@ -121,6 +126,24 @@ class LoggingProcessor:
         except UserTelegramIsAlreadyTakenError as e:
             logger.error(
                 "Unexpected error occurred: User telegram is already taken",
+                extra={"processing_id": command_processing_id},
+            )
+            raise e
+        except InvalidUserNameError as e:
+            logger.error(
+                "Unexpected error occurred: Invalid user name",
+                extra={"processing_id": command_processing_id},
+            )
+            raise e
+        except InvalidEmailError as e:
+            logger.error(
+                "Unexpected error occurred: Invalid user email",
+                extra={"processing_id": command_processing_id},
+            )
+            raise e
+        except InvalidTelegramError as e:
+            logger.error(
+                "Unexpected error occurred: Invalid user telegram",
                 extra={"processing_id": command_processing_id},
             )
             raise e

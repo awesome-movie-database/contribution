@@ -1,11 +1,11 @@
 from typing import Optional
 
-from contribution.domain.value_objects import (
-    UserId,
-    Email,
-    Telegram,
+from contribution.domain.value_objects import UserId
+from contribution.domain.validators import (
+    ValidateUserName,
+    ValidateEmail,
+    ValidateTelegram,
 )
-from contribution.domain.validators import ValidateUserName
 from contribution.domain.entities import User
 
 
@@ -13,19 +13,28 @@ class CreateUser:
     def __init__(
         self,
         validate_user_name: ValidateUserName,
+        validate_email: ValidateEmail,
+        validate_telegram: ValidateTelegram,
     ):
         self._validate_user_name = validate_user_name
+        self._validate_email = validate_email
+        self._validate_telegram = validate_telegram
 
     def __call__(
         self,
         *,
         id: UserId,
         name: str,
-        email: Optional[Email],
-        telegram: Optional[Telegram],
+        email: Optional[str],
+        telegram: Optional[str],
         is_active: bool,
     ) -> User:
         self._validate_user_name(name)
+
+        if email:
+            self._validate_email(email)
+        if telegram:
+            self._validate_telegram(telegram)
 
         return User(
             id=id,

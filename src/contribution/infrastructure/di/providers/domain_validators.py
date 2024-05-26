@@ -5,6 +5,8 @@ from contribution.domain import (
     ValidateMovieOriginalTitle,
     ValidateMovieDuration,
     ValidateUserName,
+    ValidateEmail,
+    ValidateTelegram,
     ValidatePersonFirstName,
     ValidatePersonLastName,
     ValidateRoleCharacter,
@@ -19,6 +21,8 @@ def domain_validators_provider_factory() -> Provider:
     provider.provide(ValidateMovieOriginalTitle)
     provider.provide(ValidateMovieDuration)
     provider.provide(ValidateUserName)
+    provider.provide(ValidateEmail)
+    provider.provide(ValidateTelegram)
     provider.provide(ValidatePersonFirstName)
     provider.provide(ValidatePersonLastName)
     provider.provide(ValidateRoleCharacter)
