@@ -13,6 +13,7 @@ dependencies = [
     "uuid7==0.1.*",
     "aio-pika==9.4.*",
     "dishka==1.1.*",
+    "motor==3.4.*",
 ]
 
 [project.optional-dependencies]
@@ -24,4 +25,7 @@ dev = [
 web_api = [
     "fastapi==0.111.*",
     "uvicorn==0.29.*",
+]
+event_consumer = [
+    "faststream==0.5.*",
 ]
