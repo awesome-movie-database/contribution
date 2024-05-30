@@ -22,13 +22,13 @@ from contribution.application.common import (
     OnEventOccurred,
     AchievementEarnedEvent,
 )
-from contribution.application.commands import RejectMovieAdditionCommand
+from contribution.application.commands import RejectMovieAddingCommand
 
 
 logger = logging.getLogger(__name__)
 
 
-def reject_movie_addition_factory(
+def reject_movie_adding_factory(
     reject_contribution: RejectContribution,
     add_movie_contribution_gateway: AddMovieContributionGateway,
     user_gateway: UserGateway,
@@ -36,8 +36,8 @@ def reject_movie_addition_factory(
     object_storage: ObjectStorage,
     unit_of_work: UnitOfWork,
     on_achievement_earned: OnEventOccurred[AchievementEarnedEvent],
-) -> CommandProcessor[RejectMovieAdditionCommand, Optional[AchievementId]]:
-    accept_movie_addition_processor = RejectMovieAdditionProcessor(
+) -> CommandProcessor[RejectMovieAddingCommand, Optional[AchievementId]]:
+    accept_movie_addition_processor = RejectMovieAddingProcessor(
         reject_contribution=reject_contribution,
         add_movie_contribution_gateway=add_movie_contribution_gateway,
         user_gateway=user_gateway,
@@ -60,7 +60,7 @@ def reject_movie_addition_factory(
     return log_processor
 
 
-class RejectMovieAdditionProcessor:
+class RejectMovieAddingProcessor:
     def __init__(
         self,
         *,
@@ -78,7 +78,7 @@ class RejectMovieAdditionProcessor:
 
     async def process(
         self,
-        command: RejectMovieAdditionCommand,
+        command: RejectMovieAddingCommand,
     ) -> Optional[AchievementId]:
         contribution = (
             await self._add_movie_contribution_gateway.acquire_by_id(
@@ -117,12 +117,12 @@ class LoggingProcessor:
 
     async def process(
         self,
-        command: RejectMovieAdditionCommand,
+        command: RejectMovieAddingCommand,
     ) -> Optional[AchievementId]:
         command_processing_id = uuid7()
 
         logger.debug(
-            "'Reject Movie Addition' command processing started",
+            "'Reject Movie Adding' command processing started",
             extra={
                 "processing_id": command_processing_id,
                 "command": command,
@@ -162,7 +162,7 @@ class LoggingProcessor:
             raise e
 
         logger.debug(
-            "'Reject Movie Addition' command processing completed",
+            "'Reject Movie Adding' command processing completed",
             extra={
                 "processing_id": command_processing_id,
                 "achievement_id": result,

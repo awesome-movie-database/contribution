@@ -9,13 +9,13 @@ __all__ = (
     "EditMovieCommand",
     "AddPersonCommand",
     "EditPersonCommand",
-    "AcceptMovieAdditionCommand",
+    "AcceptMovieAddingCommand",
     "AcceptMovieEditingCommand",
-    "RejectMovieAdditionCommand",
+    "RejectMovieAddingCommand",
     "RejectMovieEditingCommand",
-    "AcceptPersonAdditionCommand",
+    "AcceptPersonAddingCommand",
     "AcceptPersonEditingCommand",
-    "RejectPersonAdditionCommand",
+    "RejectPersonAddingCommand",
     "RejectPersonEditingCommand",
 )
 
@@ -29,11 +29,11 @@ from .add_movie import AddMovieCommand
 from .edit_movie import EditMovieCommand
 from .add_person import AddPersonCommand
 from .edit_person import EditPersonCommand
-from .accept_movie_addition import AcceptMovieAdditionCommand
+from .accept_movie_adding import AcceptMovieAddingCommand
 from .accept_movie_editing import AcceptMovieEditingCommand
-from .reject_movie_addition import RejectMovieAdditionCommand
+from .reject_movie_adding import RejectMovieAddingCommand
 from .reject_movie_editing import RejectMovieEditingCommand
-from .accept_person_addition import AcceptPersonAdditionCommand
+from .accept_person_adding import AcceptPersonAddingCommand
 from .accept_person_editing import AcceptPersonEditingCommand
-from .reject_person_addition import RejectPersonAdditionCommand
+from .reject_person_adding import RejectPersonAddingCommand
 from .reject_person_editing import RejectPersonEditingCommand

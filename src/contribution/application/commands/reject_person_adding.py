@@ -5,6 +5,6 @@ from contribution.domain import AddPersonContributionId
 
 
 @dataclass(frozen=True, slots=True)
-class RejectPersonAdditionCommand:
+class RejectPersonAddingCommand:
     contribution_id: AddPersonContributionId
     rejected_at: datetime

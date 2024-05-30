@@ -8,7 +8,7 @@ from contribution.domain import (
 
 
 @dataclass(frozen=True, slots=True)
-class AcceptPersonAdditionCommand:
+class AcceptPersonAddingCommand:
     contribution_id: AddPersonContributionId
     person_id: PersonId
     accepted_at: datetime

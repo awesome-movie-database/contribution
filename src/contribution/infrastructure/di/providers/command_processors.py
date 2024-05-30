@@ -19,13 +19,13 @@ from contribution.application import (
     edit_movie_factory,
     add_person_factory,
     edit_person_factory,
-    accept_movie_addition_factory,
+    accept_movie_adding_factory,
     accept_movie_editing_factory,
-    reject_movie_addition_factory,
+    reject_movie_adding_factory,
     reject_movie_editing_factory,
-    accept_person_addition_factory,
+    accept_person_adding_factory,
     accept_person_editing_factory,
-    reject_person_addition_factory,
+    reject_person_adding_factory,
     reject_person_editing_factory,
     CreateUserCommand,
     UpdateUserCommand,
@@ -37,13 +37,13 @@ from contribution.application import (
     EditMovieCommand,
     AddPersonCommand,
     EditPersonCommand,
-    AcceptMovieAdditionCommand,
+    AcceptMovieAddingCommand,
     AcceptMovieEditingCommand,
-    RejectMovieAdditionCommand,
+    RejectMovieAddingCommand,
     RejectMovieEditingCommand,
-    AcceptPersonAdditionCommand,
+    AcceptPersonAddingCommand,
     AcceptPersonEditingCommand,
-    RejectPersonAdditionCommand,
+    RejectPersonAddingCommand,
     RejectPersonEditingCommand,
 )
 
@@ -92,32 +92,32 @@ def command_processors_provider_factory() -> Provider:
         provides=CommandProcessor[EditPersonCommand, EditPersonContributionId],
     )
     provider.provide(
-        accept_movie_addition_factory,
-        provides=CommandProcessor[AcceptMovieAdditionCommand, AchievementId],
+        accept_movie_adding_factory,
+        provides=CommandProcessor[AcceptMovieAddingCommand, AchievementId],
     )
     provider.provide(
         accept_movie_editing_factory,
         provides=CommandProcessor[AcceptMovieEditingCommand, AchievementId],
     )
     provider.provide(
-        reject_movie_addition_factory,
-        provides=CommandProcessor[RejectMovieAdditionCommand, AchievementId],
+        reject_movie_adding_factory,
+        provides=CommandProcessor[RejectMovieAddingCommand, AchievementId],
     )
     provider.provide(
         reject_movie_editing_factory,
         provides=CommandProcessor[RejectMovieEditingCommand, AchievementId],
     )
     provider.provide(
-        accept_person_addition_factory,
-        provides=CommandProcessor[AcceptPersonAdditionCommand, AchievementId],
+        accept_person_adding_factory,
+        provides=CommandProcessor[AcceptPersonAddingCommand, AchievementId],
     )
     provider.provide(
         accept_person_editing_factory,
         provides=CommandProcessor[AcceptPersonEditingCommand, AchievementId],
     )
     provider.provide(
-        reject_person_addition_factory,
-        provides=CommandProcessor[RejectPersonAdditionCommand, AchievementId],
+        reject_person_adding_factory,
+        provides=CommandProcessor[RejectPersonAddingCommand, AchievementId],
     )
     provider.provide(
         reject_person_editing_factory,

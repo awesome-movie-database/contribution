@@ -5,6 +5,6 @@ from contribution.domain import AddMovieContributionId
 
 
 @dataclass(frozen=True, slots=True)
-class RejectMovieAdditionCommand:
+class RejectMovieAddingCommand:
     contribution_id: AddMovieContributionId
     rejected_at: datetime

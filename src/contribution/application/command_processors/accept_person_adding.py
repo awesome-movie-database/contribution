@@ -27,13 +27,13 @@ from contribution.application.common import (
     OnEventOccurred,
     AchievementEarnedEvent,
 )
-from contribution.application.commands import AcceptPersonAdditionCommand
+from contribution.application.commands import AcceptPersonAddingCommand
 
 
 logger = logging.getLogger(__name__)
 
 
-def accept_person_addition_factory(
+def accept_person_adding_factory(
     accept_contribution: AcceptContribution,
     create_person: CreatePerson,
     add_person_contribution_gateway: AddPersonContributionGateway,
@@ -42,8 +42,8 @@ def accept_person_addition_factory(
     achievement_gateway: AchievementGateway,
     unit_of_work: UnitOfWork,
     on_achievement_earned: OnEventOccurred[AchievementEarnedEvent],
-) -> CommandProcessor[AcceptPersonAdditionCommand, Optional[AchievementId]]:
-    accept_person_addition_processor = AcceptPersonAdditionProcessor(
+) -> CommandProcessor[AcceptPersonAddingCommand, Optional[AchievementId]]:
+    accept_person_addition_processor = AcceptPersonAddingProcessor(
         accept_contribution=accept_contribution,
         create_person=create_person,
         add_person_contribution_gateway=add_person_contribution_gateway,
@@ -67,7 +67,7 @@ def accept_person_addition_factory(
     return log_processor
 
 
-class AcceptPersonAdditionProcessor:
+class AcceptPersonAddingProcessor:
     def __init__(
         self,
         *,
@@ -87,7 +87,7 @@ class AcceptPersonAdditionProcessor:
 
     async def process(
         self,
-        command: AcceptPersonAdditionCommand,
+        command: AcceptPersonAddingCommand,
     ) -> Optional[AchievementId]:
         contribution = (
             await self._add_person_contribution_gateway.acquire_by_id(
@@ -138,12 +138,12 @@ class LoggingProcessor:
 
     async def process(
         self,
-        command: AcceptPersonAdditionCommand,
+        command: AcceptPersonAddingCommand,
     ) -> Optional[AchievementId]:
         command_processing_id = uuid7()
 
         logger.debug(
-            msg="'Accept Person Addition' command processing started",
+            msg="'Accept Person Adding' command processing started",
             extra={
                 "processing_id": command_processing_id,
                 "command": command,
@@ -207,7 +207,7 @@ class LoggingProcessor:
             raise e
 
         logger.debug(
-            "'Accept Person Addition' command processing completed",
+            "'Accept Person Adding' command processing completed",
             extra={
                 "processing_id": command_processing_id,
                 "achievement_id": result,

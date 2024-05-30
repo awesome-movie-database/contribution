@@ -14,7 +14,7 @@ from contribution.application.common import (
 
 
 @dataclass(frozen=True, slots=True)
-class AcceptMovieAdditionCommand:
+class AcceptMovieAddingCommand:
     contribution_id: AddMovieContributionId
     movie_id: MovieId
     accepted_at: datetime
