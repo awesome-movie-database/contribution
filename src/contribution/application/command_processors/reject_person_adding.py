@@ -8,6 +8,7 @@ from contribution.domain import (
     RejectContribution,
 )
 from contribution.application.common import (
+    CorrelationId,
     CommandProcessor,
     TransactionProcessor,
     AchievementEearnedCallbackProcessor,
@@ -29,6 +30,7 @@ logger = logging.getLogger(__name__)
 
 
 def reject_person_adding_factory(
+    correlation_id: CorrelationId,
     reject_contribution: RejectContribution,
     add_person_contribution_gateway: AddPersonContributionGateway,
     user_gateway: UserGateway,
@@ -55,6 +57,7 @@ def reject_person_adding_factory(
     )
     log_processor = LoggingProcessor(
         processor=tx_processor,
+        correlation_id=correlation_id,
     )
 
     return log_processor
@@ -112,19 +115,25 @@ class RejectPersonAddingProcessor:
 
 
 class LoggingProcessor:
-    def __init__(self, processor: TransactionProcessor):
+    def __init__(
+        self,
+        *,
+        processor: TransactionProcessor,
+        correlation_id: CorrelationId,
+    ):
         self._processor = processor
+        self._correlation_id = correlation_id
 
     async def process(
         self,
         command: RejectPersonAddingCommand,
     ) -> Optional[AchievementId]:
-        command_processing_id = uuid7()
+        self._correlation_id = uuid7()
 
         logger.debug(
             "'Reject Person Adding' command processing started",
             extra={
-                "processing_id": command_processing_id,
+                "correlation_id": self._correlation_id,
                 "command": command,
             },
         )
@@ -134,28 +143,28 @@ class LoggingProcessor:
         except ContributionDoesNotExistError as e:
             logger.error(
                 "Unexpected error occurred: Contribution doesn't exist",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except UserDoesNotExistError as e:
             logger.error(
                 "Unexpected error occurred: Contribution has author id, "
                 "using which user gateway returns None",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except AchievementDoesNotExistError as e:
             logger.error(
                 "Unexpected error occurred: Achievement was created, "
                 "but achievement gateway returns None",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
         except Exception as e:
             logger.exception(
                 "Unexpected error occurred",
                 exc_info=e,
                 extra={
-                    "processing_id": command_processing_id,
+                    "correlation_id": self._correlation_id,
                     "error": e,
                 },
             )
@@ -164,7 +173,7 @@ class LoggingProcessor:
         logger.debug(
             "'Reject Person Adding' command processing completed",
             extra={
-                "processing_id": command_processing_id,
+                "correlation_id": self._correlation_id,
                 "achievement_id": result,
             },
         )

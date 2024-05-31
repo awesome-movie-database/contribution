@@ -1,7 +1,5 @@
 import logging
 
-from uuid_extensions import uuid7
-
 from contribution.domain import (
     InvalidMovieEngTitleError,
     InvalidMovieOriginalTitleError,
@@ -9,6 +7,7 @@ from contribution.domain import (
     UpdateMovie,
 )
 from contribution.application.common import (
+    CorrelationId,
     CreateAndSaveRoles,
     DeleteRoles,
     CreateAndSaveWriters,
@@ -36,6 +35,7 @@ logger = logging.getLogger(__name__)
 
 
 def update_movie_factory(
+    correlation_id: CorrelationId,
     update_movie: UpdateMovie,
     create_and_save_roles: CreateAndSaveRoles,
     delete_roles: DeleteRoles,
@@ -64,6 +64,7 @@ def update_movie_factory(
     )
     log_processor = LoggingProcessor(
         processor=tx_processor,
+        correlation_id=correlation_id,
     )
 
     return log_processor
@@ -131,16 +132,20 @@ class UpdateMovieProcessor:
 
 
 class LoggingProcessor:
-    def __init__(self, processor: TransactionProcessor):
+    def __init__(
+        self,
+        *,
+        processor: TransactionProcessor,
+        correlation_id: CorrelationId,
+    ):
         self._processor = processor
+        self._correlation_id = correlation_id
 
     async def process(self, command: UpdateMovieCommand) -> None:
-        command_processing_id = uuid7()
-
         logger.debug(
             "'Update Movie' command processing started",
             extra={
-                "processing_id": command_processing_id,
+                "correlation_id": self._correlation_id,
                 "command": command,
             },
         )
@@ -150,25 +155,25 @@ class LoggingProcessor:
         except MovieDoesNotExistError as e:
             logger.error(
                 "Unexpected error occurred: Movie doesn't exist",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except InvalidMovieEngTitleError as e:
             logger.error(
                 "Unexpected error occurred: Invalid movie eng title",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except InvalidMovieOriginalTitleError as e:
             logger.error(
                 "Unexpected error occurred: Invalid movie original title",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except InvalidMovieDurationError as e:
             logger.error(
                 "Unexpected error occurred: Invalid movie duration",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except PersonsDoNotExistError as e:
@@ -176,7 +181,7 @@ class LoggingProcessor:
                 "Unexpected error occurred: "
                 "Person ids do not belong to any persons",
                 extra={
-                    "processing_id": command_processing_id,
+                    "correlation_id": self._correlation_id,
                     "ids_of_missing_persons": e.ids_of_missing_persons,
                 },
             )
@@ -186,7 +191,7 @@ class LoggingProcessor:
                 "Unexpected error occurred: "
                 "Role ids already belong to some roles",
                 extra={
-                    "processing_id": command_processing_id,
+                    "correlation_id": self._correlation_id,
                     "ids_of_existing_roles": e.ids_of_existing_roles,
                 },
             )
@@ -196,7 +201,7 @@ class LoggingProcessor:
                 "Unexpected error occurred: "
                 "Role ids do not belong to any roles",
                 extra={
-                    "processing_id": command_processing_id,
+                    "correlation_id": self._correlation_id,
                     "ids_of_missing_roles": e.ids_of_missing_roles,
                 },
             )
@@ -206,7 +211,7 @@ class LoggingProcessor:
                 "Unexpected error occurred: "
                 "Writer ids already belong to some writers",
                 extra={
-                    "processing_id": command_processing_id,
+                    "correlation_id": self._correlation_id,
                     "ids_of_existing_writers": e.ids_of_existing_writers,
                 },
             )
@@ -216,7 +221,7 @@ class LoggingProcessor:
                 "Unexpected error occurred: "
                 "Writer ids do not belong to any writers",
                 extra={
-                    "processing_id": command_processing_id,
+                    "correlation_id": self._correlation_id,
                     "ids_of_missing_writers": e.ids_of_missing_writers,
                 },
             )
@@ -226,7 +231,7 @@ class LoggingProcessor:
                 "Unexpected error occurred: "
                 "Crew member ids already belong to some crew members",
                 extra={
-                    "processing_id": command_processing_id,
+                    "correlation_id": self._correlation_id,
                     "ids_of_existing_crew_members": e.ids_of_existing_crew_members,
                 },
             )
@@ -236,7 +241,7 @@ class LoggingProcessor:
                 "Unexpected error occurred: "
                 "Crew member ids do not belong to any crew members",
                 extra={
-                    "processing_id": command_processing_id,
+                    "correlation_id": self._correlation_id,
                     "ids_of_missing_crew_members": e.ids_of_missing_crew_members,
                 },
             )
@@ -246,7 +251,7 @@ class LoggingProcessor:
                 "Unexpected error occurred",
                 exc_info=e,
                 extra={
-                    "processing_id": command_processing_id,
+                    "correlation_id": self._correlation_id,
                     "error": e,
                 },
             )
@@ -254,7 +259,7 @@ class LoggingProcessor:
 
         logger.debug(
             "'Update Movie' command processing completed",
-            extra={"processing_id": command_processing_id},
+            extra={"correlation_id": self._correlation_id},
         )
 
         return result

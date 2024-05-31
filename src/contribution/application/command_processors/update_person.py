@@ -1,7 +1,5 @@
 import logging
 
-from uuid_extensions import uuid7
-
 from contribution.domain import (
     InvalidPersonFirstNameError,
     InvalidPersonLastNameError,
@@ -9,6 +7,7 @@ from contribution.domain import (
     UpdatePerson,
 )
 from contribution.application.common import (
+    CorrelationId,
     CommandProcessor,
     TransactionProcessor,
     PersonDoesNotExistError,
@@ -22,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 def update_person_factory(
+    correlation_id: CorrelationId,
     update_person: UpdatePerson,
     person_gateway: PersonGateway,
     unit_of_work: UnitOfWork,
@@ -36,6 +36,7 @@ def update_person_factory(
     )
     log_processor = LoggingProcessor(
         processor=tx_processor,
+        correlation_id=correlation_id,
     )
 
     return log_processor
@@ -68,16 +69,20 @@ class UpdatePersonProcessor:
 
 
 class LoggingProcessor:
-    def __init__(self, processor: TransactionProcessor):
+    def __init__(
+        self,
+        *,
+        processor: TransactionProcessor,
+        correlation_id: CorrelationId,
+    ):
         self._processor = processor
+        self._correlation_id = correlation_id
 
     async def process(self, command: UpdatePersonCommand) -> None:
-        command_processing_id = uuid7()
-
         logger.debug(
             msg="'Update Person' command processing started",
             extra={
-                "processing_id": command_processing_id,
+                "correlation_id": self._correlation_id,
                 "command": command,
             },
         )
@@ -87,25 +92,25 @@ class LoggingProcessor:
         except PersonDoesNotExistError as e:
             logger.error(
                 "Unexpected error occurred: Person doesn't exist",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except InvalidPersonFirstNameError as e:
             logger.error(
                 "Unexpected error occurred: Invalid person first name",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except InvalidPersonLastNameError as e:
             logger.error(
                 "Unexpected error occurred: Invalid person last name",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except InvalidPersonBirthOrDeathDateError as e:
             logger.error(
                 "Unexpected error occurred: Invalid person birth or death date",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except Exception as e:
@@ -113,7 +118,7 @@ class LoggingProcessor:
                 "Unexpected error occurred",
                 exc_info=e,
                 extra={
-                    "processing_id": command_processing_id,
+                    "correlation_id": self._correlation_id,
                     "error": e,
                 },
             )
@@ -121,7 +126,7 @@ class LoggingProcessor:
 
         logger.debug(
             "'Update Person' command processing completed",
-            extra={"processing_id": command_processing_id},
+            extra={"correlation_id": self._correlation_id},
         )
 
         return result

@@ -1,7 +1,5 @@
 import logging
 
-from uuid_extensions import uuid7
-
 from contribution.domain import (
     InvalidUserNameError,
     InvalidEmailError,
@@ -9,6 +7,7 @@ from contribution.domain import (
     CreateUser,
 )
 from contribution.application.common import (
+    CorrelationId,
     CommandProcessor,
     TransactionProcessor,
     UserIdIsAlreadyTakenError,
@@ -25,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 def create_user_factory(
+    correlation_id: CorrelationId,
     create_user: CreateUser,
     user_gateway: UserGateway,
     unit_of_work: UnitOfWork,
@@ -39,6 +39,7 @@ def create_user_factory(
     )
     log_processor = LoggingProcessor(
         processor=tx_processor,
+        correlation_id=correlation_id,
     )
 
     return log_processor
@@ -91,16 +92,20 @@ class CreateUserProcessor:
 
 
 class LoggingProcessor:
-    def __init__(self, processor: TransactionProcessor):
+    def __init__(
+        self,
+        *,
+        processor: TransactionProcessor,
+        correlation_id: CorrelationId,
+    ):
         self._processor = processor
+        self._correlation_id = correlation_id
 
     async def process(self, command: CreateUserCommand) -> None:
-        command_processing_id = uuid7()
-
         logger.debug(
             "'Create User' command processing started",
             extra={
-                "processing_id": command_processing_id,
+                "correlation_id": self._correlation_id,
                 "command": command,
             },
         )
@@ -110,43 +115,43 @@ class LoggingProcessor:
         except UserIdIsAlreadyTakenError as e:
             logger.error(
                 "Unexpected error occurred: User id is already taken",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except UserNameIsAlreadyTakenError as e:
             logger.error(
                 "Unexpected error occurred: User name is already taken",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except UserEmailIsAlreadyTakenError as e:
             logger.error(
                 "Unexpected error occurred: User email already taken",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except UserTelegramIsAlreadyTakenError as e:
             logger.error(
                 "Unexpected error occurred: User telegram is already taken",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except InvalidUserNameError as e:
             logger.error(
                 "Unexpected error occurred: Invalid user name",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except InvalidEmailError as e:
             logger.error(
                 "Unexpected error occurred: Invalid user email",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except InvalidTelegramError as e:
             logger.error(
                 "Unexpected error occurred: Invalid user telegram",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except Exception as e:
@@ -154,7 +159,7 @@ class LoggingProcessor:
                 "Unexpected error occurred",
                 exc_info=e,
                 extra={
-                    "processing_id": command_processing_id,
+                    "correlation_id": self._correlation_id,
                     "error": e,
                 },
             )
@@ -162,7 +167,7 @@ class LoggingProcessor:
 
         logger.debug(
             "'Create User' command processing completed",
-            extra={"processing_id": command_processing_id},
+            extra={"correlation_id": self._correlation_id},
         )
 
         return result

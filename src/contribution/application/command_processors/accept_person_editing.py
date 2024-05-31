@@ -12,6 +12,7 @@ from contribution.domain import (
     UpdatePerson,
 )
 from contribution.application.common import (
+    CorrelationId,
     CommandProcessor,
     TransactionProcessor,
     AchievementEearnedCallbackProcessor,
@@ -34,6 +35,7 @@ logger = logging.getLogger(__name__)
 
 
 def accept_person_editing_factory(
+    correlation_id: CorrelationId,
     accept_contribution: AcceptContribution,
     update_person: UpdatePerson,
     edit_person_contribution_gateway: EditPersonContributionGateway,
@@ -61,6 +63,7 @@ def accept_person_editing_factory(
         unit_of_work=unit_of_work,
     )
     log_processor = LoggingProcessor(
+        correlation_id=correlation_id,
         processor=tx_processor,
     )
 
@@ -137,19 +140,23 @@ class AcceptPersonEditingProcessor:
 
 
 class LoggingProcessor:
-    def __init__(self, processor: TransactionProcessor):
+    def __init__(
+        self,
+        *,
+        processor: TransactionProcessor,
+        correlation_id: CorrelationId,
+    ):
         self._processor = processor
+        self._correlation_id = correlation_id
 
     async def process(
         self,
         command: AcceptPersonEditingCommand,
     ) -> Optional[AchievementId]:
-        command_processing_id = uuid7()
-
         logger.debug(
             "'Accept Person Editing' command processing started",
             extra={
-                "processing_id": command_processing_id,
+                "correlation_id": self._correlation_id,
                 "command": command,
             },
         )
@@ -159,53 +166,53 @@ class LoggingProcessor:
         except ContributionDoesNotExistError as e:
             logger.error(
                 "Unexpected error occurred: Contribution doesn't exist",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except UserDoesNotExistError as e:
             logger.error(
                 "Unexpected error occurred: Contribution has author id, "
                 "using which user gateway returns None",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except PersonDoesNotExistError as e:
             logger.error(
                 "Unexpected error occurred: Contribution has person id,"
                 "using which person gateway returns None",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except InvalidPersonFirstNameError as e:
             logger.error(
                 "Unexpected error occurred: Invalid person first name",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except InvalidPersonLastNameError as e:
             logger.error(
                 "Unexpected error occurred: Invalid person last name",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except InvalidPersonBirthOrDeathDateError as e:
             logger.error(
                 "Unexpected error occurred: Invalid person birth or death date",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
             raise e
         except AchievementDoesNotExistError as e:
             logger.error(
                 "Unexpected error occurred: Achievement was created, "
                 "but achievement gateway returns None",
-                extra={"processing_id": command_processing_id},
+                extra={"correlation_id": self._correlation_id},
             )
         except Exception as e:
             logger.exception(
                 "Unexpected error occurred",
                 exc_info=e,
                 extra={
-                    "processing_id": command_processing_id,
+                    "correlation_id": self._correlation_id,
                     "error": e,
                 },
             )
@@ -214,7 +221,7 @@ class LoggingProcessor:
         logger.debug(
             "'Accept Person Editing' command processing completed",
             extra={
-                "processing_id": command_processing_id,
+                "correlation_id": self._correlation_id,
                 "achievement_id": result,
             },
         )
