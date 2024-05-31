@@ -1,8 +1,8 @@
-import json
-
 from aio_pika import Exchange, Message
 
-from contribution.application import AchievementEarnedEvent
+from contribution.infrastructure.message_broker.real_events import (
+    RealAchievementEarnedEvent,
+)
 
 
 class PublishAchievementEarnedEvent:
@@ -14,18 +14,8 @@ class PublishAchievementEarnedEvent:
         self._exchange = exchange
         self._routing_key = routing_key
 
-    async def __call__(self, event: AchievementEarnedEvent) -> None:
-        message_body_as_dict = (
-            {
-                "achievement_id": str(event.achievement_id),
-                "user_id": str(event.user_id),
-                "type": event.achieved.value,
-                "achieved_at": event.achieved_at.isoformat(),
-            },
-        )
-        message_body = json.dumps(message_body_as_dict).encode()
-
+    async def __call__(self, event: RealAchievementEarnedEvent) -> None:
         await self._exchange.publish(
-            message=Message(message_body),
+            message=Message(event.to_json().encode()),
             routing_key=self._routing_key,
         )
