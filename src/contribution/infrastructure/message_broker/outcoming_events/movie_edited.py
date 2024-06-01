@@ -6,7 +6,7 @@ from contribution.application import CorrelationId
 
 
 @dataclass(frozen=True, slots=True)
-class RealMovieEditedEvent:
+class OutcomingMovieEditedEvent:
     correlation_id: CorrelationId
     contribution_id: EditMovieContributionId
 

@@ -1,4 +1,4 @@
-from .real_events import *
+from .outcoming_events import *
 from .publishers import *
 
 from .config import RabbitMQConfig as RabbitMQConfig

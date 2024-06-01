@@ -1,18 +1,18 @@
 import json
 from dataclasses import dataclass
 
-from contribution.domain import EditPersonContributionId
+from contribution.domain import AchievementId
 from contribution.application import CorrelationId
 
 
 @dataclass(frozen=True, slots=True)
-class RealPersonEditedEvent:
+class OutcomingAchievementEarnedEvent:
     correlation_id: CorrelationId
-    contribution_id: EditPersonContributionId
+    achievement_id: AchievementId
 
     def to_json(self) -> str:
         event_as_dict = {
             "correlation_id": self.correlation_id.hex,
-            "contribution_id": self.contribution_id.hex,
+            "achievement_id": self.achievement_id.hex,
         }
         return json.dumps(event_as_dict)

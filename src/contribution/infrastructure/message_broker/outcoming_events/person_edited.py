@@ -1,14 +1,14 @@
 import json
 from dataclasses import dataclass
 
-from contribution.domain import AddPersonContributionId
+from contribution.domain import EditPersonContributionId
 from contribution.application import CorrelationId
 
 
 @dataclass(frozen=True, slots=True)
-class RealPersonAddedEvent:
+class OutcomingPersonEditedEvent:
     correlation_id: CorrelationId
-    contribution_id: AddPersonContributionId
+    contribution_id: EditPersonContributionId
 
     def to_json(self) -> str:
         event_as_dict = {
