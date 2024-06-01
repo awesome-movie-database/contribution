@@ -85,7 +85,7 @@ class AddMovieContributionMapper:
         else:
             status_updated_at = None
 
-        budget_as_dict = document["revenue"]
+        budget_as_dict = document["budget"]
         if budget_as_dict:
             budget = Money(
                 amount=Decimal(budget_as_dict["amount"]),
