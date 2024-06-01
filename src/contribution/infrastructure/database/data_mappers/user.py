@@ -33,11 +33,11 @@ class UserMapper:
         if user_from_map:
             return user_from_map
 
-        document_or_none = await self._collection.find_one(
+        document = await self._collection.find_one(
             {"id": id.hex},
         )
-        if document_or_none:
-            user = self._document_to_user(document_or_none)
+        if document:
+            user = self._document_to_user(document)
             self._user_map.save(user)
             self._unit_of_work.register_clean(user)
             return user
@@ -49,11 +49,9 @@ class UserMapper:
         if user_from_map:
             return user_from_map
 
-        document_or_none = await self._collection.find_one(
-            {"name": name},
-        )
-        if document_or_none:
-            user = self._document_to_user(document_or_none)
+        document = await self._collection.find_one({"name": name})
+        if document:
+            user = self._document_to_user(document)
             self._user_map.save(user)
             self._unit_of_work.register_clean(user)
             return user
@@ -65,11 +63,9 @@ class UserMapper:
         if user_from_map:
             return user_from_map
 
-        document_or_none = await self._collection.find_one(
-            {"email": email},
-        )
-        if document_or_none:
-            user = self._document_to_user(document_or_none)
+        document = await self._collection.find_one({"email": email})
+        if document:
+            user = self._document_to_user(document)
             self._user_map.save(user)
             self._unit_of_work.register_clean(user)
             return user
@@ -81,11 +77,11 @@ class UserMapper:
         if user_from_map:
             return user_from_map
 
-        document_or_none = await self._collection.find_one(
+        document = await self._collection.find_one(
             {"telegram": telegram},
         )
-        if document_or_none:
-            user = self._document_to_user(document_or_none)
+        if document:
+            user = self._document_to_user(document)
             self._user_map.save(user)
             self._unit_of_work.register_clean(user)
             return user
@@ -97,12 +93,12 @@ class UserMapper:
         if user_from_map and self._user_map.is_acquired(user_from_map):
             return user_from_map
 
-        document_or_none = await self._collection.find_one_and_update(
+        document = await self._collection.find_one_and_update(
             {"id": id.hex},
             {"$set": {"lock": self._lock_factory()}},
         )
-        if document_or_none:
-            user = self._document_to_user(document_or_none)
+        if document:
+            user = self._document_to_user(document)
             self._user_map.save_acquired(user)
             self._unit_of_work.register_clean(user)
             return user

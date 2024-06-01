@@ -55,12 +55,12 @@ class AddMovieContributionMapper:
         ):
             return contribution_from_map
 
-        document_or_none = await self._collection.find_one_and_update(
+        document = await self._collection.find_one_and_update(
             {"id": id.hex},
             {"$set": {"lock": self._lock_factory()}},
         )
-        if document_or_none:
-            contribution = self._document_to_contribution(document_or_none)
+        if document:
+            contribution = self._document_to_contribution(document)
             self._contribution_map.save_acquired(contribution)
             self._unit_of_work.register_clean(contribution)
             return contribution

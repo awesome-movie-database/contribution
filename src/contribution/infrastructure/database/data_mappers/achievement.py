@@ -13,9 +13,6 @@ from contribution.domain import (
 from contribution.infrastructure.database.identity_maps import (
     AchievementMap,
 )
-from contribution.infrastructure.database.lock_factory import (
-    MongoDBLockFactory,
-)
 from contribution.infrastructure.database.unit_of_work import (
     MongoDBUnitOfWork,
 )
@@ -26,12 +23,10 @@ class AchievementMapper:
         self,
         achievement_map: AchievementMap,
         collection: AsyncIOMotorCollection,
-        lock_factory: MongoDBLockFactory,
         unit_of_work: MongoDBUnitOfWork,
     ):
         self._achievement_map = achievement_map
         self._collection = collection
-        self._lock_factory = lock_factory
         self._unit_of_work = unit_of_work
 
     async def by_id(self, id: AchievementId) -> Optional[Achievement]:
@@ -39,11 +34,9 @@ class AchievementMapper:
         if achievement_from_map:
             return achievement_from_map
 
-        document_or_none = await self._collection.find_one(
-            {"id": id.hex},
-        )
-        if document_or_none:
-            achievement = self._document_to_achievement(document_or_none)
+        document = await self._collection.find_one({"id": id.hex})
+        if document:
+            achievement = self._document_to_achievement(document)
             self._achievement_map.save(achievement)
             self._unit_of_work.register_clean(achievement)
             return achievement

@@ -13,9 +13,6 @@ from contribution.domain import (
 from contribution.infrastructure.database.identity_maps import (
     WriterMap,
 )
-from contribution.infrastructure.database.lock_factory import (
-    MongoDBLockFactory,
-)
 from contribution.infrastructure.database.unit_of_work import (
     MongoDBUnitOfWork,
 )
@@ -26,12 +23,10 @@ class WriterMapper:
         self,
         writer_map: WriterMap,
         collection: AsyncIOMotorCollection,
-        lock_factory: MongoDBLockFactory,
         unit_of_work: MongoDBUnitOfWork,
     ):
         self._writer_map = writer_map
         self._collection = collection
-        self._lock_factory = lock_factory
         self._unit_of_work = unit_of_work
 
     async def by_id(self, id: WriterId) -> Optional[Writer]:
@@ -39,11 +34,11 @@ class WriterMapper:
         if writer_from_map:
             return writer_from_map
 
-        document_or_none = await self._collection.find_one(
+        document = await self._collection.find_one(
             {"id": id.hex},
         )
-        if document_or_none:
-            role = self._document_to_writer(document_or_none)
+        if document:
+            role = self._document_to_writer(document)
             self._writer_map.save(role)
             self._unit_of_work.register_clean(role)
             return role

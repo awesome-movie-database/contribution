@@ -41,11 +41,9 @@ class MovieMapper:
         if movie_from_map:
             return movie_from_map
 
-        document_or_none = await self._collection.find_one(
-            {"id": id.hex},
-        )
-        if document_or_none:
-            movie = self._document_to_movie(document_or_none)
+        document = await self._collection.find_one({"id": id.hex})
+        if document:
+            movie = self._document_to_movie(document)
             self._movie_map.save(movie)
             self._unit_of_work.register_clean(movie)
             return movie
@@ -57,12 +55,12 @@ class MovieMapper:
         if movie_from_map and self._movie_map.is_acquired(movie_from_map):
             return movie_from_map
 
-        document_or_none = await self._collection.find_one_and_update(
+        document = await self._collection.find_one_and_update(
             {"id": id.hex},
             {"$set": {"lock": self._lock_factory()}},
         )
-        if document_or_none:
-            movie = self._document_to_movie(document_or_none)
+        if document:
+            movie = self._document_to_movie(document)
             self._movie_map.save_acquired(movie)
             self._unit_of_work.register_clean(movie)
             return movie
@@ -77,20 +75,20 @@ class MovieMapper:
         self._unit_of_work.register_dirty(movie)
 
     def _document_to_movie(self, document: dict[str, Any]) -> Movie:
-        budget_or_none = document["budget"]
-        if budget_or_none:
+        budget_as_dict = document["budget"]
+        if budget_as_dict:
             budget = Money(
-                amount=Decimal(budget_or_none["amount"]),
-                currency=budget_or_none["currency"],
+                amount=Decimal(budget_as_dict["amount"]),
+                currency=budget_as_dict["currency"],
             )
         else:
             budget = None
 
-        revenue_or_none = document["revenue"]
-        if revenue_or_none:
+        revenue_as_dict = document["revenue"]
+        if revenue_as_dict:
             revenue = Money(
-                amount=Decimal(revenue_or_none["amount"]),
-                currency=revenue_or_none["currency"],
+                amount=Decimal(revenue_as_dict["amount"]),
+                currency=revenue_as_dict["currency"],
             )
         else:
             revenue = None

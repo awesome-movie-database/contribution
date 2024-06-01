@@ -13,9 +13,6 @@ from contribution.domain import (
 from contribution.infrastructure.database.identity_maps import (
     CrewMemberMap,
 )
-from contribution.infrastructure.database.lock_factory import (
-    MongoDBLockFactory,
-)
 from contribution.infrastructure.database.unit_of_work import (
     MongoDBUnitOfWork,
 )
@@ -26,12 +23,10 @@ class CrewMemberMapper:
         self,
         crew_member_map: CrewMemberMap,
         collection: AsyncIOMotorCollection,
-        lock_factory: MongoDBLockFactory,
         unit_of_work: MongoDBUnitOfWork,
     ):
         self._crew_member_map = crew_member_map
         self._collection = collection
-        self._lock_factory = lock_factory
         self._unit_of_work = unit_of_work
 
     async def by_id(self, id: CrewMemberId) -> Optional[CrewMember]:
@@ -39,11 +34,11 @@ class CrewMemberMapper:
         if crew_member_from_map:
             return crew_member_from_map
 
-        document_or_none = await self._collection.find_one(
+        document = await self._collection.find_one(
             {"id": id.hex},
         )
-        if document_or_none:
-            role = self._document_to_crew_member(document_or_none)
+        if document:
+            role = self._document_to_crew_member(document)
             self._crew_member_map.save(role)
             self._unit_of_work.register_clean(role)
             return role

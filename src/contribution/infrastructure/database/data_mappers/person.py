@@ -34,11 +34,9 @@ class PersonMapper:
         if person_from_map:
             return person_from_map
 
-        document_or_none = await self._collection.find_one(
-            {"id": id.hex},
-        )
-        if document_or_none:
-            person = self._document_to_person(document_or_none)
+        document = await self._collection.find_one({"id": id.hex})
+        if document:
+            person = self._document_to_person(document)
             self._person_map.save(person)
             self._unit_of_work.register_clean(person)
             return person
@@ -50,12 +48,12 @@ class PersonMapper:
         if person_from_map and self._person_map.is_acquired(person_from_map):
             return person_from_map
 
-        document_or_none = await self._collection.find_one_and_update(
+        document = await self._collection.find_one_and_update(
             {"id": id.hex},
             {"$set": {"lock": self._lock_factory()}},
         )
-        if document_or_none:
-            person = self._document_to_person(document_or_none)
+        if document:
+            person = self._document_to_person(document)
             self._person_map.save_acquired(person)
             self._unit_of_work.register_clean(person)
             return person
