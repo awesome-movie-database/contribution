@@ -8,6 +8,7 @@ __all__ = (
     "AddMovieContributionMapper",
     "EditMovieContributionMapper",
     "AddPersonContributionMapper",
+    "EditPersonContributionMapper",
     "AchievementMapper",
 )
 
@@ -20,4 +21,5 @@ from .crew_member import CrewMemberMapper
 from .add_movie_contribution import AddMovieContributionMapper
 from .edit_movie_contribution import EditMovieContributionMapper
 from .add_person_contribution import AddPersonContributionMapper
+from .edit_person_contribution import EditPersonContributionMapper
 from .achievement import AchievementMapper
