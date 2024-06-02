@@ -9,6 +9,7 @@ __all__ = (
     "CommitEditMovieContributionCollectionChanges",
     "CommitAddPersonContributionCollectionChanges",
     "CommitEditPersonContributionCollectionChanges",
+    "CommitAchievementCollectionChanges",
 )
 
 from .user import CommitUserCollectionChanges
@@ -27,3 +28,4 @@ from .add_person_contribution import (
 from .edit_person_contribution import (
     CommitEditPersonContributionCollectionChanges,
 )
+from .achievement import CommitAchievementCollectionChanges
