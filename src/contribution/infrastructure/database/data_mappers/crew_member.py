@@ -1,14 +1,15 @@
 from typing import Any, Iterable, Optional
 from uuid import UUID
 
-from motor.motor_asyncio import AsyncIOMotorCollection
-
 from contribution.domain import (
     CrewMembership,
     CrewMemberId,
     MovieId,
     PersonId,
     CrewMember,
+)
+from contribution.infrastructure.database.collections import (
+    CrewMemberCollection,
 )
 from contribution.infrastructure.database.identity_maps import (
     CrewMemberMap,
@@ -22,7 +23,7 @@ class CrewMemberMapper:
     def __init__(
         self,
         crew_member_map: CrewMemberMap,
-        collection: AsyncIOMotorCollection,
+        collection: CrewMemberCollection,
         unit_of_work: MongoDBUnitOfWork,
     ):
         self._crew_member_map = crew_member_map

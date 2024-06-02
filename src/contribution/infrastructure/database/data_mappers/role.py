@@ -1,9 +1,10 @@
 from typing import Any, Iterable, Optional
 from uuid import UUID
 
-from motor.motor_asyncio import AsyncIOMotorCollection
-
 from contribution.domain import RoleId, MovieId, PersonId, Role
+from contribution.infrastructure.database.collections import (
+    RoleCollection,
+)
 from contribution.infrastructure.database.identity_maps import (
     RoleMap,
 )
@@ -16,7 +17,7 @@ class RoleMapper:
     def __init__(
         self,
         role_map: RoleMap,
-        collection: AsyncIOMotorCollection,
+        collection: RoleCollection,
         unit_of_work: MongoDBUnitOfWork,
     ):
         self._role_map = role_map

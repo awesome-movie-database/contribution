@@ -2,9 +2,10 @@ from typing import Any, Iterable, Optional
 from datetime import date
 from uuid import UUID
 
-from motor.motor_asyncio import AsyncIOMotorCollection
-
 from contribution.domain import PersonId, Sex, Person
+from contribution.infrastructure.database.collections import (
+    PersonCollection,
+)
 from contribution.infrastructure.database.identity_maps import (
     PersonMap,
 )
@@ -20,7 +21,7 @@ class PersonMapper:
     def __init__(
         self,
         person_map: PersonMap,
-        collection: AsyncIOMotorCollection,
+        collection: PersonCollection,
         lock_factory: MongoDBLockFactory,
         unit_of_work: MongoDBUnitOfWork,
     ):

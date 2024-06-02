@@ -2,8 +2,6 @@ from datetime import date, datetime
 from typing import Any, Optional
 from uuid import UUID
 
-from motor.motor_asyncio import AsyncIOMotorCollection
-
 from contribution.domain import (
     ContributionStatus,
     Sex,
@@ -13,6 +11,9 @@ from contribution.domain import (
     PhotoUrl,
     EditPersonContribution,
     Maybe,
+)
+from contribution.infrastructure.database.collections import (
+    EditPersonContributionCollection,
 )
 from contribution.infrastructure.database.identity_maps import (
     EditPersonContributionMap,
@@ -35,7 +36,7 @@ class EditPersonContributionMapper:
     def __init__(
         self,
         contribution_map: EditPersonContributionMap,
-        collection: AsyncIOMotorCollection,
+        collection: EditPersonContributionCollection,
         lock_factory: MongoDBLockFactory,
         unit_of_work: MongoDBUnitOfWork,
     ):

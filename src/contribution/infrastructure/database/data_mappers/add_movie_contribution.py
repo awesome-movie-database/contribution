@@ -3,8 +3,6 @@ from typing import Any, Optional
 from decimal import Decimal
 from uuid import UUID
 
-from motor.motor_asyncio import AsyncIOMotorCollection
-
 from contribution.domain import (
     ContributionStatus,
     Genre,
@@ -21,6 +19,9 @@ from contribution.domain import (
     Money,
     AddMovieContribution,
 )
+from contribution.infrastructure.database.collections import (
+    AddMovieContributionCollection,
+)
 from contribution.infrastructure.database.identity_maps import (
     AddMovieContributionMap,
 )
@@ -36,7 +37,7 @@ class AddMovieContributionMapper:
     def __init__(
         self,
         contribution_map: AddMovieContributionMap,
-        collection: AsyncIOMotorCollection,
+        collection: AddMovieContributionCollection,
         lock_factory: MongoDBLockFactory,
         unit_of_work: MongoDBUnitOfWork,
     ):

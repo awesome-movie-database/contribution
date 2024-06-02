@@ -3,14 +3,15 @@ from decimal import Decimal
 from datetime import date
 from uuid import UUID
 
-from motor.motor_asyncio import AsyncIOMotorCollection
-
 from contribution.domain import (
     Genre,
     MPAA,
     MovieId,
     Money,
     Movie,
+)
+from contribution.infrastructure.database.collections import (
+    MovieCollection,
 )
 from contribution.infrastructure.database.identity_maps import (
     MovieMap,
@@ -27,7 +28,7 @@ class MovieMapper:
     def __init__(
         self,
         movie_map: MovieMap,
-        collection: AsyncIOMotorCollection,
+        collection: MovieCollection,
         lock_factory: MongoDBLockFactory,
         unit_of_work: MongoDBUnitOfWork,
     ):

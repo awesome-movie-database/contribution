@@ -1,14 +1,15 @@
 from typing import Any, Iterable, Optional
 from uuid import UUID
 
-from motor.motor_asyncio import AsyncIOMotorCollection
-
 from contribution.domain import (
     Writing,
     WriterId,
     MovieId,
     PersonId,
     Writer,
+)
+from contribution.infrastructure.database.collections import (
+    WriterCollection,
 )
 from contribution.infrastructure.database.identity_maps import (
     WriterMap,
@@ -22,7 +23,7 @@ class WriterMapper:
     def __init__(
         self,
         writer_map: WriterMap,
-        collection: AsyncIOMotorCollection,
+        collection: WriterCollection,
         unit_of_work: MongoDBUnitOfWork,
     ):
         self._writer_map = writer_map

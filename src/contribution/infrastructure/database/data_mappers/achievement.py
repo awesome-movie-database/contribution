@@ -2,13 +2,14 @@ from datetime import datetime
 from typing import Any, Optional
 from uuid import UUID
 
-from motor.motor_asyncio import AsyncIOMotorCollection
-
 from contribution.domain import (
     Achieved,
     AchievementId,
     UserId,
     Achievement,
+)
+from contribution.infrastructure.database.collections import (
+    AchievementCollection,
 )
 from contribution.infrastructure.database.identity_maps import (
     AchievementMap,
@@ -22,7 +23,7 @@ class AchievementMapper:
     def __init__(
         self,
         achievement_map: AchievementMap,
-        collection: AsyncIOMotorCollection,
+        collection: AchievementCollection,
         unit_of_work: MongoDBUnitOfWork,
     ):
         self._achievement_map = achievement_map

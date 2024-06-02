@@ -2,15 +2,17 @@
 
 from typing import Any, Sequence
 
-from motor.motor_asyncio import AsyncIOMotorCollection
 from pymongo import InsertOne, UpdateOne, DeleteOne
 
 from contribution.domain import AddPersonContribution
+from contribution.infrastructure.database.collections import (
+    PersonCollection,
+)
 
 
 class CommitAddPersonContributionCollectionChanges:
-    def __init__(self, user_collection: AsyncIOMotorCollection):
-        self._collection = user_collection
+    def __init__(self, collection: PersonCollection):
+        self._collection = collection
 
     async def __call__(
         self,

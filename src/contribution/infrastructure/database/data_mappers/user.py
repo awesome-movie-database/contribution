@@ -1,9 +1,10 @@
 from typing import Any, Optional
 from uuid import UUID
 
-from motor.motor_asyncio import AsyncIOMotorCollection
-
 from contribution.domain import UserId, User
+from contribution.infrastructure.database.collections import (
+    UserCollection,
+)
 from contribution.infrastructure.database.identity_maps import (
     UserMap,
 )
@@ -19,7 +20,7 @@ class UserMapper:
     def __init__(
         self,
         user_map: UserMap,
-        collection: AsyncIOMotorCollection,
+        collection: UserCollection,
         lock_factory: MongoDBLockFactory,
         unit_of_work: MongoDBUnitOfWork,
     ):

@@ -2,7 +2,6 @@
 
 from typing import Any, Iterable, Sequence
 
-from motor.motor_asyncio import AsyncIOMotorCollection
 from pymongo import InsertOne, UpdateOne, DeleteOne
 
 from contribution.domain import (
@@ -11,11 +10,14 @@ from contribution.domain import (
     ContributionCrewMember,
     EditMovieContribution,
 )
+from contribution.infrastructure.database.collections import (
+    EditMovieContributionCollection,
+)
 
 
 class CommitEditMovieContributionCollectionChanges:
-    def __init__(self, user_collection: AsyncIOMotorCollection):
-        self._collection = user_collection
+    def __init__(self, collection: EditMovieContributionCollection):
+        self._collection = collection
 
     async def __call__(
         self,
