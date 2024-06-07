@@ -3,7 +3,7 @@ __all__ = (
     "InvalidEmailError",
     "InvalidTelegramError",
     "MoneyAmountLessThanZeroError",
-    "MoneyCurrenciesDoesNotMatchError",
+    "MoneyCurrenciesDoNotMatchError",
     "InvalidMovieEngTitleError",
     "InvalidMovieOriginalTitleError",
     "InvalidMovieDurationError",
@@ -22,7 +22,7 @@ from .email import InvalidEmailError
 from .telegram import InvalidTelegramError
 from .money import (
     MoneyAmountLessThanZeroError,
-    MoneyCurrenciesDoesNotMatchError,
+    MoneyCurrenciesDoNotMatchError,
 )
 from .movie import (
     InvalidMovieEngTitleError,

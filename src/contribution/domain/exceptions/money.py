@@ -2,7 +2,7 @@ from contribution.domain.value_objects import Currency
 from .base import DomainError
 
 
-class MoneyCurrenciesDoesNotMatchError(DomainError):
+class MoneyCurrenciesDoNotMatchError(DomainError):
     def __init__(
         self,
         *,

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from decimal import Decimal
 
 from contribution.domain.exceptions import (
-    MoneyCurrenciesDoesNotMatchError,
+    MoneyCurrenciesDoNotMatchError,
     MoneyAmountLessThanZeroError,
 )
 from .currency import Currency
@@ -58,7 +58,7 @@ class Money:
 
     def _ensure_currency_match(self, currency: Currency) -> None:
         if currency != self.currency:
-            raise MoneyCurrenciesDoesNotMatchError(
+            raise MoneyCurrenciesDoNotMatchError(
                 got=currency,
                 required=self.currency,
             )
