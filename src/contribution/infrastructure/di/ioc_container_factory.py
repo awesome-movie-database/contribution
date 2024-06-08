@@ -6,6 +6,7 @@ from .providers import (
     domain_services_provider_factrory,
     identity_maps_provider_factory,
     collections_provider_factory,
+    data_mappers_provider_factory,
     application_services_provider_factory,
     command_processors_provider_factory,
 )
@@ -18,6 +19,7 @@ def ioc_container_factory() -> AsyncContainer:
         domain_services_provider_factrory(),
         identity_maps_provider_factory(),
         collections_provider_factory(),
+        data_mappers_provider_factory(),
         application_services_provider_factory(),
         command_processors_provider_factory(),
     )
