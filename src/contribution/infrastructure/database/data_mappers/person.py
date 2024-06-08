@@ -1,4 +1,4 @@
-from typing import Any, Iterable, Optional
+from typing import Any, Iterable, Mapping, Optional
 from datetime import date
 from uuid import UUID
 
@@ -76,7 +76,7 @@ class PersonMapper:
 
         documents = await self._collection.find(
             {"$in": list(ids)},
-        ).to_list()
+        ).to_list(None)
 
         persons = []
         for document in documents:
@@ -94,7 +94,7 @@ class PersonMapper:
     async def update(self, person: Person) -> None:
         self._unit_of_work.register_dirty(person)
 
-    def _document_to_person(self, document: dict[str, Any]) -> Person:
+    def _document_to_person(self, document: Mapping[str, Any]) -> Person:
         death_date_or_none = document["death_date"]
         if death_date_or_none:
             death_date = date.fromisoformat(death_date_or_none)

@@ -1,4 +1,4 @@
-from typing import Any, Iterable, Optional
+from typing import Any, Iterable, Mapping, Optional
 from uuid import UUID
 
 from contribution.domain import (
@@ -61,7 +61,7 @@ class WriterMapper:
 
         documents = await self._collection.find(
             {"id": {"$in": [id.hex for id in ids]}},
-        ).to_list()
+        ).to_list(None)
 
         writers = []
         for document in documents:
@@ -84,7 +84,7 @@ class WriterMapper:
         for writer in writers:
             self._unit_of_work.register_deleted(writer)
 
-    def _document_to_writer(self, document: dict[str, Any]) -> Writer:
+    def _document_to_writer(self, document: Mapping[str, Any]) -> Writer:
         return Writer(
             id=WriterId(UUID(document["id"])),
             movie_id=MovieId(UUID(document["movie_id"])),

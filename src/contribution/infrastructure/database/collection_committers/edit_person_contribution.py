@@ -40,7 +40,11 @@ class CommitEditPersonContributionCollectionChanges:
             DeleteOne({"id": contribution.id}) for contribution in deleted
         ]
 
-        changes = [*inserts, *updates, *deletes]
+        changes: list[InsertOne, UpdateOne, DeleteOne] = [
+            *inserts,
+            *updates,
+            *deletes,
+        ]
         await self._collection.bulk_write(changes)
 
     def _contribution_to_document(

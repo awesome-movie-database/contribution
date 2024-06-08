@@ -32,7 +32,11 @@ class CommitWriterCollectionChanges:
         ]
         deletes = [DeleteOne({"id": writer.id}) for writer in deleted]
 
-        changes = [*inserts, *updates, *deletes]
+        changes: list[InsertOne, UpdateOne, DeleteOne] = [
+            *inserts,
+            *updates,
+            *deletes,
+        ]
         await self._collection.bulk_write(changes)
 
     def _writer_to_document(self, writer: Writer) -> dict[str, Any]:

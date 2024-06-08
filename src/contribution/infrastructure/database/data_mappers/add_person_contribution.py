@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Any, Optional
+from typing import Any, Mapping, Optional
 from uuid import UUID
 
 from contribution.domain import (
@@ -68,7 +68,7 @@ class AddPersonContributionMapper:
 
     def _document_to_contribution(
         self,
-        document: dict[str, Any],
+        document: Mapping[str, Any],
     ) -> AddPersonContribution:
         if document["status_updated_at"]:
             status_updated_at = datetime.fromisoformat(

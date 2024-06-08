@@ -30,7 +30,11 @@ class CommitMovieCollectionChanges:
         ]
         deletes = [DeleteOne({"id": movie.id}) for movie in deleted]
 
-        changes = [*inserts, *updates, *deletes]
+        changes: list[InsertOne, UpdateOne, DeleteOne] = [
+            *inserts,
+            *updates,
+            *deletes,
+        ]
         await self._collection.bulk_write(changes)
 
     def _movie_to_document(self, movie: Movie) -> dict[str, Any]:

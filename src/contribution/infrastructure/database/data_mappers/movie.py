@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Mapping, Optional
 from decimal import Decimal
 from datetime import date
 from uuid import UUID
@@ -75,7 +75,7 @@ class MovieMapper:
     async def update(self, movie: Movie) -> None:
         self._unit_of_work.register_dirty(movie)
 
-    def _document_to_movie(self, document: dict[str, Any]) -> Movie:
+    def _document_to_movie(self, document: Mapping[str, Any]) -> Movie:
         budget_as_dict = document["budget"]
         if budget_as_dict:
             budget = Money(

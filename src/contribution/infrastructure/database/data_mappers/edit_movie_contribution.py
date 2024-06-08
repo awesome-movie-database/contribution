@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Any, Iterable, Optional, cast
+from typing import Any, Iterable, Mapping, Optional, cast
 from decimal import Decimal
 from uuid import UUID
 
@@ -102,7 +102,7 @@ class EditMovieContributionMapper:
 
     def _document_to_contribution(
         self,
-        document: dict[str, Any],
+        document: Mapping[str, Any],
     ) -> EditMovieContribution:
         if document["status_updated_at"]:
             status_updated_at = datetime.fromisoformat(

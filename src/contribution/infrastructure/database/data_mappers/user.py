@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Mapping, Optional
 from uuid import UUID
 
 from contribution.domain import UserId, User
@@ -113,7 +113,7 @@ class UserMapper:
     async def update(self, user: User) -> None:
         self._unit_of_work.register_dirty(user)
 
-    def _document_to_user(self, document: dict[str, Any]) -> User:
+    def _document_to_user(self, document: Mapping[str, Any]) -> User:
         return User(
             id=UserId(UUID(document["id"])),
             name=document["name"],

@@ -34,7 +34,11 @@ class CommitPersonCollectionChanges:
         ]
         deletes = [DeleteOne({"id": person.id}) for person in deleted]
 
-        changes = [*inserts, *updates, *deletes]
+        changes: list[InsertOne, UpdateOne, DeleteOne] = [
+            *inserts,
+            *updates,
+            *deletes,
+        ]
         await self._collection.bulk_write(changes)
 
     def _person_to_document(self, person: Person) -> dict[str, Any]:

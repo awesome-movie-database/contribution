@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any, Mapping, Optional
 from uuid import UUID
 
 from contribution.domain import (
@@ -50,7 +50,7 @@ class AchievementMapper:
 
     def _document_to_achievement(
         self,
-        document: dict[str, Any],
+        document: Mapping[str, Any],
     ) -> Achievement:
         return Achievement(
             id=AchievementId(UUID(document["id"])),

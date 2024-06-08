@@ -38,7 +38,11 @@ class CommitCrewMemberCollectionChanges:
             DeleteOne({"id": crew_member.id}) for crew_member in deleted
         ]
 
-        changes = [*inserts, *updates, *deletes]
+        changes: list[InsertOne, UpdateOne, DeleteOne] = [
+            *inserts,
+            *updates,
+            *deletes,
+        ]
         await self._collection.bulk_write(changes)
 
     def _crew_member_to_document(
