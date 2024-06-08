@@ -16,6 +16,24 @@ from contribution.infrastructure.database import (
 )
 
 
+def collections_provider_factory() -> Provider:
+    provider = Provider(Scope.REQUEST)
+
+    provider.provide(user_collection_factory)
+    provider.provide(movie_collection_factory)
+    provider.provide(person_collection_factory)
+    provider.provide(role_collection_factory)
+    provider.provide(writer_collection_factory)
+    provider.provide(crew_member_collection_factory)
+    provider.provide(add_movie_contribution_collection_factory)
+    provider.provide(edit_movie_contribution_collection_factory)
+    provider.provide(add_person_contribution_collection_factory)
+    provider.provide(edit_person_contribution_collection_factory)
+    provider.provide(achievement_collection_factory)
+
+    return provider
+
+
 def user_collection_factory(
     database: AsyncIOMotorDatabase,
 ) -> UserCollection:
@@ -80,21 +98,3 @@ def achievement_collection_factory(
     database: AsyncIOMotorDatabase,
 ) -> AchievementCollection:
     return database.get_collection("achievements")
-
-
-def collections_provider_factory() -> Provider:
-    provider = Provider(Scope.REQUEST)
-
-    provider.provide(user_collection_factory)
-    provider.provide(movie_collection_factory)
-    provider.provide(person_collection_factory)
-    provider.provide(role_collection_factory)
-    provider.provide(writer_collection_factory)
-    provider.provide(crew_member_collection_factory)
-    provider.provide(add_movie_contribution_collection_factory)
-    provider.provide(edit_movie_contribution_collection_factory)
-    provider.provide(add_person_contribution_collection_factory)
-    provider.provide(edit_person_contribution_collection_factory)
-    provider.provide(achievement_collection_factory)
-
-    return provider
