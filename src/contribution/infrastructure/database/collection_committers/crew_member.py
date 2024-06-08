@@ -49,7 +49,7 @@ class CommitCrewMemberCollectionChanges:
             "id": crew_member.id.hex,
             "movie_id": crew_member.movie_id.hex,
             "person_id": crew_member.person_id.hex,
-            "membership": crew_member.membership.value,
+            "membership": crew_member.membership,
         }
         return document
 
@@ -61,6 +61,6 @@ class CommitCrewMemberCollectionChanges:
         pipeline = {"$set": {}}
 
         if clean.membership != dirty.membership:
-            pipeline["$set"]["membership"] = dirty.membership.value
+            pipeline["$set"]["membership"] = dirty.membership
 
         return pipeline

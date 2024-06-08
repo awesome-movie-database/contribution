@@ -49,7 +49,7 @@ class CommitEditPersonContributionCollectionChanges:
     ) -> dict[str, Any]:
         document = {
             "id": contribution.id.hex,
-            "status": contribution.status.value,
+            "status": contribution.status,
             "author_id": contribution.author_id.hex,
             "person_id": contribution.person_id.hex,
             "add_photos": list(contribution.add_photos),
@@ -66,7 +66,7 @@ class CommitEditPersonContributionCollectionChanges:
         if contribution.last_name.is_set:
             document["last_name"] = contribution.last_name.value
         if contribution.sex.is_set:
-            document["sex"] = contribution.sex.value.value
+            document["sex"] = contribution.sex.value
         if contribution.birth_date.is_set:
             document["birth_date"] = contribution.birth_date.value.isoformat()
         if contribution.death_date.is_set:
@@ -86,7 +86,7 @@ class CommitEditPersonContributionCollectionChanges:
         pipeline = {"$set": {}, "$unset": {}}
 
         if clean.status != dirty.status:
-            pipeline["$set"]["status"] = dirty.status.value
+            pipeline["$set"]["status"] = dirty.status
         if clean.status_updated_at != dirty.status_updated_at:
             if dirty.status_updated_at:
                 pipeline["$set"][
@@ -106,7 +106,7 @@ class CommitEditPersonContributionCollectionChanges:
                 pipeline["$unset"]["last_name"] = ""
         if clean.sex != dirty.sex:
             if dirty.sex.is_set:
-                pipeline["$set"]["sex"] = dirty.sex.value.value
+                pipeline["$set"]["sex"] = dirty.sex.value
             else:
                 pipeline["$unset"]["sex"] = ""
         if clean.birth_date != dirty.birth_date:

@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class CrewMembership(Enum):
+class CrewMembership(StrEnum):
     DIRECTOR = "Director"
     PRODUCER = "Producer"
     COMPOSER = "Composer"

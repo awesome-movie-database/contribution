@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class MPAA(Enum):
+class MPAA(StrEnum):
     G = "G"
     PG = "PG"
     PG_13 = "PG-13"

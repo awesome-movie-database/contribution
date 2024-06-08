@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ContributionStatus(Enum):
+class ContributionStatus(StrEnum):
     PENDING = "Pending"
     ACCEPTED = "Accepted"
     REJECTED = "Rejected"

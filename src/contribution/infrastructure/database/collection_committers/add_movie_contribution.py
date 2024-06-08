@@ -54,14 +54,14 @@ class CommitAddMovieContributionCollectionChanges:
     ) -> dict[str, Any]:
         document = {
             "id": contribution.id.hex,
-            "status": contribution.status.value,
+            "status": contribution.status,
             "author_id": contribution.author_id.hex,
             "eng_title": contribution.eng_title,
             "original_title": contribution.original_title,
             "release_date": contribution.release_date.isoformat(),
             "countries": list(contribution.countries),
-            "genres": [genre.value for genre in contribution.genres],
-            "mpaa": contribution.mpaa.value,
+            "genres": list(contribution.genres),
+            "mpaa": contribution.mpaa,
             "duration": contribution.duration,
             "photos": list(contribution.photos),
         }
@@ -107,7 +107,7 @@ class CommitAddMovieContributionCollectionChanges:
         pipeline = {"$set": {}}
 
         if clean.status != dirty.status:
-            pipeline["$set"]["status"] = dirty.status.value
+            pipeline["$set"]["status"] = dirty.status
         if clean.status_updated_at != dirty.status_updated_at:
             if dirty.status_updated_at:
                 pipeline["$set"][
@@ -124,11 +124,9 @@ class CommitAddMovieContributionCollectionChanges:
         if clean.countries != dirty.countries:
             pipeline["$set"]["countries"] = list(dirty.countries)
         if clean.genres != dirty.genres:
-            pipeline["$set"]["genres"] = [
-                genre.value for genre in dirty.genres
-            ]
+            pipeline["$set"]["genres"] = list(dirty.genres)
         if clean.mpaa != dirty.mpaa:
-            pipeline["$set"]["mpaa"] = dirty.mpaa.value
+            pipeline["$set"]["mpaa"] = dirty.mpaa
         if clean.duration != dirty.duration:
             pipeline["$set"]["duration"] = dirty.duration
         if clean.budget != dirty.budget:
@@ -189,7 +187,7 @@ class CommitAddMovieContributionCollectionChanges:
         for contribution_writer in contribution_writers:
             contribution_writer_as_dict = {
                 "person_id": contribution_writer.person_id.hex,
-                "writing": contribution_writer.writing.value,
+                "writing": contribution_writer.writing,
             }
             contribution_writers_as_dict_list.append(
                 contribution_writer_as_dict,
@@ -204,7 +202,7 @@ class CommitAddMovieContributionCollectionChanges:
         for contribution_crew_member in contribution_crew:
             contribution_crew_member_as_dict = {
                 "person_id": contribution_crew_member.person_id.hex,
-                "membership": contribution_crew_member.membership.value,
+                "membership": contribution_crew_member.membership,
             }
             contribution_crew_as_dict_list.append(
                 contribution_crew_member_as_dict,

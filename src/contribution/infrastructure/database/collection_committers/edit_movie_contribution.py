@@ -54,7 +54,7 @@ class CommitEditMovieContributionCollectionChanges:
     ) -> dict[str, Any]:
         document = {
             "id": contribution.id.hex,
-            "status": contribution.status.value,
+            "status": contribution.status,
             "author_id": contribution.author_id.hex,
             "movie_id": contribution.movie_id.hex,
             "add_photos": list(contribution.add_photos),
@@ -77,11 +77,9 @@ class CommitEditMovieContributionCollectionChanges:
         if contribution.countries.is_set:
             document["countries"] = list(contribution.countries.value)
         if contribution.genres.is_set:
-            document["genres"] = [
-                genre.value for genre in contribution.genres.value
-            ]
+            document["genres"] = list(contribution.genres.value)
         if contribution.mpaa.is_set:
-            document["mpaa"] = contribution.mpaa.value.value
+            document["mpaa"] = contribution.mpaa.value
         if contribution.duration.is_set:
             document["duration"] = contribution.duration.value
         if contribution.budget.is_set:

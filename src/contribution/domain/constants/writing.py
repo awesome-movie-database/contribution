@@ -1,6 +1,6 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class Writing(Enum):
+class Writing(StrEnum):
     ORIGIN = "Origin"
     SCREENPLAY = "Screenplay"

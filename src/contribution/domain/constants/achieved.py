@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class Achieved(Enum):
+class Achieved(StrEnum):
     ACCEPTED_CONTRIBUTIONS_1 = "Accepted contributions level 1"
     ACCEPTED_CONTRIBUTIONS_2 = "Accepted contributions level 2"
     ACCEPTED_CONTRIBUTIONS_3 = "Accepted contributions level 3"

@@ -40,8 +40,8 @@ class CommitMovieCollectionChanges:
             "original_title": movie.original_title,
             "release_date": movie.release_date.isoformat(),
             "countries": list(movie.countries),
-            "genres": [genre.value for genre in movie.genres],
-            "mpaa": movie.mpaa.value,
+            "genres": list(movie.genres),
+            "mpaa": movie.mpaa,
             "duration": movie.duration,
         }
 
@@ -79,11 +79,9 @@ class CommitMovieCollectionChanges:
         if clean.countries != dirty.countries:
             pipeline["$set"]["countries"] = list(dirty.countries)
         if clean.genres != dirty.genres:
-            pipeline["$set"]["genres"] = [
-                genre.value for genre in dirty.genres
-            ]
+            pipeline["$set"]["genres"] = list(dirty.genres)
         if clean.mpaa != dirty.mpaa:
-            pipeline["$set"]["mpaa"] = dirty.mpaa.value
+            pipeline["$set"]["mpaa"] = dirty.mpaa
         if clean.duration != dirty.duration:
             pipeline["$set"]["duration"] = dirty.duration
         if clean.budget != dirty.budget:

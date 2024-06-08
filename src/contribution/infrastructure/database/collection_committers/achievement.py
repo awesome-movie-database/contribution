@@ -48,7 +48,7 @@ class CommitAchievementCollectionChanges:
         document = {
             "id": achievement.id.hex,
             "user_id": achievement.user_id.hex,
-            "achieved": achievement.achieved.value,
+            "achieved": achievement.achieved,
             "achieved_at": achievement.achieved_at.isoformat(),
         }
         return document
@@ -61,7 +61,7 @@ class CommitAchievementCollectionChanges:
         pipeline = {"$set": {}}
 
         if clean.achieved != dirty.achieved:
-            pipeline["$set"]["achieved"] = dirty.achieved.value
+            pipeline["$set"]["achieved"] = dirty.achieved
         if clean.achieved_at != dirty.achieved_at:
             pipeline["$set"]["achieved_at"] = dirty.achieved_at.isoformat()
 

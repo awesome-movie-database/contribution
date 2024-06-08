@@ -40,7 +40,7 @@ class CommitWriterCollectionChanges:
             "id": writer.id.hex,
             "movie_id": writer.movie_id.hex,
             "person_id": writer.person_id.hex,
-            "writing": writer.writing.value,
+            "writing": writer.writing,
         }
         return document
 
@@ -52,6 +52,6 @@ class CommitWriterCollectionChanges:
         pipeline = {"$set": {}}
 
         if clean.writing != dirty.writing:
-            pipeline["$set"]["writing"] = dirty.writing.value
+            pipeline["$set"]["writing"] = dirty.writing
 
         return pipeline

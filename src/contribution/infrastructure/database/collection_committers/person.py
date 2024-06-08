@@ -42,7 +42,7 @@ class CommitPersonCollectionChanges:
             "id": person.id.hex,
             "first_name": person.first_name,
             "last_name": person.last_name,
-            "sex": person.sex.value,
+            "sex": person.sex,
             "birth_date": person.birth_date.isoformat(),
         }
 
@@ -65,7 +65,7 @@ class CommitPersonCollectionChanges:
         if clean.last_name != dirty.last_name:
             pipeline["$set"]["last_name"] = dirty.last_name
         if clean.sex != dirty.sex:
-            pipeline["$set"]["sex"] = dirty.sex.value
+            pipeline["$set"]["sex"] = dirty.sex
         if clean.birth_date != dirty.birth_date:
             pipeline["$set"]["birth_date"] = dirty.birth_date.isoformat()
         if clean.death_date != dirty.death_date:
