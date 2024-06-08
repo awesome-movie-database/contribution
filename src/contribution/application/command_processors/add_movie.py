@@ -9,7 +9,7 @@ from contribution.domain import (
     AddMovie,
 )
 from contribution.application.common import (
-    CorrelationId,
+    OperationId,
     AccessConcern,
     EnsurePersonsExist,
     CreatePhotoFromObj,
@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 
 
 def add_movie_factory(
-    correlation_id: CorrelationId,
+    operation_id: OperationId,
     add_movie: AddMovie,
     access_concern: AccessConcern,
     ensure_persons_exist: EnsurePersonsExist,
@@ -79,7 +79,7 @@ def add_movie_factory(
     )
     log_processor = LoggingProcessor(
         processor=tx_processor,
-        correlation_id=correlation_id,
+        operation_id=operation_id,
         identity_provider=identity_provider,
     )
 
@@ -204,11 +204,11 @@ class LoggingProcessor:
         self,
         *,
         processor: TransactionProcessor,
-        correlation_id: CorrelationId,
+        operation_id: OperationId,
         identity_provider: IdentityProvider,
     ):
         self._processor = processor
-        self._correlation_id = correlation_id
+        self._operation_id = operation_id
         self._identity_provider = identity_provider
 
     async def process(
@@ -220,7 +220,7 @@ class LoggingProcessor:
         logger.debug(
             "'Add Movie' command processing started",
             extra={
-                "correlation_id": self._correlation_id,
+                "operation_id": self._operation_id,
                 "command": command,
                 "current_user_id": current_user_id,
             },
@@ -232,7 +232,7 @@ class LoggingProcessor:
             logger.debug(
                 "Expected error occurred: User has not enough permissions",
                 extra={
-                    "correlation_id": self._correlation_id,
+                    "operation_id": self._operation_id,
                     "current_user_permissions": (
                         await self._identity_provider.permissions(),
                     ),
@@ -243,13 +243,13 @@ class LoggingProcessor:
             logger.warning(
                 "Unexpected error occurred: "
                 "User is authenticated, but user gateway returns None",
-                extra={"correlation_id": self._correlation_id},
+                extra={"operation_id": self._operation_id},
             )
             raise e
         except UserIsNotActiveError as e:
             logger.debug(
                 "Expected error occurred: User is not active",
-                extra={"correlation_id": self._correlation_id},
+                extra={"operation_id": self._operation_id},
             )
             raise e
         except PersonsDoNotExistError as e:
@@ -257,7 +257,7 @@ class LoggingProcessor:
                 "Expected error occurred: "
                 "Person ids entered by user do not belong to any persons",
                 extra={
-                    "correlation_id": self._correlation_id,
+                    "operation_id": self._operation_id,
                     "ids_of_missing_persons": e.ids_of_missing_persons,
                 },
             )
@@ -267,7 +267,7 @@ class LoggingProcessor:
                 "Unexpected error occurred",
                 exc_info=e,
                 extra={
-                    "correlation_id": self._correlation_id,
+                    "operation_id": self._operation_id,
                     "error": e,
                 },
             )
@@ -276,7 +276,7 @@ class LoggingProcessor:
         logger.debug(
             "'Add Movie' command processing completed",
             extra={
-                "correlation_id": self._correlation_id,
+                "operation_id": self._operation_id,
                 "contribution_id": result,
             },
         )

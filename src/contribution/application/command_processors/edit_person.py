@@ -8,7 +8,7 @@ from contribution.domain import (
     EditPerson,
 )
 from contribution.application.common import (
-    CorrelationId,
+    OperationId,
     AccessConcern,
     CreatePhotoFromObj,
     CommandProcessor,
@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 
 
 def edit_person_factory(
-    correlation_id: CorrelationId,
+    operation_id: OperationId,
     edit_person: EditPerson,
     access_concern: AccessConcern,
     create_photo_from_obj: CreatePhotoFromObj,
@@ -78,7 +78,7 @@ def edit_person_factory(
     )
     log_processor = LoggingProcessor(
         processor=tx_processor,
-        correlation_id=correlation_id,
+        operation_id=operation_id,
         identity_provider=identity_provider,
     )
 
@@ -194,11 +194,11 @@ class LoggingProcessor:
         self,
         *,
         processor: TransactionProcessor,
-        correlation_id: CorrelationId,
+        operation_id: OperationId,
         identity_provider: IdentityProvider,
     ):
         self._processor = processor
-        self._correlation_id = correlation_id
+        self._operation_id = operation_id
         self._identity_provider = identity_provider
 
     async def process(
@@ -210,7 +210,7 @@ class LoggingProcessor:
         logger.debug(
             "'Edit Person' command processing started",
             extra={
-                "correlation_id": self._correlation_id,
+                "operation_id": self._operation_id,
                 "command": command,
                 "current_user_id": current_user_id,
             },
@@ -222,7 +222,7 @@ class LoggingProcessor:
             logger.debug(
                 "Expected error occurred: User has not enough permissions",
                 extra={
-                    "correlation_id": self._correlation_id,
+                    "operation_id": self._operation_id,
                     "current_user_permissions": (
                         await self._identity_provider.permissions(),
                     ),
@@ -233,13 +233,13 @@ class LoggingProcessor:
             logger.warning(
                 "Unexpected error occurred: "
                 "User is authenticated, but user gateway returns None",
-                extra={"correlation_id": self._correlation_id},
+                extra={"operation_id": self._operation_id},
             )
             raise e
         except PersonDoesNotExistError as e:
             logger.error(
                 "Unexpected error occurred: Person doesn't exist",
-                extra={"correlation_id": self._correlation_id},
+                extra={"operation_id": self._operation_id},
             )
             raise e
         except Exception as e:
@@ -247,7 +247,7 @@ class LoggingProcessor:
                 "Unexpected error occurred",
                 exc_info=e,
                 extra={
-                    "correlation_id": self._correlation_id,
+                    "operation_id": self._operation_id,
                     "error": e,
                 },
             )
@@ -256,7 +256,7 @@ class LoggingProcessor:
         logger.debug(
             "'Edit Person' command processing completed",
             extra={
-                "correlation_id": self._correlation_id,
+                "operation_id": self._operation_id,
                 "contribution_id": result,
             },
         )

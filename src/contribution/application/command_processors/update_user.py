@@ -7,7 +7,7 @@ from contribution.domain import (
     UpdateUser,
 )
 from contribution.application.common import (
-    CorrelationId,
+    OperationId,
     CommandProcessor,
     TransactionProcessor,
     UserNameIsAlreadyTakenError,
@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 def update_user_factory(
-    correlation_id: CorrelationId,
+    operation_id: OperationId,
     update_user: UpdateUser,
     user_gateway: UserGateway,
     unit_of_work: UnitOfWork,
@@ -39,7 +39,7 @@ def update_user_factory(
     )
     log_processor = LoggingProcessor(
         processor=tx_processor,
-        correlation_id=correlation_id,
+        operation_id=operation_id,
     )
 
     return log_processor
@@ -94,16 +94,16 @@ class LoggingProcessor:
         self,
         *,
         processor: TransactionProcessor,
-        correlation_id: CorrelationId,
+        operation_id: OperationId,
     ):
         self._processor = processor
-        self._correlation_id = correlation_id
+        self._operation_id = operation_id
 
     async def process(self, command: UpdateUserCommand) -> None:
         logger.debug(
             "'Update User' command processing started",
             extra={
-                "correlation_id": self._correlation_id,
+                "operation_id": self._operation_id,
                 "command": command,
             },
         )
@@ -113,43 +113,43 @@ class LoggingProcessor:
         except UserDoesNotExistError as e:
             logger.error(
                 "Unexpected error occurred: User doesn't exist",
-                extra={"correlation_id": self._correlation_id},
+                extra={"operation_id": self._operation_id},
             )
             raise e
         except UserNameIsAlreadyTakenError as e:
             logger.error(
                 "Unexpected error occurred: User name is already taken",
-                extra={"correlation_id": self._correlation_id},
+                extra={"operation_id": self._operation_id},
             )
             raise e
         except UserEmailIsAlreadyTakenError as e:
             logger.error(
                 "Unexpected error occurred: User email already taken",
-                extra={"correlation_id": self._correlation_id},
+                extra={"operation_id": self._operation_id},
             )
             raise e
         except UserTelegramIsAlreadyTakenError as e:
             logger.error(
                 "Unexpected error occurred: User telegram is already taken",
-                extra={"correlation_id": self._correlation_id},
+                extra={"operation_id": self._operation_id},
             )
             raise e
         except InvalidUserNameError as e:
             logger.error(
                 "Unexpected error occurred: Invalid user name",
-                extra={"correlation_id": self._correlation_id},
+                extra={"operation_id": self._operation_id},
             )
             raise e
         except InvalidEmailError as e:
             logger.error(
                 "Unexpected error occurred: Invalid user email",
-                extra={"correlation_id": self._correlation_id},
+                extra={"operation_id": self._operation_id},
             )
             raise e
         except InvalidTelegramError as e:
             logger.error(
                 "Unexpected error occurred: Invalid user telegram",
-                extra={"correlation_id": self._correlation_id},
+                extra={"operation_id": self._operation_id},
             )
             raise e
         except Exception as e:
@@ -157,7 +157,7 @@ class LoggingProcessor:
                 "Unexpected error occurred",
                 exc_info=e,
                 extra={
-                    "correlation_id": self._correlation_id,
+                    "operation_id": self._operation_id,
                     "error": e,
                 },
             )
@@ -165,7 +165,7 @@ class LoggingProcessor:
 
         logger.debug(
             "'Update User' command processing completed",
-            extra={"correlation_id": self._correlation_id},
+            extra={"operation_id": self._operation_id},
         )
 
         return result

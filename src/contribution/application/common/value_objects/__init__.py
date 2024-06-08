@@ -1,12 +1,12 @@
 __all__ = (
-    "CorrelationId",
+    "OperationId",
     "MovieRole",
     "MovieWriter",
     "MovieCrewMember",
     "Photo",
 )
 
-from .correlation_id import CorrelationId
+from .operation_id import OperationId
 from .movie_role import MovieRole
 from .movie_writer import MovieWriter
 from .movie_crew_member import MovieCrewMember

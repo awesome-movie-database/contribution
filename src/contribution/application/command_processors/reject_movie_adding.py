@@ -8,7 +8,7 @@ from contribution.domain import (
     RejectContribution,
 )
 from contribution.application.common import (
-    CorrelationId,
+    OperationId,
     CommandProcessor,
     TransactionProcessor,
     AchievementEearnedCallbackProcessor,
@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 
 def reject_movie_adding_factory(
-    correlation_id: CorrelationId,
+    operation_id: OperationId,
     reject_contribution: RejectContribution,
     add_movie_contribution_gateway: AddMovieContributionGateway,
     user_gateway: UserGateway,
@@ -57,7 +57,7 @@ def reject_movie_adding_factory(
     )
     log_processor = LoggingProcessor(
         processor=tx_processor,
-        correlation_id=correlation_id,
+        operation_id=operation_id,
     )
 
     return log_processor
@@ -119,10 +119,10 @@ class LoggingProcessor:
         self,
         *,
         processor: TransactionProcessor,
-        correlation_id: CorrelationId,
+        operation_id: OperationId,
     ):
         self._processor = processor
-        self._correlation_id = correlation_id
+        self._operation_id = operation_id
 
     async def process(
         self,
@@ -131,7 +131,7 @@ class LoggingProcessor:
         logger.debug(
             "'Reject Movie Adding' command processing started",
             extra={
-                "correlation_id": self._correlation_id,
+                "operation_id": self._operation_id,
                 "command": command,
             },
         )
@@ -141,28 +141,28 @@ class LoggingProcessor:
         except ContributionDoesNotExistError as e:
             logger.error(
                 "Unexpected error occurred: Contribution doesn't exist",
-                extra={"correlation_id": self._correlation_id},
+                extra={"operation_id": self._operation_id},
             )
             raise e
         except UserDoesNotExistError as e:
             logger.error(
                 "Unexpected error occurred: Contribution has author id, "
                 "using which user gateway returns None",
-                extra={"correlation_id": self._correlation_id},
+                extra={"operation_id": self._operation_id},
             )
             raise e
         except AchievementDoesNotExistError as e:
             logger.error(
                 "Unexpected error occurred: Achievement was created, "
                 "but achievement gateway returns None",
-                extra={"correlation_id": self._correlation_id},
+                extra={"operation_id": self._operation_id},
             )
         except Exception as e:
             logger.exception(
                 "Unexpected error occurred",
                 exc_info=e,
                 extra={
-                    "correlation_id": self._correlation_id,
+                    "operation_id": self._operation_id,
                     "error": e,
                 },
             )
@@ -171,7 +171,7 @@ class LoggingProcessor:
         logger.debug(
             "'Reject Movie Adding' command processing completed",
             extra={
-                "correlation_id": self._correlation_id,
+                "operation_id": self._operation_id,
                 "achievement_id": result,
             },
         )

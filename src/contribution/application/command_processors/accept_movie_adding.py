@@ -12,7 +12,7 @@ from contribution.domain import (
     CreateMovie,
 )
 from contribution.application.common import (
-    CorrelationId,
+    OperationId,
     CreateAndSaveRoles,
     CreateAndSaveWriters,
     CreateAndSaveCrew,
@@ -42,7 +42,7 @@ logger = logging.getLogger(__name__)
 
 
 def accept_movie_adding_factory(
-    correlation_id: CorrelationId,
+    operation_id: OperationId,
     accept_contribution: AcceptContribution,
     create_movie: CreateMovie,
     create_and_save_roles: CreateAndSaveRoles,
@@ -77,7 +77,7 @@ def accept_movie_adding_factory(
     )
     log_processor = LoggingProcessor(
         processor=tx_processor,
-        correlation_id=correlation_id,
+        operation_id=operation_id,
     )
 
     return log_processor
@@ -176,10 +176,10 @@ class LoggingProcessor:
         self,
         *,
         processor: TransactionProcessor,
-        correlation_id: CorrelationId,
+        operation_id: OperationId,
     ):
         self._processor = processor
-        self._correlation_id = correlation_id
+        self._operation_id = operation_id
 
     async def process(
         self,
@@ -188,7 +188,7 @@ class LoggingProcessor:
         logger.debug(
             "'Accept Movie Adding' command processing started",
             extra={
-                "correlation_id": self._correlation_id,
+                "operation_id": self._operation_id,
                 "command": command,
             },
         )
@@ -198,38 +198,38 @@ class LoggingProcessor:
         except ContributionDoesNotExistError as e:
             logger.error(
                 "Unexpected error occurred: Contribution doesn't exist",
-                extra={"correlation_id": self._correlation_id},
+                extra={"operation_id": self._operation_id},
             )
             raise e
         except UserDoesNotExistError as e:
             logger.error(
                 "Unexpected error occurred: Contribution has author id, "
                 "using which user gateway returns None",
-                extra={"correlation_id": self._correlation_id},
+                extra={"operation_id": self._operation_id},
             )
             raise e
         except MovieIdIsAlreadyTakenError as e:
             logger.error(
                 "Unexpected error occurred: Movie id is already taken",
-                extra={"correlation_id": self._correlation_id},
+                extra={"operation_id": self._operation_id},
             )
             raise e
         except InvalidMovieEngTitleError as e:
             logger.error(
                 "Unexpected error occurred: Invalid movie eng title",
-                extra={"correlation_id": self._correlation_id},
+                extra={"operation_id": self._operation_id},
             )
             raise e
         except InvalidMovieOriginalTitleError as e:
             logger.error(
                 "Unexpected error occurred: Invalid movie original title",
-                extra={"correlation_id": self._correlation_id},
+                extra={"operation_id": self._operation_id},
             )
             raise e
         except InvalidMovieDurationError as e:
             logger.error(
                 "Unexpected error occurred: Invalid movie duration",
-                extra={"correlation_id": self._correlation_id},
+                extra={"operation_id": self._operation_id},
             )
             raise e
         except RolesAlreadyExistError as e:
@@ -237,7 +237,7 @@ class LoggingProcessor:
                 "Unexpected error occurred: "
                 "Role ids already belong to some roles",
                 extra={
-                    "correlation_id": self._correlation_id,
+                    "operation_id": self._operation_id,
                     "ids_of_existing_roles": e.ids_of_existing_roles,
                 },
             )
@@ -247,7 +247,7 @@ class LoggingProcessor:
                 "Unexpected error occurred: "
                 "Writer ids already belong to some writers",
                 extra={
-                    "correlation_id": self._correlation_id,
+                    "operation_id": self._operation_id,
                     "ids_of_existing_writers": e.ids_of_existing_writers,
                 },
             )
@@ -257,7 +257,7 @@ class LoggingProcessor:
                 "Unexpected error occurred: "
                 "Crew member ids already belong to some crew members",
                 extra={
-                    "correlation_id": self._correlation_id,
+                    "operation_id": self._operation_id,
                     "ids_of_existing_crew_members": e.ids_of_existing_crew_members,
                 },
             )
@@ -268,7 +268,7 @@ class LoggingProcessor:
                 "Person ids referenced in contribution roles, writers or crew"
                 "are do not belong to any persons",
                 extra={
-                    "correlation_id": self._correlation_id,
+                    "operation_id": self._operation_id,
                     "ids_of_missing_persons": e.ids_of_missing_persons,
                 },
             )
@@ -277,14 +277,14 @@ class LoggingProcessor:
             logger.error(
                 "Unexpected error occurred: Achievement was created, "
                 "but achievement gateway returns None",
-                extra={"correlation_id": self._correlation_id},
+                extra={"operation_id": self._operation_id},
             )
         except Exception as e:
             logger.exception(
                 "Unexpected error occurred",
                 exc_info=e,
                 extra={
-                    "correlation_id": self._correlation_id,
+                    "operation_id": self._operation_id,
                     "error": e,
                 },
             )
@@ -293,7 +293,7 @@ class LoggingProcessor:
         logger.debug(
             "'Accept Movie Adding' command processing completed",
             extra={
-                "correlation_id": self._correlation_id,
+                "operation_id": self._operation_id,
                 "achievement_id": result,
             },
         )

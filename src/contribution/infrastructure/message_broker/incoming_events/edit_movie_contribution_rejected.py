@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 
 from contribution.domain import EditMovieContributionId
-from contribution.application import CorrelationId
+from contribution.application import OperationId
 
 
 @dataclass(frozen=True, slots=True)
 class IncomingEditMovieContributionRejectedEvent:
-    correlation_id: CorrelationId
+    operation_id: OperationId
     contribution_id: EditMovieContributionId

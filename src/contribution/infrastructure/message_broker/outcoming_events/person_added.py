@@ -2,12 +2,12 @@ import json
 from dataclasses import dataclass
 
 from contribution.domain import AddPersonContributionId
-from contribution.application import CorrelationId
+from contribution.application import OperationId
 
 
 @dataclass(frozen=True, slots=True)
 class OutcomingPersonAddedEvent:
-    correlation_id: CorrelationId
+    correlation_id: OperationId
     contribution_id: AddPersonContributionId
 
     def to_json(self) -> str:
