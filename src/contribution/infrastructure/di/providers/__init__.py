@@ -2,6 +2,7 @@ __all__ = (
     "configs_provider_factory",
     "domain_validators_provider_factory",
     "domain_services_provider_factrory",
+    "motor_provider_factory",
     "identity_maps_provider_factory",
     "collections_provider_factory",
     "unit_of_work_provider_factory",
@@ -13,6 +14,7 @@ __all__ = (
 from .configs import configs_provider_factory
 from .domain_validators import domain_validators_provider_factory
 from .domain_services import domain_services_provider_factrory
+from .motor_ import motor_provider_factory
 from .identity_maps import identity_maps_provider_factory
 from .collections import collections_provider_factory
 from .unit_of_work import unit_of_work_provider_factory
