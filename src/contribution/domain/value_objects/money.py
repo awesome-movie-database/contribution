@@ -14,7 +14,7 @@ class Money:
     currency: Currency
 
     def __post_init__(self) -> None:
-        self._esnure_valid_amount()
+        self._ensure_valid_amount()
 
     def __lt__(self, other_money: "Money") -> bool:
         self._ensure_currency_match(other_money.currency)
@@ -63,6 +63,6 @@ class Money:
                 required=self.currency,
             )
 
-    def _esnure_valid_amount(self) -> None:
+    def _ensure_valid_amount(self) -> None:
         if self.amount < 0:
             raise MoneyAmountLessThanZeroError()
