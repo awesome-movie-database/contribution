@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from urllib.parse import quote_plus
 
-from contribution.infrastructure.get_env import get_env
+from contribution.infrastructure.get_env import env_var_by_key
 
 
 @dataclass(frozen=True, slots=True)
@@ -22,8 +22,8 @@ class MongoDBConfig:
 
 def mongodb_config_from_env() -> MongoDBConfig:
     return MongoDBConfig(
-        username=get_env("MONGODB_USER"),
-        password=get_env("MONGODB_PASSWORD"),
-        host=get_env("MONGODB_HOST"),
-        port=int(get_env("MONGODB_PORT")),
+        username=env_var_by_key("MONGODB_USER"),
+        password=env_var_by_key("MONGODB_PASSWORD"),
+        host=env_var_by_key("MONGODB_HOST"),
+        port=int(env_var_by_key("MONGODB_PORT")),
     )

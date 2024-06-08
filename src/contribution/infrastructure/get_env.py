@@ -1,7 +1,7 @@
 import os
 
 
-def get_env(key: str) -> str:
+def env_var_by_key(key: str) -> str:
     """
     Returns value from env vars by key
     if value exists, otherwise raises
