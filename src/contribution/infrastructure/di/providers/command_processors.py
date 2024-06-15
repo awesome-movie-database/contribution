@@ -49,7 +49,7 @@ from contribution.application import (
 
 
 def command_processors_provider_factory() -> Provider:
-    provider = Provider(scope=Scope.REQUEST)
+    provider = Provider(Scope.REQUEST)
 
     provider.provide(
         create_user_factory,

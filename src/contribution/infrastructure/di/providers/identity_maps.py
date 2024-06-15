@@ -16,7 +16,7 @@ from contribution.infrastructure.database import (
 
 
 def identity_maps_provider_factory() -> Provider:
-    provider = Provider(scope=Scope.REQUEST)
+    provider = Provider(Scope.REQUEST)
 
     provider.provide(MovieMap)
     provider.provide(UserMap)

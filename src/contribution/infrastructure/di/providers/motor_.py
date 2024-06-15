@@ -10,6 +10,16 @@ from motor.motor_asyncio import (
 from contribution.infrastructure.database import MongoDBConfig
 
 
+def motor_provider_factory() -> Provider:
+    provider = Provider(Scope.REQUEST)
+
+    provider.provide(motor_client_factory, scope=Scope.APP)
+    provider.provide(motor_session_factory)
+    provider.provide(motor_database_factory)
+
+    return provider
+
+
 def motor_client_factory(
     mongodb_config: MongoDBConfig,
 ) -> AsyncIOMotorClient:
@@ -27,17 +37,7 @@ async def motor_session_factory(
             yield session
 
 
-def database_factory(
+def motor_database_factory(
     motor_session: AsyncIOMotorClientSession,
 ) -> AsyncIOMotorDatabase:
     return motor_session.client.get_database("contribution")
-
-
-def motor_provider_factory() -> Provider:
-    provider = Provider(Scope.REQUEST)
-
-    provider.provide(motor_client_factory, scope=Scope.APP)
-    provider.provide(motor_session_factory)
-    provider.provide(database_factory)
-
-    return provider
