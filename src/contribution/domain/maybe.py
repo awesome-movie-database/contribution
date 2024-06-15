@@ -95,7 +95,7 @@ class Maybe[T]:
             print(location_from_bar_dict.value)  # Raises ValueError
         """
         value = mapping.get(key, Maybe[T].without_value())
-        if isinstance(value, Maybe[T]):
+        if isinstance(value, Maybe):
             return value
 
         if value_factory:
