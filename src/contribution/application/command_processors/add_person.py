@@ -194,8 +194,8 @@ class LoggingProcessor:
             msg="'Add Person' command processing started",
             extra={
                 "operation_id": self._operation_id,
+                "user_id": current_user_id,
                 "command": command,
-                "current_user_id": current_user_id,
             },
         )
 
