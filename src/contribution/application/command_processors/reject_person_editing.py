@@ -18,7 +18,7 @@ from contribution.application.common import (
     EditPersonContributionGateway,
     UserGateway,
     AchievementGateway,
-    ObjectStorage,
+    PhotoGateway,
     UnitOfWork,
     OnEventOccurred,
     AchievementEarnedEvent,
@@ -36,7 +36,7 @@ def reject_person_editing_factory(
     user_gateway: UserGateway,
     achievement_gateway: AchievementGateway,
     unit_of_work: UnitOfWork,
-    object_storage: ObjectStorage,
+    photo_gateway: PhotoGateway,
     on_achievement_earned: OnEventOccurred[AchievementEarnedEvent],
 ) -> CommandProcessor[RejectPersonEditingCommand, Optional[AchievementId]]:
     reject_person_editing_processor = RejectPersonEditingProcessor(
@@ -44,7 +44,7 @@ def reject_person_editing_factory(
         edit_person_contribution_gateway=edit_person_contribution_gateway,
         user_gateway=user_gateway,
         achievement_gateway=achievement_gateway,
-        object_storage=object_storage,
+        photo_gateway=photo_gateway,
     )
     callback_processor = AchievementEearnedCallbackProcessor(
         processor=reject_person_editing_processor,
@@ -71,7 +71,7 @@ class RejectPersonEditingProcessor:
         edit_person_contribution_gateway: EditPersonContributionGateway,
         user_gateway: UserGateway,
         achievement_gateway: AchievementGateway,
-        object_storage: ObjectStorage,
+        photo_gateway: PhotoGateway,
     ):
         self._reject_contribution = reject_contribution
         self._edit_person_contribution_gateway = (
@@ -79,7 +79,7 @@ class RejectPersonEditingProcessor:
         )
         self._user_gateway = user_gateway
         self._achievement_gateway = achievement_gateway
-        self._object_storage = object_storage
+        self._photo_gateway = photo_gateway
 
     async def process(
         self,
@@ -111,9 +111,7 @@ class RejectPersonEditingProcessor:
         await self._user_gateway.update(author)
         await self._edit_person_contribution_gateway.update(contribution)
 
-        await self._object_storage.delete_photos_by_urls(
-            contribution.add_photos,
-        )
+        await self._photo_gateway.delete_by_urls(contribution.add_photos)
 
         return achievement.id if achievement else None
 

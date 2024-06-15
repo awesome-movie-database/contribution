@@ -21,7 +21,7 @@ from contribution.application.common import (
     UserGateway,
     PersonGateway,
     PermissionsGateway,
-    ObjectStorage,
+    PhotoGateway,
     UnitOfWork,
     IdentityProvider,
     OnEventOccurred,
@@ -43,7 +43,7 @@ def edit_person_factory(
     person_gateway: PersonGateway,
     permissions_gateway: PermissionsGateway,
     unit_of_work: UnitOfWork,
-    object_storage: ObjectStorage,
+    photo_gateway: PhotoGateway,
     identity_provider: IdentityProvider,
     on_person_edited: OnEventOccurred[PersonEditedEvent],
 ) -> CommandProcessor[EditPersonCommand, EditPersonContributionId]:
@@ -55,7 +55,7 @@ def edit_person_factory(
         edit_person_contribution_gateway=edit_person_contribution_gateway,
         user_gateway=user_gateway,
         person_gateway=person_gateway,
-        object_storage=object_storage,
+        photo_gateway=photo_gateway,
         identity_provider=identity_provider,
         current_timestamp=current_timestamp,
     )
@@ -94,7 +94,7 @@ class EditPersonProcessor:
         edit_person_contribution_gateway: EditPersonContributionGateway,
         user_gateway: UserGateway,
         person_gateway: PersonGateway,
-        object_storage: ObjectStorage,
+        photo_gateway: PhotoGateway,
         identity_provider: IdentityProvider,
         current_timestamp: datetime,
     ):
@@ -105,7 +105,7 @@ class EditPersonProcessor:
         )
         self._user_gateway = user_gateway
         self._person_gateway = person_gateway
-        self._object_storage = object_storage
+        self._photo_gateway = photo_gateway
         self._identity_provider = identity_provider
         self._current_timestamp = current_timestamp
 
@@ -141,7 +141,7 @@ class EditPersonProcessor:
         )
         await self._edit_person_contribution_gateway.save(contribution)
 
-        await self._object_storage.save_photos(add_photos)
+        await self._photo_gateway.save_many(add_photos)
 
         return contribution.id
 

@@ -22,7 +22,7 @@ from contribution.application.common import (
     AddMovieContributionGateway,
     UserGateway,
     PermissionsGateway,
-    ObjectStorage,
+    PhotoGateway,
     UnitOfWork,
     IdentityProvider,
     OnEventOccurred,
@@ -43,7 +43,7 @@ def add_movie_factory(
     add_movie_contribution_gateway: AddMovieContributionGateway,
     user_gateway: UserGateway,
     permissions_gateway: PermissionsGateway,
-    object_storage: ObjectStorage,
+    photo_gateway: PhotoGateway,
     unit_of_work: UnitOfWork,
     identity_provider: IdentityProvider,
     on_movie_added: OnEventOccurred[MovieAddedEvent],
@@ -56,7 +56,7 @@ def add_movie_factory(
         create_photo_from_obj=create_photo_from_obj,
         add_movie_contribution_gateway=add_movie_contribution_gateway,
         user_gateway=user_gateway,
-        object_storage=object_storage,
+        photo_gateway=photo_gateway,
         identity_provider=identity_provider,
         current_timestamp=current_timestamp,
     )
@@ -95,7 +95,7 @@ class AddMovieProcessor:
         create_photo_from_obj: CreatePhotoFromObj,
         add_movie_contribution_gateway: AddMovieContributionGateway,
         user_gateway: UserGateway,
-        object_storage: ObjectStorage,
+        photo_gateway: PhotoGateway,
         identity_provider: IdentityProvider,
         current_timestamp: datetime,
     ):
@@ -104,7 +104,7 @@ class AddMovieProcessor:
         self._create_photo_from_obj = create_photo_from_obj
         self._add_movie_contribution_gateway = add_movie_contribution_gateway
         self._user_gateway = user_gateway
-        self._object_storage = object_storage
+        self._photo_gateway = photo_gateway
         self._identity_provider = identity_provider
         self._current_timestamp = current_timestamp
 
@@ -147,7 +147,7 @@ class AddMovieProcessor:
         )
         await self._add_movie_contribution_gateway.save(contribution)
 
-        await self._object_storage.save_photos(photos)
+        await self._photo_gateway.save_many(photos)
 
         return contribution.id
 

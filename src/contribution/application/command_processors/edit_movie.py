@@ -34,7 +34,7 @@ from contribution.application.common import (
     WriterGateway,
     CrewMemberGateway,
     PermissionsGateway,
-    ObjectStorage,
+    PhotoGateway,
     UnitOfWork,
     IdentityProvider,
     OnEventOccurred,
@@ -59,7 +59,7 @@ def edit_movie_factory(
     writer_gateway: WriterGateway,
     crew_member_gateway: CrewMemberGateway,
     permissions_gateway: PermissionsGateway,
-    object_storage: ObjectStorage,
+    photo_gateway: PhotoGateway,
     unit_of_work: UnitOfWork,
     identity_provider: IdentityProvider,
     on_movie_edited: OnEventOccurred[MovieEditedEvent],
@@ -76,7 +76,7 @@ def edit_movie_factory(
         role_gateway=role_gateway,
         writer_gateway=writer_gateway,
         crew_member_gateway=crew_member_gateway,
-        object_storage=object_storage,
+        photo_gateway=photo_gateway,
         identity_provider=identity_provider,
         current_timestamp=current_timestamp,
     )
@@ -119,7 +119,7 @@ class EditMovieProcessor:
         role_gateway: RoleGateway,
         writer_gateway: WriterGateway,
         crew_member_gateway: CrewMemberGateway,
-        object_storage: ObjectStorage,
+        photo_gateway: PhotoGateway,
         identity_provider: IdentityProvider,
         current_timestamp: datetime,
     ):
@@ -132,7 +132,7 @@ class EditMovieProcessor:
         self._role_gateway = role_gateway
         self._writer_gateway = writer_gateway
         self._crew_member_gateway = crew_member_gateway
-        self._object_storage = object_storage
+        self._photo_gateway = photo_gateway
         self._identity_provider = identity_provider
         self._current_timestamp = current_timestamp
 
@@ -189,7 +189,7 @@ class EditMovieProcessor:
         )
         await self._edit_movie_contribution_gateway.save(contribution)
 
-        await self._object_storage.save_photos(add_photos)
+        await self._photo_gateway.save_many(add_photos)
 
         return contribution.id
 
