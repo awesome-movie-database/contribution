@@ -303,7 +303,9 @@ class LoggingProcessor:
                 "Crew member ids already belong to some crew members",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_existing_crew_members": e.ids_of_existing_crew_members,
+                    "ids_of_existing_crew_members": (
+                        e.ids_of_existing_crew_members,
+                    ),
                 },
             )
             raise e
@@ -313,7 +315,9 @@ class LoggingProcessor:
                 "Crew member ids do not belong to any crew members",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_missing_crew_members": e.ids_of_missing_crew_members,
+                    "ids_of_missing_crew_members": (
+                        e.ids_of_missing_crew_members,
+                    ),
                 },
             )
             raise e
