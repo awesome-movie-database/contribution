@@ -22,7 +22,7 @@ from contribution.presentation.cli.converters import (
     json_to_money,
     jsons_to_movie_roles,
     jsons_to_movie_writers,
-    jsons_to_crew,
+    jsons_to_movie_crew,
 )
 
 
@@ -53,7 +53,7 @@ async def create_movie(
     ] = [],
     crew: Annotated[
         list[MovieCrewMember],
-        Parameter("--crew", converter=jsons_to_crew),
+        Parameter("--crew", converter=jsons_to_movie_crew),
     ] = [],
 ) -> None:
     ioc_container = ioc_container_factory()

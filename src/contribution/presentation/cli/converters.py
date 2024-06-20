@@ -33,7 +33,7 @@ def jsons_to_movie_writers(jsons: str) -> list[MovieWriter]:
     return movie_writers
 
 
-def jsons_to_crew(jsons: str) -> list[MovieCrewMember]:
+def jsons_to_movie_crew(jsons: str) -> list[MovieCrewMember]:
     jsons_as_dicts = [json.loads(json_) for json_ in jsons]
     movie_crew = _retort.load(jsons_as_dicts, list[MovieCrewMember])
     return movie_crew
