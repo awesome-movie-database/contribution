@@ -16,7 +16,7 @@ class JsonFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         record_as_dict = record.__dict__
 
-        self._remove_useless_fileds_from_record_as_dict(record_as_dict)
+        self._remove_useless_fields_from_record_as_dict(record_as_dict)
         self._add_usefull_fields_to_record_as_dict(record_as_dict)
 
         self._make_dict_serializable(record_as_dict)
@@ -24,7 +24,7 @@ class JsonFormatter(logging.Formatter):
 
         return record_as_json
 
-    def _remove_useless_fileds_from_record_as_dict(
+    def _remove_useless_fields_from_record_as_dict(
         self,
         record_as_dict: dict,
     ) -> None:
