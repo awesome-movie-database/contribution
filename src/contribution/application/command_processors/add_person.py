@@ -213,7 +213,7 @@ class LoggingProcessor:
             )
             raise e
         except UserDoesNotExistError as e:
-            logger.warning(
+            logger.error(
                 "Unexpected error occurred: "
                 "User is authenticated, but user gateway returns None",
                 extra={"operation_id": self._operation_id},
