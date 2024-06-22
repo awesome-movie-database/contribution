@@ -7,6 +7,7 @@ __all__ = (
     "aioboto3_provider_factory",
     "identity_maps_provider_factory",
     "collections_provider_factory",
+    "mongodb_lock_factory_provider_factory",
     "unit_of_work_provider_factory",
     "data_mappers_provider_factory",
     "cache_provider_factory",
@@ -25,6 +26,7 @@ from .redis_ import redis_provider_factory
 from .aioboto3_ import aioboto3_provider_factory
 from .identity_maps import identity_maps_provider_factory
 from .collections import collections_provider_factory
+from .mongodb_lock_factory import mongodb_lock_factory_provider_factory
 from .unit_of_work import unit_of_work_provider_factory
 from .data_mappers import data_mappers_provider_factory
 from .cache import cache_provider_factory
