@@ -18,6 +18,7 @@ dependencies = [
     "types-aioboto3[aioboto3,s3]",
     "cyclopts==2.7.*",
     "adaptix==3.0.0b7",
+    "redis==5.0.*",
 ]
 
 [project.optional-dependencies]

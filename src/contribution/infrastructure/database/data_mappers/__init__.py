@@ -10,6 +10,7 @@ __all__ = (
     "AddPersonContributionMapper",
     "EditPersonContributionMapper",
     "AchievementMapper",
+    "PermissionsMapper",
 )
 
 from .user import UserMapper
@@ -23,3 +24,4 @@ from .edit_movie_contribution import EditMovieContributionMapper
 from .add_person_contribution import AddPersonContributionMapper
 from .edit_person_contribution import EditPersonContributionMapper
 from .achievement import AchievementMapper
+from .permissions import PermissionsMapper

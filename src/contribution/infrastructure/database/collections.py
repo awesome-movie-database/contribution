@@ -12,6 +12,7 @@ __all__ = (
     "AddPersonContributionCollection",
     "EditPersonContributionCollection",
     "AchievementCollection",
+    "PermissionsCollection",
 )
 
 from typing import NewType
@@ -43,5 +44,9 @@ EditPersonContributionCollection = NewType(
 )
 AchievementCollection = NewType(
     "AchievementCollection",
+    AsyncIOMotorCollection,
+)
+PermissionsCollection = NewType(
+    "PermissionsCollection",
     AsyncIOMotorCollection,
 )
