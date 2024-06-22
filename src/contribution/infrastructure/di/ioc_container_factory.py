@@ -11,7 +11,9 @@ from .providers import (
     collections_provider_factory,
     data_mappers_provider_factory,
     cache_provider_factory,
+    permissions_storage_provider_factory,
     photo_storage_provider_factory,
+    identity_provider_provider_factory,
     application_services_provider_factory,
     command_processors_provider_factory,
 )
@@ -29,7 +31,9 @@ def ioc_container_factory() -> AsyncContainer:
         collections_provider_factory(),
         data_mappers_provider_factory(),
         cache_provider_factory(),
+        permissions_storage_provider_factory(),
         photo_storage_provider_factory(),
+        identity_provider_provider_factory(),
         application_services_provider_factory(),
         command_processors_provider_factory(),
     )
