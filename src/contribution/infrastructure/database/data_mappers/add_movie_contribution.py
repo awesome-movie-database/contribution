@@ -37,12 +37,12 @@ class AddMovieContributionMapper:
     def __init__(
         self,
         contribution_map: AddMovieContributionMap,
-        collection: AddMovieContributionCollection,
+        contribution_collection: AddMovieContributionCollection,
         lock_factory: MongoDBLockFactory,
         unit_of_work: MongoDBUnitOfWork,
     ):
         self._contribution_map = contribution_map
-        self._collection = collection
+        self._contribution_collection = contribution_collection
         self._lock_factory = lock_factory
         self._unit_of_work = unit_of_work
 
@@ -56,7 +56,7 @@ class AddMovieContributionMapper:
         ):
             return contribution_from_map
 
-        document = await self._collection.find_one_and_update(
+        document = await self._contribution_collection.find_one_and_update(
             {"id": id.hex},
             {"$set": {"lock": self._lock_factory()}},
         )

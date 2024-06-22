@@ -40,34 +40,16 @@ from contribution.infrastructure.database.unit_of_work import (
 )
 
 
-def genres_factory(genre_values: Iterable[str]) -> list[Genre]:
-    return [Genre(genre_value) for genre_value in genre_values]
-
-
-def budget_factory(budget_as_dict: dict[str, str]) -> Money:
-    return Money(
-        amount=Decimal(budget_as_dict["amount"]),
-        currency=cast(Currency, budget_as_dict["currency"]),
-    )
-
-
-def revenue_factory(revenue_as_dict: dict[str, str]) -> Money:
-    return Money(
-        amount=Decimal(revenue_as_dict["amount"]),
-        currency=cast(Currency, revenue_as_dict["currency"]),
-    )
-
-
 class EditMovieContributionMapper:
     def __init__(
         self,
         contribution_map: EditMovieContributionMap,
-        collection: EditMovieContributionCollection,
+        contribution_collection: EditMovieContributionCollection,
         lock_factory: MongoDBLockFactory,
         unit_of_work: MongoDBUnitOfWork,
     ):
         self._contribution_map = contribution_map
-        self._collection = collection
+        self._contribution_collection = contribution_collection
         self._lock_factory = lock_factory
         self._unit_of_work = unit_of_work
 
@@ -81,7 +63,7 @@ class EditMovieContributionMapper:
         ):
             return contribution_from_map
 
-        document = await self._collection.find_one_and_update(
+        document = await self._contribution_collection.find_one_and_update(
             {"id": id.hex},
             {"$set": {"lock": self._lock_factory()}},
         )
@@ -131,7 +113,7 @@ class EditMovieContributionMapper:
         maybe_genres = Maybe[list[Genre]].from_mapping_by_key(
             mapping=document,
             key="genres",
-            value_factory=genres_factory,
+            value_factory=self._genres_factory,
         )
         maybe_mpaa = Maybe[MPAA].from_mapping_by_key(
             mapping=document,
@@ -145,12 +127,12 @@ class EditMovieContributionMapper:
         maybe_budget = Maybe[Optional[Money]].from_mapping_by_key(
             mapping=document,
             key="budget",
-            value_factory=budget_factory,
+            value_factory=self._budget_factory,
         )
         maybe_revenue = Maybe[Optional[Money]].from_mapping_by_key(
             mapping=document,
             key="revenue",
-            value_factory=revenue_factory,
+            value_factory=self._revenue_factory,
         )
 
         add_roles = []
@@ -212,4 +194,19 @@ class EditMovieContributionMapper:
             add_photos=[
                 PhotoUrl(photo_url) for photo_url in document["photos"]
             ],
+        )
+
+    def _genres_factory(self, genre_values: Iterable[str]) -> list[Genre]:
+        return [Genre(genre_value) for genre_value in genre_values]
+
+    def _budget_factory(self, budget_as_dict: dict[str, str]) -> Money:
+        return Money(
+            amount=Decimal(budget_as_dict["amount"]),
+            currency=cast(Currency, budget_as_dict["currency"]),
+        )
+
+    def _revenue_factory(self, revenue_as_dict: dict[str, str]) -> Money:
+        return Money(
+            amount=Decimal(revenue_as_dict["amount"]),
+            currency=cast(Currency, revenue_as_dict["currency"]),
         )

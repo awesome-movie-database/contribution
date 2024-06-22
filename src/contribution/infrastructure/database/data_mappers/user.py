@@ -20,12 +20,12 @@ class UserMapper:
     def __init__(
         self,
         user_map: UserMap,
-        collection: UserCollection,
+        user_collection: UserCollection,
         lock_factory: MongoDBLockFactory,
         unit_of_work: MongoDBUnitOfWork,
     ):
         self._user_map = user_map
-        self._collection = collection
+        self._user_collection = user_collection
         self._lock_factory = lock_factory
         self._unit_of_work = unit_of_work
 
@@ -34,7 +34,7 @@ class UserMapper:
         if user_from_map:
             return user_from_map
 
-        document = await self._collection.find_one(
+        document = await self._user_collection.find_one(
             {"id": id.hex},
         )
         if document:
@@ -50,7 +50,9 @@ class UserMapper:
         if user_from_map:
             return user_from_map
 
-        document = await self._collection.find_one({"name": name})
+        document = await self._user_collection.find_one(
+            {"name": name},
+        )
         if document:
             user = self._document_to_user(document)
             self._user_map.save(user)
@@ -64,7 +66,9 @@ class UserMapper:
         if user_from_map:
             return user_from_map
 
-        document = await self._collection.find_one({"email": email})
+        document = await self._user_collection.find_one(
+            {"email": email},
+        )
         if document:
             user = self._document_to_user(document)
             self._user_map.save(user)
@@ -78,7 +82,7 @@ class UserMapper:
         if user_from_map:
             return user_from_map
 
-        document = await self._collection.find_one(
+        document = await self._user_collection.find_one(
             {"telegram": telegram},
         )
         if document:
@@ -94,7 +98,7 @@ class UserMapper:
         if user_from_map and self._user_map.is_acquired(user_from_map):
             return user_from_map
 
-        document = await self._collection.find_one_and_update(
+        document = await self._user_collection.find_one_and_update(
             {"id": id.hex},
             {"$set": {"lock": self._lock_factory()}},
         )

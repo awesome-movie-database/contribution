@@ -21,12 +21,12 @@ class PersonMapper:
     def __init__(
         self,
         person_map: PersonMap,
-        collection: PersonCollection,
+        person_collection: PersonCollection,
         lock_factory: MongoDBLockFactory,
         unit_of_work: MongoDBUnitOfWork,
     ):
         self._person_map = person_map
-        self._collection = collection
+        self._person_collection = person_collection
         self._lock_factory = lock_factory
         self._unit_of_work = unit_of_work
 
@@ -35,7 +35,9 @@ class PersonMapper:
         if person_from_map:
             return person_from_map
 
-        document = await self._collection.find_one({"id": id.hex})
+        document = await self._person_collection.find_one(
+            {"id": id.hex},
+        )
         if document:
             person = self._document_to_person(document)
             self._person_map.save(person)
@@ -49,7 +51,7 @@ class PersonMapper:
         if person_from_map and self._person_map.is_acquired(person_from_map):
             return person_from_map
 
-        document = await self._collection.find_one_and_update(
+        document = await self._person_collection.find_one_and_update(
             {"id": id.hex},
             {"$set": {"lock": self._lock_factory()}},
         )
@@ -74,7 +76,7 @@ class PersonMapper:
         else:
             return persons_from_map
 
-        documents = await self._collection.find(
+        documents = await self._person_collection.find(
             {"$in": list(ids)},
         ).to_list(None)
 

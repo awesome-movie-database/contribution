@@ -23,11 +23,11 @@ class WriterMapper:
     def __init__(
         self,
         writer_map: WriterMap,
-        collection: WriterCollection,
+        writer_collection: WriterCollection,
         unit_of_work: MongoDBUnitOfWork,
     ):
         self._writer_map = writer_map
-        self._collection = collection
+        self._writer_collection = writer_collection
         self._unit_of_work = unit_of_work
 
     async def by_id(self, id: WriterId) -> Optional[Writer]:
@@ -35,7 +35,7 @@ class WriterMapper:
         if writer_from_map:
             return writer_from_map
 
-        document = await self._collection.find_one(
+        document = await self._writer_collection.find_one(
             {"id": id.hex},
         )
         if document:
@@ -59,7 +59,7 @@ class WriterMapper:
         else:
             return writers_from_map
 
-        documents = await self._collection.find(
+        documents = await self._writer_collection.find(
             {"id": {"$in": [id.hex for id in ids]}},
         ).to_list(None)
 

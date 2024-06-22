@@ -26,22 +26,16 @@ from contribution.infrastructure.database.unit_of_work import (
 )
 
 
-def death_date_factory(date_string: Optional[str]) -> Optional[date]:
-    if date_string:
-        return date.fromisoformat(date_string)
-    return None
-
-
 class EditPersonContributionMapper:
     def __init__(
         self,
         contribution_map: EditPersonContributionMap,
-        collection: EditPersonContributionCollection,
+        contribution_collection: EditPersonContributionCollection,
         lock_factory: MongoDBLockFactory,
         unit_of_work: MongoDBUnitOfWork,
     ):
         self._contribution_map = contribution_map
-        self._collection = collection
+        self._contribution_collection = contribution_collection
         self._lock_factory = lock_factory
         self._unit_of_work = unit_of_work
 
@@ -55,7 +49,7 @@ class EditPersonContributionMapper:
         ):
             return contribution_from_map
 
-        document = await self._collection.find_one_and_update(
+        document = await self._contribution_collection.find_one_and_update(
             {"id": id.hex},
             {"$set": {"lock": self._lock_factory()}},
         )
@@ -106,7 +100,7 @@ class EditPersonContributionMapper:
         maybe_death_date = Maybe[date].from_mapping_by_key(
             mapping=document,
             key="death_date",
-            value_factory=death_date_factory,
+            value_factory=self._death_date_factory,
         )
 
         return EditPersonContribution(
@@ -125,3 +119,11 @@ class EditPersonContributionMapper:
                 PhotoUrl(photo_url) for photo_url in document["photos"]
             ],
         )
+
+    def _death_date_factory(
+        self,
+        date_string: Optional[str],
+    ) -> Optional[date]:
+        if date_string:
+            return date.fromisoformat(date_string)
+        return None

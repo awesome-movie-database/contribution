@@ -23,11 +23,11 @@ class AchievementMapper:
     def __init__(
         self,
         achievement_map: AchievementMap,
-        collection: AchievementCollection,
+        achievement_collection: AchievementCollection,
         unit_of_work: MongoDBUnitOfWork,
     ):
         self._achievement_map = achievement_map
-        self._collection = collection
+        self._achievement_collection = achievement_collection
         self._unit_of_work = unit_of_work
 
     async def by_id(self, id: AchievementId) -> Optional[Achievement]:
@@ -35,7 +35,9 @@ class AchievementMapper:
         if achievement_from_map:
             return achievement_from_map
 
-        document = await self._collection.find_one({"id": id.hex})
+        document = await self._achievement_collection.find_one(
+            {"id": id.hex},
+        )
         if document:
             achievement = self._document_to_achievement(document)
             self._achievement_map.save(achievement)

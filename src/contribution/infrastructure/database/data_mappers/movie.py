@@ -28,12 +28,12 @@ class MovieMapper:
     def __init__(
         self,
         movie_map: MovieMap,
-        collection: MovieCollection,
+        movie_collection: MovieCollection,
         lock_factory: MongoDBLockFactory,
         unit_of_work: MongoDBUnitOfWork,
     ):
         self._movie_map = movie_map
-        self._collection = collection
+        self._movie_collection = movie_collection
         self._lock_factory = lock_factory
         self._unit_of_work = unit_of_work
 
@@ -42,7 +42,9 @@ class MovieMapper:
         if movie_from_map:
             return movie_from_map
 
-        document = await self._collection.find_one({"id": id.hex})
+        document = await self._movie_collection.find_one(
+            {"id": id.hex},
+        )
         if document:
             movie = self._document_to_movie(document)
             self._movie_map.save(movie)
@@ -56,7 +58,7 @@ class MovieMapper:
         if movie_from_map and self._movie_map.is_acquired(movie_from_map):
             return movie_from_map
 
-        document = await self._collection.find_one_and_update(
+        document = await self._movie_collection.find_one_and_update(
             {"id": id.hex},
             {"$set": {"lock": self._lock_factory()}},
         )

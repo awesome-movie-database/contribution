@@ -17,11 +17,11 @@ class RoleMapper:
     def __init__(
         self,
         role_map: RoleMap,
-        collection: RoleCollection,
+        role_collection: RoleCollection,
         unit_of_work: MongoDBUnitOfWork,
     ):
         self._role_map = role_map
-        self._collection = collection
+        self._role_collection = role_collection
         self._unit_of_work = unit_of_work
 
     async def by_id(self, id: RoleId) -> Optional[Role]:
@@ -29,7 +29,7 @@ class RoleMapper:
         if role_from_map:
             return role_from_map
 
-        document = await self._collection.find_one(
+        document = await self._role_collection.find_one(
             {"id": id.hex},
         )
         if document:
@@ -53,7 +53,7 @@ class RoleMapper:
         else:
             return roles_from_map
 
-        documents = await self._collection.find(
+        documents = await self._role_collection.find(
             {"id": {"$in": [id.hex for id in ids]}},
         ).to_list(None)
 

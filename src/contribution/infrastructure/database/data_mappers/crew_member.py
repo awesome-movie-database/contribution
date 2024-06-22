@@ -23,11 +23,11 @@ class CrewMemberMapper:
     def __init__(
         self,
         crew_member_map: CrewMemberMap,
-        collection: CrewMemberCollection,
+        crew_member_collection: CrewMemberCollection,
         unit_of_work: MongoDBUnitOfWork,
     ):
         self._crew_member_map = crew_member_map
-        self._collection = collection
+        self._crew_member_collection = crew_member_collection
         self._unit_of_work = unit_of_work
 
     async def by_id(self, id: CrewMemberId) -> Optional[CrewMember]:
@@ -35,7 +35,7 @@ class CrewMemberMapper:
         if crew_member_from_map:
             return crew_member_from_map
 
-        document = await self._collection.find_one(
+        document = await self._crew_member_collection.find_one(
             {"id": id.hex},
         )
         if document:
@@ -59,7 +59,7 @@ class CrewMemberMapper:
         else:
             return crew_members_from_map
 
-        documents = await self._collection.find(
+        documents = await self._crew_member_collection.find(
             {"id": {"$in": [id.hex for id in ids]}},
         ).to_list(None)
 
