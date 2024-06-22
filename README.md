@@ -7,3 +7,7 @@ The service allows the user to create requests(contributions) to add and edit co
 ## Used technologies:
 
 * [Python 3](https://www.python.org/downloads/)
+* [MongoDB](https://www.mongodb.com/)
+* [RabbitMQ](https://www.rabbitmq.com/)
+* [MinIO](https://min.io/)
+* [Redis](https://redis.io/)
