@@ -25,6 +25,7 @@ from contribution.infrastructure.database import (
     AddPersonContributionMapper,
     EditPersonContributionMapper,
     AchievementMapper,
+    PermissionsMapper,
 )
 
 
@@ -54,5 +55,6 @@ def data_mappers_provider_factory() -> Provider:
         provides=EditPersonContributionGateway,
     )
     provider.provide(AchievementMapper, provides=AchievementGateway)
+    provider.provide(PermissionsMapper)
 
     return provider

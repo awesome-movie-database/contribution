@@ -3,6 +3,7 @@ __all__ = (
     "domain_validators_provider_factory",
     "domain_services_provider_factrory",
     "motor_provider_factory",
+    "redis_provider_factory",
     "aioboto3_provider_factory",
     "identity_maps_provider_factory",
     "collections_provider_factory",
@@ -17,6 +18,7 @@ from .configs import configs_provider_factory
 from .domain_validators import domain_validators_provider_factory
 from .domain_services import domain_services_provider_factrory
 from .motor_ import motor_provider_factory
+from .redis_ import redis_provider_factory
 from .aioboto3_ import aioboto3_provider_factory
 from .identity_maps import identity_maps_provider_factory
 from .collections import collections_provider_factory
