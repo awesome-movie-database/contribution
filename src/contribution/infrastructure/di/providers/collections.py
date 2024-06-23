@@ -13,6 +13,7 @@ from contribution.infrastructure.database import (
     AddPersonContributionCollection,
     EditPersonContributionCollection,
     AchievementCollection,
+    PermissionsCollection,
 )
 
 
@@ -30,6 +31,7 @@ def collections_provider_factory() -> Provider:
     provider.provide(add_person_contribution_collection_factory)
     provider.provide(edit_person_contribution_collection_factory)
     provider.provide(achievement_collection_factory)
+    provider.provide(permissions_collection_factory)
 
     return provider
 
@@ -98,3 +100,9 @@ def achievement_collection_factory(
     database: AsyncIOMotorDatabase,
 ) -> AchievementCollection:
     return database.get_collection("achievements")
+
+
+def permissions_collection_factory(
+    database: AsyncIOMotorDatabase,
+) -> PermissionsCollection:
+    return database.get_collection("permissions")
