@@ -28,7 +28,7 @@ async def motor_session_factory(
     motor_client: AsyncIOMotorClient,
 ) -> AsyncGenerator[AsyncIOMotorClientSession, None]:
     async with motor_client.start_session() as session:
-        async with session.start_transaction():
+        async with session.start_transaction():  # type: ignore
             yield session
 
 

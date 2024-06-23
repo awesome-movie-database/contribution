@@ -26,7 +26,7 @@ class PermissionsCache:
         await self._redis.hset(
             name=HASH_MAP_KEY,
             key=self._key_factory(user_id),
-            value=permissions,
+            value=str(permissions),
         )
 
     def _key_factory(self, user_id: UserId) -> str:

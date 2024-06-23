@@ -8,7 +8,7 @@ from contribution.infrastructure.identity import RawIdentityProvider
 def identity_provider_provider_factory() -> Provider:
     provider = Provider(Scope.REQUEST)
 
-    provider.from_context(Request)
+    provider.from_context(Request, scope=Scope.REQUEST)
     provider.provide(RawIdentityProvider, provides=IdentityProvider)
 
     return provider
