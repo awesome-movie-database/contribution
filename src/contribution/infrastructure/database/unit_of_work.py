@@ -26,6 +26,11 @@ from contribution.infrastructure.database.collection_committers import (
     CommitRoleCollectionChanges,
     CommitWriterCollectionChanges,
     CommitCrewMemberCollectionChanges,
+    CommitAddMovieContributionCollectionChanges,
+    CommitEditMovieContributionCollectionChanges,
+    CommitAddPersonContributionCollectionChanges,
+    CommitEditPersonContributionCollectionChanges,
+    CommitAchievementCollectionChanges,
 )
 
 
@@ -65,7 +70,24 @@ class MongoDBUnitOfWork:
         commit_person_collection_changes: CommitPersonCollectionChanges,
         commit_role_collection_changes: CommitRoleCollectionChanges,
         commit_writer_collection_changes: CommitWriterCollectionChanges,
-        commit_crew_member_collection_changes: CommitCrewMemberCollectionChanges,
+        commit_crew_member_collection_changes: (
+            CommitCrewMemberCollectionChanges
+        ),
+        commit_add_movie_contribution_collection_changes: (
+            CommitAddMovieContributionCollectionChanges
+        ),
+        commit_edit_movie_contribution_collection_changes: (
+            CommitEditMovieContributionCollectionChanges
+        ),
+        commit_add_person_contribution_collection_changes: (
+            CommitAddPersonContributionCollectionChanges
+        ),
+        commit_edit_person_contribution_collection_changes: (
+            CommitEditPersonContributionCollectionChanges
+        ),
+        commit_achievement_collection_changes: (
+            CommitAchievementCollectionChanges
+        ),
         session: AsyncIOMotorClientSession,
     ):
         self._collection_changes_commiters: dict[
@@ -78,6 +100,19 @@ class MongoDBUnitOfWork:
             Role: commit_role_collection_changes,
             Writer: commit_writer_collection_changes,
             CrewMember: commit_crew_member_collection_changes,
+            AddMovieContribution: (
+                commit_add_movie_contribution_collection_changes
+            ),
+            EditMovieContribution: (
+                commit_edit_movie_contribution_collection_changes
+            ),
+            AddPersonContribution: (
+                commit_add_person_contribution_collection_changes
+            ),
+            EditPersonContribution: (
+                commit_edit_person_contribution_collection_changes
+            ),
+            Achievement: commit_achievement_collection_changes,
         }
         self._session = session
 
@@ -119,6 +154,11 @@ class MongoDBUnitOfWork:
             Role,
             Writer,
             CrewMember,
+            AddMovieContribution,
+            EditMovieContribution,
+            AddPersonContribution,
+            EditPersonContribution,
+            Achievement,
         )
         for entity_type in entity_types:
             await self._collection_changes_commiters[entity_type](
