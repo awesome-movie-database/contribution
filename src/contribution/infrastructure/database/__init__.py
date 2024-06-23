@@ -1,3 +1,4 @@
+from .motor_ import *
 from .collections import *
 from .collection_committers import *
 from .identity_maps import *
