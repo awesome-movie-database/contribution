@@ -31,6 +31,8 @@ class Maybe[T]:
                 foo.bar = bar
     """
 
+    __slots__ = ("_value",)
+
     def __init__(self, value: Union[T, _Unset]) -> None:
         self._value = value
 
