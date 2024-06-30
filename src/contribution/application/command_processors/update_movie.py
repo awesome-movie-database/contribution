@@ -62,7 +62,7 @@ def update_movie_factory(
         processor=update_movie_processor,
         unit_of_work=unit_of_work,
     )
-    log_processor = LoggingProcessor(
+    log_processor = UpdateMovieLoggingProcessor(
         processor=tx_processor,
         operation_id=operation_id,
     )
@@ -131,7 +131,7 @@ class UpdateMovieProcessor:
         await self._delete_crew(command.remove_crew)
 
 
-class LoggingProcessor:
+class UpdateMovieLoggingProcessor:
     def __init__(
         self,
         *,

@@ -55,7 +55,7 @@ def reject_person_editing_factory(
         processor=callback_processor,
         unit_of_work=unit_of_work,
     )
-    log_processor = LoggingProcessor(
+    log_processor = RejectPersonEditingLoggingProcessor(
         processor=tx_processor,
         operation_id=operation_id,
     )
@@ -116,7 +116,7 @@ class RejectPersonEditingProcessor:
         return achievement.id if achievement else None
 
 
-class LoggingProcessor:
+class RejectPersonEditingLoggingProcessor:
     def __init__(
         self,
         *,

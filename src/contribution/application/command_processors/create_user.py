@@ -37,7 +37,7 @@ def create_user_factory(
         processor=create_user_processor,
         unit_of_work=unit_of_work,
     )
-    log_processor = LoggingProcessor(
+    log_processor = CreateUserLoggingProcessor(
         processor=tx_processor,
         operation_id=operation_id,
     )
@@ -91,7 +91,7 @@ class CreateUserProcessor:
         await self._user_gateway.save(new_user)
 
 
-class LoggingProcessor:
+class CreateUserLoggingProcessor:
     def __init__(
         self,
         *,

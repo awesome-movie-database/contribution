@@ -50,7 +50,7 @@ def create_movie_factory(
         processor=create_movie_processor,
         unit_of_work=unit_of_work,
     )
-    log_processor = LoggingProcessor(
+    log_processor = CreateMovieLoggingProcessor(
         processor=tx_processor,
         operation_id=operation_id,
     )
@@ -109,7 +109,7 @@ class CreateMovieProcessor:
         )
 
 
-class LoggingProcessor:
+class CreateMovieLoggingProcessor:
     def __init__(
         self,
         *,

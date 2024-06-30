@@ -62,7 +62,7 @@ def accept_person_editing_factory(
         processor=callback_processor,
         unit_of_work=unit_of_work,
     )
-    log_processor = LoggingProcessor(
+    log_processor = AcceptPersonEditingLoggingProcessor(
         operation_id=operation_id,
         processor=tx_processor,
     )
@@ -139,7 +139,7 @@ class AcceptPersonEditingProcessor:
         return achievement.id if achievement else None
 
 
-class LoggingProcessor:
+class AcceptPersonEditingLoggingProcessor:
     def __init__(
         self,
         *,

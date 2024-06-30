@@ -62,7 +62,7 @@ def add_person_factory(
         permissions_gateway=permissions_gateway,
         identity_provider=identity_provider,
     )
-    callback_processor = CallbackProcessor(
+    callback_processor = AddPersonCallbackProcessor(
         processor=authz_processor,
         create_photo_from_obj=create_photo_from_obj,
         identity_provider=identity_provider,
@@ -73,7 +73,7 @@ def add_person_factory(
         processor=callback_processor,
         unit_of_work=unit_of_work,
     )
-    log_processor = LoggingProcessor(
+    log_processor = AddPersonLoggingProcessor(
         processor=tx_processor,
         operation_id=operation_id,
         identity_provider=identity_provider,
@@ -132,7 +132,7 @@ class AddPersonProcessor:
         return contribution.id
 
 
-class CallbackProcessor:
+class AddPersonCallbackProcessor:
     def __init__(
         self,
         *,
@@ -172,7 +172,7 @@ class CallbackProcessor:
         return result
 
 
-class LoggingProcessor:
+class AddPersonLoggingProcessor:
     def __init__(
         self,
         *,

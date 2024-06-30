@@ -37,7 +37,7 @@ def update_user_factory(
         processor=update_user_processor,
         unit_of_work=unit_of_work,
     )
-    log_processor = LoggingProcessor(
+    log_processor = UpdateUserLoggingProcessor(
         processor=tx_processor,
         operation_id=operation_id,
     )
@@ -89,7 +89,7 @@ class UpdateUserProcessor:
         await self._user_gateway.update(user)
 
 
-class LoggingProcessor:
+class UpdateUserLoggingProcessor:
     def __init__(
         self,
         *,
