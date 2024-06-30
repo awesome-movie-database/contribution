@@ -9,10 +9,7 @@ from motor.motor_asyncio import (
 )
 from redis.asyncio import Redis
 
-from contribution.application import (
-    UnitOfWork,
-    OnEventOccurred,
-)
+from contribution.application import OnEventOccurred
 from contribution.infrastructure import (
     UserCollection,
     MovieCollection,
@@ -166,7 +163,7 @@ def role_collection(
 def writer_collection(
     motor_database: AsyncIOMotorDatabase,
 ) -> WriterCollection:
-    raise writer_collection_factory(motor_database)
+    return writer_collection_factory(motor_database)
 
 
 @pytest.fixture
@@ -200,7 +197,7 @@ def add_person_contribution_collection(
 @pytest.fixture
 def edit_person_contribution_collection(
     motor_database: AsyncIOMotorDatabase,
-) -> EditMovieContributionCollection:
+) -> EditPersonContributionCollection:
     return edit_person_contribution_collection_factory(motor_database)
 
 
@@ -282,7 +279,7 @@ def unit_of_work(
 @pytest.fixture
 def user_gateway(
     user_collection: UserCollection,
-    unit_of_work: UnitOfWork,
+    unit_of_work: MongoDBUnitOfWork,
 ) -> UserMapper:
     return UserMapper(
         user_map=UserMap(),
@@ -295,7 +292,7 @@ def user_gateway(
 @pytest.fixture
 def movie_gateway(
     movie_collection: MovieCollection,
-    unit_of_work: UnitOfWork,
+    unit_of_work: MongoDBUnitOfWork,
 ) -> MovieMapper:
     return MovieMapper(
         movie_map=MovieMap(),
@@ -308,11 +305,12 @@ def movie_gateway(
 @pytest.fixture
 def person_gateway(
     person_collection: PersonCollection,
-    unit_of_work: UnitOfWork,
+    unit_of_work: MongoDBUnitOfWork,
 ) -> PersonMapper:
     return PersonMapper(
         person_map=PersonMap(),
         person_collection=person_collection,
+        lock_factory=MongoDBLockFactory(),
         unit_of_work=unit_of_work,
     )
 
@@ -320,7 +318,7 @@ def person_gateway(
 @pytest.fixture
 def role_gateway(
     role_collection: RoleCollection,
-    unit_of_work: UnitOfWork,
+    unit_of_work: MongoDBUnitOfWork,
 ) -> RoleMapper:
     return RoleMapper(
         role_map=RoleMap(),
@@ -332,7 +330,7 @@ def role_gateway(
 @pytest.fixture
 def writer_gateway(
     writer_collection: WriterCollection,
-    unit_of_work: UnitOfWork,
+    unit_of_work: MongoDBUnitOfWork,
 ) -> WriterMapper:
     return WriterMapper(
         writer_map=WriterMap(),
@@ -344,7 +342,7 @@ def writer_gateway(
 @pytest.fixture
 def crew_member_gateway(
     crew_member_collection: CrewMemberCollection,
-    unit_of_work: UnitOfWork,
+    unit_of_work: MongoDBUnitOfWork,
 ) -> CrewMemberMapper:
     return CrewMemberMapper(
         crew_member_map=CrewMemberMap(),
@@ -356,11 +354,11 @@ def crew_member_gateway(
 @pytest.fixture
 def add_movie_contribution_gateway(
     add_movie_contribution_collection: AddMovieContributionCollection,
-    unit_of_work: UnitOfWork,
+    unit_of_work: MongoDBUnitOfWork,
 ) -> AddMovieContributionMapper:
     return AddMovieContributionMapper(
-        add_movie_contribution_map=AddMovieContributionMap(),
-        add_movie_contribution_collection=add_movie_contribution_collection,
+        contribution_map=AddMovieContributionMap(),
+        contribution_collection=add_movie_contribution_collection,
         lock_factory=MongoDBLockFactory(),
         unit_of_work=unit_of_work,
     )
@@ -369,11 +367,11 @@ def add_movie_contribution_gateway(
 @pytest.fixture
 def edit_movie_contribution_gateway(
     edit_movie_contribution_collection: EditMovieContributionCollection,
-    unit_of_work: UnitOfWork,
+    unit_of_work: MongoDBUnitOfWork,
 ) -> EditMovieContributionMapper:
     return EditMovieContributionMapper(
-        edit_movie_contribution_map=EditMovieContributionMap(),
-        edit_movie_contribution_collection=edit_movie_contribution_collection,
+        contribution_map=EditMovieContributionMap(),
+        contribution_collection=edit_movie_contribution_collection,
         lock_factory=MongoDBLockFactory(),
         unit_of_work=unit_of_work,
     )
@@ -382,11 +380,11 @@ def edit_movie_contribution_gateway(
 @pytest.fixture
 def add_person_contribution_gateway(
     add_person_contribution_collection: AddPersonContributionCollection,
-    unit_of_work: UnitOfWork,
+    unit_of_work: MongoDBUnitOfWork,
 ) -> AddPersonContributionMapper:
     return AddPersonContributionMapper(
-        add_person_contribution_map=AddPersonContributionMap(),
-        add_person_contribution_collection=add_person_contribution_collection,
+        contribution_map=AddPersonContributionMap(),
+        contribution_collection=add_person_contribution_collection,
         lock_factory=MongoDBLockFactory(),
         unit_of_work=unit_of_work,
     )
@@ -395,13 +393,11 @@ def add_person_contribution_gateway(
 @pytest.fixture
 def edit_person_contribution_gateway(
     edit_person_contribution_collection: EditPersonContributionCollection,
-    unit_of_work: UnitOfWork,
+    unit_of_work: MongoDBUnitOfWork,
 ) -> EditPersonContributionMapper:
     return EditPersonContributionMapper(
-        edit_person_contribution_map=EditPersonContributionMap(),
-        edit_person_contribution_collection=(
-            edit_person_contribution_collection
-        ),
+        contribution_map=EditPersonContributionMap(),
+        contribution_collection=(edit_person_contribution_collection),
         lock_factory=MongoDBLockFactory(),
         unit_of_work=unit_of_work,
     )
@@ -410,7 +406,7 @@ def edit_person_contribution_gateway(
 @pytest.fixture
 def achievement_gateway(
     achievement_collection: AchievementCollection,
-    unit_of_work: UnitOfWork,
+    unit_of_work: MongoDBUnitOfWork,
 ) -> AchievementMapper:
     return AchievementMapper(
         achievement_map=AchievementMap(),

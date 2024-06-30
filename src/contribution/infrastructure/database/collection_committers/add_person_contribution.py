@@ -6,12 +6,12 @@ from pymongo import InsertOne, UpdateOne, DeleteOne
 
 from contribution.domain import AddPersonContribution
 from contribution.infrastructure.database.collections import (
-    PersonCollection,
+    AddPersonContributionCollection,
 )
 
 
 class CommitAddPersonContributionCollectionChanges:
-    def __init__(self, collection: PersonCollection):
+    def __init__(self, collection: AddPersonContributionCollection):
         self._collection = collection
 
     async def __call__(

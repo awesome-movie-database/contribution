@@ -27,9 +27,12 @@ def motor_client_factory(
 async def motor_session_factory(
     motor_client: AsyncIOMotorClient,
 ) -> AsyncGenerator[AsyncIOMotorClientSession, None]:
-    async with motor_client.start_session() as session:
+    session = await motor_client.start_session()
+    try:
         async with session.start_transaction():  # type: ignore
             yield session
+    finally:
+        await session.end_session()
 
 
 def motor_database_factory(

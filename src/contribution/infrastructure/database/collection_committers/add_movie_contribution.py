@@ -11,12 +11,12 @@ from contribution.domain import (
     AddMovieContribution,
 )
 from contribution.infrastructure.database.collections import (
-    MovieCollection,
+    AddMovieContributionCollection,
 )
 
 
 class CommitAddMovieContributionCollectionChanges:
-    def __init__(self, collection: MovieCollection):
+    def __init__(self, collection: AddMovieContributionCollection):
         self._collection = collection
 
     async def __call__(

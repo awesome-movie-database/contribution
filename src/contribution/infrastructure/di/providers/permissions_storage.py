@@ -8,8 +8,8 @@ def permissions_storage_provider_factory() -> Provider:
     provider = Provider(Scope.REQUEST)
 
     provider.provide(
-        AnyOf[PermissionsGateway, PermissionsStorage],
-        provides=PermissionsStorage,
+        PermissionsStorage,
+        provides=AnyOf[PermissionsGateway, PermissionsStorage],
     )
 
     return provider

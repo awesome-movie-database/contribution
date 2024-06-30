@@ -7,7 +7,7 @@ name = "contribution"
 description = "Awesome Movie Database Contribution Service"
 version = "0.1.0"
 license = { file = "LICENSE" }
-requires-python = "==3.12.3"
+requires-python = ">=3.12.3"
 
 dependencies = [
     "uuid7==0.1.*",

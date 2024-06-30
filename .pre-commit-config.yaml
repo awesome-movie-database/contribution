@@ -20,7 +20,6 @@ repos:
           "--config-file=.mypy.ini",
           --ignore-missing-imports,
         ]
-        files: ^src/
         additional_dependencies:
           - types-redis
           - types-toml
