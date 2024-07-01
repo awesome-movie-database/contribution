@@ -2,7 +2,7 @@ from aioboto3 import Session
 from aiobotocore.config import AioConfig
 from types_aiobotocore_s3 import S3Client
 
-from contribution.infrastructure.s3 import MinIOConfig
+from .config import MinIOConfig
 
 
 def aioboto3_s3_client_factory(

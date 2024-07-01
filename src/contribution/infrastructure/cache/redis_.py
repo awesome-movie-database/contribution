@@ -1,6 +1,6 @@
 from redis.asyncio import Redis
 
-from contribution.infrastructure.cache import RedisConfig
+from .config import RedisConfig
 
 
 def redis_factory(redis_config: RedisConfig) -> Redis:

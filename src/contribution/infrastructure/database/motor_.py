@@ -12,7 +12,7 @@ from motor.motor_asyncio import (
     AsyncIOMotorDatabase,
 )
 
-from contribution.infrastructure.database import MongoDBConfig
+from .config import MongoDBConfig
 
 
 def motor_client_factory(

@@ -19,7 +19,7 @@ from contribution.domain import (
     EditPersonContribution,
     Achievement,
 )
-from contribution.infrastructure.database.collection_committers import (
+from .collection_committers import (
     CommitUserCollectionChanges,
     CommitMovieCollectionChanges,
     CommitPersonCollectionChanges,
