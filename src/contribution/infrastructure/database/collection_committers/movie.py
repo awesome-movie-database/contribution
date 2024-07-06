@@ -41,10 +41,11 @@ class CommitMovieCollectionChanges:
             *updates,
             *deletes,
         ]
-        await self._collection.bulk_write(
-            requests=changes,
-            session=self._session,
-        )
+        if changes:
+            await self._collection.bulk_write(
+                requests=changes,
+                session=self._session,
+            )
 
     def _movie_to_document(self, movie: Movie) -> dict[str, Any]:
         document = {

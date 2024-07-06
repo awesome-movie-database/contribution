@@ -123,26 +123,58 @@ class MongoDBUnitOfWork:
 
     def register_new(self, entity: AnyEntity) -> None:
         entity_id = id(entity)
+
+        new_entities = self._new.get(type(entity))
+        if not new_entities:
+            self._new[type(entity)] = {}
+
         self._new[type(entity)][entity_id] = entity
 
     def register_clean(self, entity: AnyEntity) -> None:
         entity_id = id(entity)
+
+        clean_entities = self._clean.get(type(entity))
+        if not clean_entities:
+            self._clean[type(entity)] = {}
+
         self._clean[type(entity)][entity_id] = copy.deepcopy(entity)
 
     def register_dirty(self, entity: AnyEntity) -> None:
         entity_id = id(entity)
-        if entity_id not in self._new[type(entity)]:
-            self._dirty[type(entity)][entity_id] = entity
+
+        new_entities = self._new.get(type(entity), {})
+        if entity_id in new_entities:
+            return
+
+        dirty_entities = self._dirty.get(type(entity))
+        if not dirty_entities:
+            self._dirty[type(entity)] = {}
+
+        self._dirty[type(entity)][entity_id] = entity
 
     def register_deleted(self, entity: AnyEntity) -> None:
         entity_id = id(entity)
 
-        if entity_id in self._new[type(entity)]:
+        new_entities = self._new.get(type(entity))
+        if new_entities and entity_id in new_entities:
             self._new[type(entity)].pop(entity_id)
             return
-        if entity_id in self._dirty[type(entity)]:
-            self._clean[type(entity)].pop(entity_id)
-            self._dirty[type(entity)].pop(entity_id)
+
+        dirty_entities = self._dirty.get(type(entity))
+        clean_entities = self._clean.get(type(entity))
+
+        if dirty_entities:
+            if not clean_entities:
+                message = f"No entities of {type(entity)} type registered"
+                raise ValueError(message)
+
+            if entity_id in dirty_entities:
+                self._dirty[type(entity)].pop(entity_id)
+                self._clean[type(entity)].pop(entity_id)
+
+        deleted_entities = self._deleted.get(type(entity))
+        if not deleted_entities:
+            self._deleted[type(entity)] = {}
 
         self._deleted[type(entity)][entity_id] = entity
 
@@ -162,9 +194,9 @@ class MongoDBUnitOfWork:
         )
         for entity_type in entity_types:
             await self._collection_changes_commiters[entity_type](
-                new=self._new[entity_type].values(),
-                clean=self._clean[entity_type].values(),
-                dirty=self._dirty[entity_type].values(),
-                deleted=self._deleted[entity_type].values(),
+                new=self._new.get(entity_type, {}).values(),
+                clean=self._clean.get(entity_type, {}).values(),
+                dirty=self._dirty.get(entity_type, {}).values(),
+                deleted=self._deleted.get(entity_type, {}).values(),
             )
         await self._session.commit_transaction()

@@ -24,6 +24,7 @@ dependencies = [
 [project.optional-dependencies]
 test = [
     "pytest==8.2.*",
+    "pytest-asyncio==0.23.*",
 ]
 dev = [
     "mypy==1.8.*",

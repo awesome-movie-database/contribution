@@ -43,10 +43,11 @@ class CommitWriterCollectionChanges:
             *updates,
             *deletes,
         ]
-        await self._collection.bulk_write(
-            requests=changes,
-            session=self._session,
-        )
+        if changes:
+            await self._collection.bulk_write(
+                requests=changes,
+                session=self._session,
+            )
 
     def _writer_to_document(self, writer: Writer) -> dict[str, Any]:
         document = {

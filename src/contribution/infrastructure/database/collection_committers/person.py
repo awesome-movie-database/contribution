@@ -45,10 +45,11 @@ class CommitPersonCollectionChanges:
             *updates,
             *deletes,
         ]
-        await self._collection.bulk_write(
-            requests=changes,
-            session=self._session,
-        )
+        if changes:
+            await self._collection.bulk_write(
+                requests=changes,
+                session=self._session,
+            )
 
     def _person_to_document(self, person: Person) -> dict[str, Any]:
         document = {

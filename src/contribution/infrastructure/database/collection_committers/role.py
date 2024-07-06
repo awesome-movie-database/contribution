@@ -12,10 +12,10 @@ from contribution.infrastructure.database.collections import (
 class CommitRoleCollectionChanges:
     def __init__(
         self,
-        role_collection: RoleCollection,
+        collection: RoleCollection,
         session: AsyncIOMotorClientSession,
     ):
-        self._collection = role_collection
+        self._collection = collection
         self._session = session
 
     async def __call__(
@@ -41,10 +41,11 @@ class CommitRoleCollectionChanges:
             *updates,
             *deletes,
         ]
-        await self._collection.bulk_write(
-            requests=changes,
-            session=self._session,
-        )
+        if changes:
+            await self._collection.bulk_write(
+                requests=changes,
+                session=self._session,
+            )
 
     def _role_to_document(self, role: Role) -> dict[str, Any]:
         document = {

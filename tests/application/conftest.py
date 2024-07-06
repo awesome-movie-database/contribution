@@ -1,3 +1,4 @@
+import os
 from unittest.mock import AsyncMock
 from typing import AsyncGenerator
 
@@ -86,11 +87,15 @@ from contribution.infrastructure import (
 
 @pytest.fixture(scope="session")
 def motor_client() -> AsyncIOMotorClient:
+    port_as_str = os.getenv("TEST_MONGODB_PORT")
+    if port_as_str:
+        port = int(port_as_str)
+    else:
+        port = None
+
     mongodb_config = MongoDBConfig(
-        username=env_var_by_key("TEST_MONGODB_USER"),
-        password=env_var_by_key("TEST_MONGODB_PASSWORD"),
-        host=env_var_by_key("TEST_MONGODB_HOST"),
-        port=int(env_var_by_key("TEST_MONGODB_PORT")),
+        url=env_var_by_key("TEST_MONGODB_URL"),
+        port=port,
     )
     motor_client = motor_client_factory(mongodb_config)
 
@@ -121,7 +126,8 @@ def on_event_occurred() -> OnEventOccurred:
 async def motor_session(
     motor_client: AsyncIOMotorClient,
 ) -> AsyncGenerator[AsyncIOMotorClientSession, None]:
-    return motor_session_factory(motor_client)
+    async with motor_session_factory(motor_client) as motor_session:
+        yield motor_session
 
 
 @pytest.fixture
@@ -232,45 +238,70 @@ def unit_of_work(
 ) -> MongoDBUnitOfWork:
     return MongoDBUnitOfWork(
         commit_user_collection_changes=(
-            CommitUserCollectionChanges(user_collection)
+            CommitUserCollectionChanges(
+                collection=user_collection,
+                session=motor_session,
+            )
         ),
         commit_movie_collection_changes=(
-            CommitMovieCollectionChanges(movie_collection)
+            CommitMovieCollectionChanges(
+                collection=movie_collection,
+                session=motor_session,
+            )
         ),
         commit_person_collection_changes=(
-            CommitPersonCollectionChanges(person_collection)
+            CommitPersonCollectionChanges(
+                collection=person_collection,
+                session=motor_session,
+            )
         ),
         commit_role_collection_changes=(
-            CommitRoleCollectionChanges(role_collection)
+            CommitRoleCollectionChanges(
+                collection=role_collection,
+                session=motor_session,
+            )
         ),
         commit_writer_collection_changes=(
-            CommitWriterCollectionChanges(writer_collection)
+            CommitWriterCollectionChanges(
+                collection=writer_collection,
+                session=motor_session,
+            )
         ),
         commit_crew_member_collection_changes=(
-            CommitCrewMemberCollectionChanges(crew_member_collection)
+            CommitCrewMemberCollectionChanges(
+                collection=crew_member_collection,
+                session=motor_session,
+            )
         ),
         commit_add_movie_contribution_collection_changes=(
             CommitAddMovieContributionCollectionChanges(
-                add_movie_contribution_collection,
+                collection=add_movie_contribution_collection,
+                session=motor_session,
             )
         ),
         commit_edit_movie_contribution_collection_changes=(
             CommitEditMovieContributionCollectionChanges(
-                edit_movie_contribution_collection,
+                collection=edit_movie_contribution_collection,
+                session=motor_session,
             )
         ),
         commit_add_person_contribution_collection_changes=(
             CommitAddPersonContributionCollectionChanges(
-                add_person_contribution_collection,
+                collection=add_person_contribution_collection,
+                session=motor_session,
             )
         ),
         commit_edit_person_contribution_collection_changes=(
             CommitEditPersonContributionCollectionChanges(
-                edit_person_contribution_collection,
+                collection=edit_person_contribution_collection,
+                session=motor_session,
             )
         ),
         commit_achievement_collection_changes=(
-            CommitAchievementCollectionChanges(achievement_collection)
+            CommitAchievementCollectionChanges(
+                collection=achievement_collection,
+                session=motor_session,
+            )
         ),
         session=motor_session,
     )
@@ -280,12 +311,14 @@ def unit_of_work(
 def user_gateway(
     user_collection: UserCollection,
     unit_of_work: MongoDBUnitOfWork,
+    motor_session: AsyncIOMotorClientSession,
 ) -> UserMapper:
     return UserMapper(
         user_map=UserMap(),
         user_collection=user_collection,
         lock_factory=MongoDBLockFactory(),
         unit_of_work=unit_of_work,
+        session=motor_session,
     )
 
 
@@ -293,12 +326,14 @@ def user_gateway(
 def movie_gateway(
     movie_collection: MovieCollection,
     unit_of_work: MongoDBUnitOfWork,
+    motor_session: AsyncIOMotorClientSession,
 ) -> MovieMapper:
     return MovieMapper(
         movie_map=MovieMap(),
         movie_collection=movie_collection,
         lock_factory=MongoDBLockFactory(),
         unit_of_work=unit_of_work,
+        session=motor_session,
     )
 
 
@@ -306,12 +341,14 @@ def movie_gateway(
 def person_gateway(
     person_collection: PersonCollection,
     unit_of_work: MongoDBUnitOfWork,
+    motor_session: AsyncIOMotorClientSession,
 ) -> PersonMapper:
     return PersonMapper(
         person_map=PersonMap(),
         person_collection=person_collection,
         lock_factory=MongoDBLockFactory(),
         unit_of_work=unit_of_work,
+        session=motor_session,
     )
 
 
@@ -319,11 +356,13 @@ def person_gateway(
 def role_gateway(
     role_collection: RoleCollection,
     unit_of_work: MongoDBUnitOfWork,
+    motor_session: AsyncIOMotorClientSession,
 ) -> RoleMapper:
     return RoleMapper(
         role_map=RoleMap(),
         role_collection=role_collection,
         unit_of_work=unit_of_work,
+        session=motor_session,
     )
 
 
@@ -331,11 +370,13 @@ def role_gateway(
 def writer_gateway(
     writer_collection: WriterCollection,
     unit_of_work: MongoDBUnitOfWork,
+    motor_session: AsyncIOMotorClientSession,
 ) -> WriterMapper:
     return WriterMapper(
         writer_map=WriterMap(),
         writer_collection=writer_collection,
         unit_of_work=unit_of_work,
+        session=motor_session,
     )
 
 
@@ -343,11 +384,13 @@ def writer_gateway(
 def crew_member_gateway(
     crew_member_collection: CrewMemberCollection,
     unit_of_work: MongoDBUnitOfWork,
+    motor_session: AsyncIOMotorClientSession,
 ) -> CrewMemberMapper:
     return CrewMemberMapper(
         crew_member_map=CrewMemberMap(),
         crew_member_collection=crew_member_collection,
         unit_of_work=unit_of_work,
+        session=motor_session,
     )
 
 
@@ -355,12 +398,14 @@ def crew_member_gateway(
 def add_movie_contribution_gateway(
     add_movie_contribution_collection: AddMovieContributionCollection,
     unit_of_work: MongoDBUnitOfWork,
+    motor_session: AsyncIOMotorClientSession,
 ) -> AddMovieContributionMapper:
     return AddMovieContributionMapper(
         contribution_map=AddMovieContributionMap(),
         contribution_collection=add_movie_contribution_collection,
         lock_factory=MongoDBLockFactory(),
         unit_of_work=unit_of_work,
+        session=motor_session,
     )
 
 
@@ -368,12 +413,14 @@ def add_movie_contribution_gateway(
 def edit_movie_contribution_gateway(
     edit_movie_contribution_collection: EditMovieContributionCollection,
     unit_of_work: MongoDBUnitOfWork,
+    motor_session: AsyncIOMotorClientSession,
 ) -> EditMovieContributionMapper:
     return EditMovieContributionMapper(
         contribution_map=EditMovieContributionMap(),
         contribution_collection=edit_movie_contribution_collection,
         lock_factory=MongoDBLockFactory(),
         unit_of_work=unit_of_work,
+        session=motor_session,
     )
 
 
@@ -381,12 +428,14 @@ def edit_movie_contribution_gateway(
 def add_person_contribution_gateway(
     add_person_contribution_collection: AddPersonContributionCollection,
     unit_of_work: MongoDBUnitOfWork,
+    motor_session: AsyncIOMotorClientSession,
 ) -> AddPersonContributionMapper:
     return AddPersonContributionMapper(
         contribution_map=AddPersonContributionMap(),
         contribution_collection=add_person_contribution_collection,
         lock_factory=MongoDBLockFactory(),
         unit_of_work=unit_of_work,
+        session=motor_session,
     )
 
 
@@ -394,12 +443,14 @@ def add_person_contribution_gateway(
 def edit_person_contribution_gateway(
     edit_person_contribution_collection: EditPersonContributionCollection,
     unit_of_work: MongoDBUnitOfWork,
+    motor_session: AsyncIOMotorClientSession,
 ) -> EditPersonContributionMapper:
     return EditPersonContributionMapper(
         contribution_map=EditPersonContributionMap(),
         contribution_collection=(edit_person_contribution_collection),
         lock_factory=MongoDBLockFactory(),
         unit_of_work=unit_of_work,
+        session=motor_session,
     )
 
 
@@ -407,11 +458,13 @@ def edit_person_contribution_gateway(
 def achievement_gateway(
     achievement_collection: AchievementCollection,
     unit_of_work: MongoDBUnitOfWork,
+    motor_session: AsyncIOMotorClientSession,
 ) -> AchievementMapper:
     return AchievementMapper(
         achievement_map=AchievementMap(),
         achievement_collection=achievement_collection,
         unit_of_work=unit_of_work,
+        session=motor_session,
     )
 
 
