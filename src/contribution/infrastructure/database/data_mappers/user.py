@@ -1,6 +1,8 @@
 from typing import Any, Mapping, Optional
 from uuid import UUID
 
+from motor.motor_asyncio import AsyncIOMotorClientSession
+
 from contribution.domain import UserId, User
 from contribution.infrastructure.database.collections import (
     UserCollection,
@@ -23,11 +25,13 @@ class UserMapper:
         user_collection: UserCollection,
         lock_factory: MongoDBLockFactory,
         unit_of_work: MongoDBUnitOfWork,
+        session: AsyncIOMotorClientSession,
     ):
         self._user_map = user_map
         self._user_collection = user_collection
         self._lock_factory = lock_factory
         self._unit_of_work = unit_of_work
+        self._session = session
 
     async def by_id(self, id: UserId) -> Optional[User]:
         user_from_map = self._user_map.by_id(id)
@@ -36,6 +40,7 @@ class UserMapper:
 
         document = await self._user_collection.find_one(
             {"id": id.hex},
+            session=self._session,
         )
         if document:
             user = self._document_to_user(document)
@@ -52,6 +57,7 @@ class UserMapper:
 
         document = await self._user_collection.find_one(
             {"name": name},
+            session=self._session,
         )
         if document:
             user = self._document_to_user(document)
@@ -68,6 +74,7 @@ class UserMapper:
 
         document = await self._user_collection.find_one(
             {"email": email},
+            session=self._session,
         )
         if document:
             user = self._document_to_user(document)
@@ -84,6 +91,7 @@ class UserMapper:
 
         document = await self._user_collection.find_one(
             {"telegram": telegram},
+            session=self._session,
         )
         if document:
             user = self._document_to_user(document)
@@ -101,6 +109,7 @@ class UserMapper:
         document = await self._user_collection.find_one_and_update(
             {"id": id.hex},
             {"$set": {"lock": self._lock_factory()}},
+            session=self._session,
         )
         if document:
             user = self._document_to_user(document)

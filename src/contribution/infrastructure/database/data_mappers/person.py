@@ -2,6 +2,8 @@ from typing import Any, Iterable, Mapping, Optional
 from datetime import date
 from uuid import UUID
 
+from motor.motor_asyncio import AsyncIOMotorClientSession
+
 from contribution.domain import PersonId, Sex, Person
 from contribution.infrastructure.database.collections import (
     PersonCollection,
@@ -24,11 +26,13 @@ class PersonMapper:
         person_collection: PersonCollection,
         lock_factory: MongoDBLockFactory,
         unit_of_work: MongoDBUnitOfWork,
+        session: AsyncIOMotorClientSession,
     ):
         self._person_map = person_map
         self._person_collection = person_collection
         self._lock_factory = lock_factory
         self._unit_of_work = unit_of_work
+        self._session = session
 
     async def by_id(self, id: PersonId) -> Optional[Person]:
         person_from_map = self._person_map.by_id(id)
@@ -37,6 +41,7 @@ class PersonMapper:
 
         document = await self._person_collection.find_one(
             {"id": id.hex},
+            session=self._session,
         )
         if document:
             person = self._document_to_person(document)
@@ -54,6 +59,7 @@ class PersonMapper:
         document = await self._person_collection.find_one_and_update(
             {"id": id.hex},
             {"$set": {"lock": self._lock_factory()}},
+            session=self._session,
         )
         if document:
             person = self._document_to_person(document)
@@ -78,6 +84,7 @@ class PersonMapper:
 
         documents = await self._person_collection.find(
             {"$in": list(ids)},
+            session=self._session,
         ).to_list(None)
 
         persons = []

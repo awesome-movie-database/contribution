@@ -3,6 +3,8 @@ from typing import Any, Iterable, Mapping, Optional, cast
 from decimal import Decimal
 from uuid import UUID
 
+from motor.motor_asyncio import AsyncIOMotorClientSession
+
 from contribution.domain import (
     ContributionStatus,
     Genre,
@@ -47,11 +49,13 @@ class EditMovieContributionMapper:
         contribution_collection: EditMovieContributionCollection,
         lock_factory: MongoDBLockFactory,
         unit_of_work: MongoDBUnitOfWork,
+        session: AsyncIOMotorClientSession,
     ):
         self._contribution_map = contribution_map
         self._contribution_collection = contribution_collection
         self._lock_factory = lock_factory
         self._unit_of_work = unit_of_work
+        self._session = session
 
     async def acquire_by_id(
         self,
@@ -66,6 +70,7 @@ class EditMovieContributionMapper:
         document = await self._contribution_collection.find_one_and_update(
             {"id": id.hex},
             {"$set": {"lock": self._lock_factory()}},
+            session=self._session,
         )
         if document:
             contribution = self._document_to_contribution(document)

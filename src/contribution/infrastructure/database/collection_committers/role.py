@@ -1,6 +1,7 @@
 from typing import Any, Sequence
 
 from pymongo import InsertOne, UpdateOne, DeleteOne
+from motor.motor_asyncio import AsyncIOMotorClientSession
 
 from contribution.domain import Role
 from contribution.infrastructure.database.collections import (
@@ -9,8 +10,13 @@ from contribution.infrastructure.database.collections import (
 
 
 class CommitRoleCollectionChanges:
-    def __init__(self, role_collection: RoleCollection):
+    def __init__(
+        self,
+        role_collection: RoleCollection,
+        session: AsyncIOMotorClientSession,
+    ):
         self._collection = role_collection
+        self._session = session
 
     async def __call__(
         self,
@@ -35,7 +41,10 @@ class CommitRoleCollectionChanges:
             *updates,
             *deletes,
         ]
-        await self._collection.bulk_write(changes)
+        await self._collection.bulk_write(
+            requests=changes,
+            session=self._session,
+        )
 
     def _role_to_document(self, role: Role) -> dict[str, Any]:
         document = {

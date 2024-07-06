@@ -1,6 +1,8 @@
 from typing import Any, Iterable, Mapping, Optional
 from uuid import UUID
 
+from motor.motor_asyncio import AsyncIOMotorClientSession
+
 from contribution.domain import RoleId, MovieId, PersonId, Role
 from contribution.infrastructure.database.collections import (
     RoleCollection,
@@ -19,10 +21,12 @@ class RoleMapper:
         role_map: RoleMap,
         role_collection: RoleCollection,
         unit_of_work: MongoDBUnitOfWork,
+        session: AsyncIOMotorClientSession,
     ):
         self._role_map = role_map
         self._role_collection = role_collection
         self._unit_of_work = unit_of_work
+        self._session = session
 
     async def by_id(self, id: RoleId) -> Optional[Role]:
         role_from_map = self._role_map.by_id(id)
@@ -31,6 +35,7 @@ class RoleMapper:
 
         document = await self._role_collection.find_one(
             {"id": id.hex},
+            session=self._session,
         )
         if document:
             role = self._document_to_role(document)
@@ -55,6 +60,7 @@ class RoleMapper:
 
         documents = await self._role_collection.find(
             {"id": {"$in": [id.hex for id in ids]}},
+            session=self._session,
         ).to_list(None)
 
         roles = []

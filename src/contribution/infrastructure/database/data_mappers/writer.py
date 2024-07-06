@@ -1,6 +1,8 @@
 from typing import Any, Iterable, Mapping, Optional
 from uuid import UUID
 
+from motor.motor_asyncio import AsyncIOMotorClientSession
+
 from contribution.domain import (
     Writing,
     WriterId,
@@ -25,10 +27,12 @@ class WriterMapper:
         writer_map: WriterMap,
         writer_collection: WriterCollection,
         unit_of_work: MongoDBUnitOfWork,
+        session: AsyncIOMotorClientSession,
     ):
         self._writer_map = writer_map
         self._writer_collection = writer_collection
         self._unit_of_work = unit_of_work
+        self._session = session
 
     async def by_id(self, id: WriterId) -> Optional[Writer]:
         writer_from_map = self._writer_map.by_id(id)
@@ -37,6 +41,7 @@ class WriterMapper:
 
         document = await self._writer_collection.find_one(
             {"id": id.hex},
+            session=self._session,
         )
         if document:
             role = self._document_to_writer(document)
@@ -61,6 +66,7 @@ class WriterMapper:
 
         documents = await self._writer_collection.find(
             {"id": {"$in": [id.hex for id in ids]}},
+            session=self._session,
         ).to_list(None)
 
         writers = []

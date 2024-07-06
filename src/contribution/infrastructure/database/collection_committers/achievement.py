@@ -1,6 +1,7 @@
 from typing import Any, Sequence
 
 from pymongo import InsertOne, UpdateOne, DeleteOne
+from motor.motor_asyncio import AsyncIOMotorClientSession
 
 from contribution.domain import Achievement
 from contribution.infrastructure.database.collections import (
@@ -9,8 +10,13 @@ from contribution.infrastructure.database.collections import (
 
 
 class CommitAchievementCollectionChanges:
-    def __init__(self, collection: AchievementCollection):
+    def __init__(
+        self,
+        collection: AchievementCollection,
+        session: AsyncIOMotorClientSession,
+    ):
         self._collection = collection
+        self._session = session
 
     async def __call__(
         self,
@@ -43,7 +49,10 @@ class CommitAchievementCollectionChanges:
             *updates,
             *deletes,
         ]
-        await self._collection.bulk_write(changes)
+        await self._collection.bulk_write(
+            requests=changes,
+            session=self._session,
+        )
 
     def _achievement_to_document(
         self,

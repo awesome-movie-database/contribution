@@ -3,6 +3,8 @@ from decimal import Decimal
 from datetime import date
 from uuid import UUID
 
+from motor.motor_asyncio import AsyncIOMotorClientSession
+
 from contribution.domain import (
     Genre,
     MPAA,
@@ -31,11 +33,13 @@ class MovieMapper:
         movie_collection: MovieCollection,
         lock_factory: MongoDBLockFactory,
         unit_of_work: MongoDBUnitOfWork,
+        session: AsyncIOMotorClientSession,
     ):
         self._movie_map = movie_map
         self._movie_collection = movie_collection
         self._lock_factory = lock_factory
         self._unit_of_work = unit_of_work
+        self._session = session
 
     async def by_id(self, id: MovieId) -> Optional[Movie]:
         movie_from_map = self._movie_map.by_id(id)
@@ -44,6 +48,7 @@ class MovieMapper:
 
         document = await self._movie_collection.find_one(
             {"id": id.hex},
+            session=self._session,
         )
         if document:
             movie = self._document_to_movie(document)
@@ -61,6 +66,7 @@ class MovieMapper:
         document = await self._movie_collection.find_one_and_update(
             {"id": id.hex},
             {"$set": {"lock": self._lock_factory()}},
+            session=self._session,
         )
         if document:
             movie = self._document_to_movie(document)

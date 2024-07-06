@@ -2,6 +2,8 @@ from datetime import datetime
 from typing import Any, Mapping, Optional
 from uuid import UUID
 
+from motor.motor_asyncio import AsyncIOMotorClientSession
+
 from contribution.domain import (
     Achieved,
     AchievementId,
@@ -25,10 +27,12 @@ class AchievementMapper:
         achievement_map: AchievementMap,
         achievement_collection: AchievementCollection,
         unit_of_work: MongoDBUnitOfWork,
+        session: AsyncIOMotorClientSession,
     ):
         self._achievement_map = achievement_map
         self._achievement_collection = achievement_collection
         self._unit_of_work = unit_of_work
+        self._session = session
 
     async def by_id(self, id: AchievementId) -> Optional[Achievement]:
         achievement_from_map = self._achievement_map.by_id(id)
@@ -37,6 +41,7 @@ class AchievementMapper:
 
         document = await self._achievement_collection.find_one(
             {"id": id.hex},
+            session=self._session,
         )
         if document:
             achievement = self._document_to_achievement(document)

@@ -1,6 +1,8 @@
 from typing import Any, Iterable, Mapping, Optional
 from uuid import UUID
 
+from motor.motor_asyncio import AsyncIOMotorClientSession
+
 from contribution.domain import (
     CrewMembership,
     CrewMemberId,
@@ -25,10 +27,12 @@ class CrewMemberMapper:
         crew_member_map: CrewMemberMap,
         crew_member_collection: CrewMemberCollection,
         unit_of_work: MongoDBUnitOfWork,
+        session: AsyncIOMotorClientSession,
     ):
         self._crew_member_map = crew_member_map
         self._crew_member_collection = crew_member_collection
         self._unit_of_work = unit_of_work
+        self._session = session
 
     async def by_id(self, id: CrewMemberId) -> Optional[CrewMember]:
         crew_member_from_map = self._crew_member_map.by_id(id)
@@ -37,6 +41,7 @@ class CrewMemberMapper:
 
         document = await self._crew_member_collection.find_one(
             {"id": id.hex},
+            session=self._session,
         )
         if document:
             role = self._document_to_crew_member(document)
@@ -61,6 +66,7 @@ class CrewMemberMapper:
 
         documents = await self._crew_member_collection.find(
             {"id": {"$in": [id.hex for id in ids]}},
+            session=self._session,
         ).to_list(None)
 
         crew_members = []

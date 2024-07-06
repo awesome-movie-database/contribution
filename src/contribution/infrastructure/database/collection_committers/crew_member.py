@@ -1,6 +1,7 @@
 from typing import Any, Sequence
 
 from pymongo import InsertOne, UpdateOne, DeleteOne
+from motor.motor_asyncio import AsyncIOMotorClientSession
 
 from contribution.domain import CrewMember
 from contribution.infrastructure.database.collections import (
@@ -9,8 +10,13 @@ from contribution.infrastructure.database.collections import (
 
 
 class CommitCrewMemberCollectionChanges:
-    def __init__(self, collection: CrewMemberCollection):
+    def __init__(
+        self,
+        collection: CrewMemberCollection,
+        session: AsyncIOMotorClientSession,
+    ):
         self._collection = collection
+        self._session = session
 
     async def __call__(
         self,
@@ -43,7 +49,10 @@ class CommitCrewMemberCollectionChanges:
             *updates,
             *deletes,
         ]
-        await self._collection.bulk_write(changes)
+        await self._collection.bulk_write(
+            requests=changes,
+            session=self._session,
+        )
 
     def _crew_member_to_document(
         self,

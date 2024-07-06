@@ -20,6 +20,7 @@ class PermissionsMapper:
     async def get(self, user_id: UserId) -> Optional[int]:
         document = await self._permissions_collection.find_one(
             {"user_id": user_id.hex},
+            session=self._session,
         )
         if document:
             permissions = document["permissions"]
