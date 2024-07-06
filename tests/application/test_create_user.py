@@ -1,3 +1,4 @@
+import pytest
 from uuid_extensions import uuid7
 
 from contribution.domain import (
@@ -16,6 +17,7 @@ from contribution.application import (
 )
 
 
+@pytest.mark.usefixtures("clear_database")
 async def test_create_user(
     user_gateway: UserGateway,
     unit_of_work: UnitOfWork,

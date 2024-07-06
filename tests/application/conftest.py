@@ -138,6 +138,14 @@ def motor_database(
 
 
 @pytest.fixture
+async def clear_database(motor_database: AsyncIOMotorDatabase):
+    collection_names = await motor_database.list_collection_names()
+    for collection_name in collection_names:
+        collection = motor_database.get_collection(collection_name)
+        collection.delete_many({})
+
+
+@pytest.fixture
 def user_collection(
     motor_database: AsyncIOMotorDatabase,
 ) -> UserCollection:
