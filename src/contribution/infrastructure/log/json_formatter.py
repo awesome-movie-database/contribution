@@ -3,10 +3,8 @@ import logging
 import dataclasses
 from datetime import date, datetime, timezone
 from decimal import Decimal
-from typing import Any
+from typing import Any, override
 from uuid import UUID
-
-from typing_extensions import override
 
 from contribution.domain import Maybe
 
