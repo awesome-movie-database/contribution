@@ -6,6 +6,8 @@ from contribution.domain import (
     InvalidMovieEngTitleError,
     InvalidMovieOriginalTitleError,
     InvalidMovieDurationError,
+    InvalidRoleCharacterError,
+    InvalidRoleImportanceError,
     InvalidPersonFirstNameError,
     InvalidPersonLastNameError,
     InvalidPersonBirthOrDeathDateError,
@@ -38,6 +40,14 @@ def setup_exception_handlers(app: FastAPI) -> None:
     app.add_exception_handler(
         InvalidMovieDurationError,
         _on_invalid_movie_duration_error,
+    )
+    app.add_exception_handler(
+        InvalidRoleCharacterError,
+        _on_invalid_role_character_error,
+    )
+    app.add_exception_handler(
+        InvalidRoleImportanceError,
+        _on_invalid_role_importance_error,
     )
     app.add_exception_handler(
         InvalidPersonFirstNameError,
@@ -112,7 +122,24 @@ def _on_invalid_movie_original_title_error(*_) -> JSONResponse:
 
 def _on_invalid_movie_duration_error(*_) -> JSONResponse:
     return JSONResponse(
-        content=("Invalid duration. Duration must be more than 1 minute. "),
+        content="Invalid duration. Duration must be more than 1 minute.",
+        status_code=400,
+    )
+
+
+def _on_invalid_role_character_error(*_) -> JSONResponse:
+    return JSONResponse(
+        content=(
+            "Invalid length of character. Lenght of character must be "
+            "more than 1 character and less than 64 characters."
+        ),
+        status_code=400,
+    )
+
+
+def _on_invalid_role_importance_error(*_) -> JSONResponse:
+    return JSONResponse(
+        content="Invalid importance. Importance must be more than 1 point",
         status_code=400,
     )
 
