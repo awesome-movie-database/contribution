@@ -3,6 +3,7 @@ from dishka import Provider, Scope
 from contribution.application import (
     AccessConcern,
     EnsurePersonsExist,
+    ValidateRoles,
     CreateAndSaveRoles,
     DeleteRoles,
     CreateAndSaveWriters,
@@ -17,6 +18,7 @@ def application_services_provider_factory() -> Provider:
 
     provider.provide(AccessConcern, scope=Scope.APP)
     provider.provide(EnsurePersonsExist)
+    provider.provide(ValidateRoles, scope=Scope.APP)
     provider.provide(CreateAndSaveRoles)
     provider.provide(DeleteRoles)
     provider.provide(CreateAndSaveWriters)

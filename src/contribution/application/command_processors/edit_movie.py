@@ -16,6 +16,7 @@ from contribution.application.common import (
     OperationId,
     AccessConcern,
     EnsurePersonsExist,
+    ValidateRoles,
     CommandProcessor,
     AuthorizationProcessor,
     TransactionProcessor,
@@ -49,6 +50,7 @@ def edit_movie_factory(
     edit_movie: EditMovie,
     access_concern: AccessConcern,
     ensure_persons_exist: EnsurePersonsExist,
+    validate_roles: ValidateRoles,
     edit_movie_contribution_gateway: EditMovieContributionGateway,
     user_gateway: UserGateway,
     movie_gateway: MovieGateway,
@@ -65,6 +67,7 @@ def edit_movie_factory(
     edit_movie_processor = EditMovieProcessor(
         edit_movie=edit_movie,
         ensure_persons_exist=ensure_persons_exist,
+        validate_roles=validate_roles,
         edit_movie_contribution_gateway=edit_movie_contribution_gateway,
         user_gateway=user_gateway,
         movie_gateway=movie_gateway,
@@ -105,6 +108,7 @@ class EditMovieProcessor:
         *,
         edit_movie: EditMovie,
         ensure_persons_exist: EnsurePersonsExist,
+        validate_roles: ValidateRoles,
         edit_movie_contribution_gateway: EditMovieContributionGateway,
         user_gateway: UserGateway,
         movie_gateway: MovieGateway,
@@ -116,6 +120,7 @@ class EditMovieProcessor:
     ):
         self._edit_movie = edit_movie
         self._ensure_persons_exist = ensure_persons_exist
+        self._validate_roles = validate_roles
         self._edit_movie_contribution_gateway = edit_movie_contribution_gateway
         self._user_gateway = user_gateway
         self._movie_gateway = movie_gateway
@@ -149,6 +154,8 @@ class EditMovieProcessor:
             *(crew_member.person_id for crew_member in command.add_crew),
         ]
         await self._ensure_persons_exist(person_ids)
+
+        self._validate_roles(command.add_roles)
 
         contribution = self._edit_movie(
             id=EditMovieContributionId(uuid7()),
