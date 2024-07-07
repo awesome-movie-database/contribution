@@ -9,7 +9,6 @@ from contribution.application import (
     DeleteWriters,
     CreateAndSaveCrew,
     DeleteCrew,
-    CreatePhotoFromObj,
 )
 
 
@@ -24,6 +23,5 @@ def application_services_provider_factory() -> Provider:
     provider.provide(DeleteWriters)
     provider.provide(CreateAndSaveCrew)
     provider.provide(DeleteCrew)
-    provider.provide(CreatePhotoFromObj)
 
     return provider

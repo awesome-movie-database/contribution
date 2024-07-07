@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Iterable, Optional
 from datetime import date
 
-from contribution.domain import Sex
+from contribution.domain import Sex, PhotoUrl
 
 
 @dataclass(frozen=True, slots=True)
@@ -12,4 +12,4 @@ class AddPersonCommand:
     sex: Sex
     birth_date: date
     death_date: Optional[date]
-    photos: Iterable[bytes]
+    photos: Iterable[PhotoUrl]

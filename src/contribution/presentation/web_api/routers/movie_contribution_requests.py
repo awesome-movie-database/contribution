@@ -29,7 +29,7 @@ router = APIRouter(tags=["Movie contribution requests"])
 @inject
 async def add_movie(
     *,
-    command: FromDishka[AddMovieCommand],
+    command: AddMovieCommand,
     command_processor: FromDishka[AddMovieCommandProcessor],
 ) -> AddMovieContributionId:
     """
@@ -43,7 +43,7 @@ async def add_movie(
 @inject
 async def edit_movie(
     *,
-    command: FromDishka[EditMovieCommand],
+    command: EditMovieCommand,
     command_processor: FromDishka[EditMovieCommandProcessor],
 ) -> EditMovieContributionId:
     """

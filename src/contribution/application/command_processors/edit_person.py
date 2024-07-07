@@ -10,7 +10,6 @@ from contribution.domain import (
 from contribution.application.common import (
     OperationId,
     AccessConcern,
-    CreatePhotoFromObj,
     CommandProcessor,
     AuthorizationProcessor,
     TransactionProcessor,
@@ -21,7 +20,6 @@ from contribution.application.common import (
     UserGateway,
     PersonGateway,
     PermissionsGateway,
-    PhotoGateway,
     UnitOfWork,
     IdentityProvider,
     OnEventOccurred,
@@ -37,13 +35,11 @@ def edit_person_factory(
     operation_id: OperationId,
     edit_person: EditPerson,
     access_concern: AccessConcern,
-    create_photo_from_obj: CreatePhotoFromObj,
     edit_person_contribution_gateway: EditPersonContributionGateway,
     user_gateway: UserGateway,
     person_gateway: PersonGateway,
     permissions_gateway: PermissionsGateway,
     unit_of_work: UnitOfWork,
-    photo_gateway: PhotoGateway,
     identity_provider: IdentityProvider,
     on_person_edited: OnEventOccurred[PersonEditedEvent],
 ) -> CommandProcessor[EditPersonCommand, EditPersonContributionId]:
@@ -51,11 +47,9 @@ def edit_person_factory(
 
     add_person_processor = EditPersonProcessor(
         edit_person=edit_person,
-        create_photo_from_obj=create_photo_from_obj,
         edit_person_contribution_gateway=edit_person_contribution_gateway,
         user_gateway=user_gateway,
         person_gateway=person_gateway,
-        photo_gateway=photo_gateway,
         identity_provider=identity_provider,
         current_timestamp=current_timestamp,
     )
@@ -67,7 +61,6 @@ def edit_person_factory(
     )
     callback_processor = EditPersonCallbackProcessor(
         processor=authz_processor,
-        create_photo_from_obj=create_photo_from_obj,
         identity_provider=identity_provider,
         on_person_edited=on_person_edited,
         current_timestamp=current_timestamp,
@@ -90,22 +83,18 @@ class EditPersonProcessor:
         self,
         *,
         edit_person: EditPerson,
-        create_photo_from_obj: CreatePhotoFromObj,
         edit_person_contribution_gateway: EditPersonContributionGateway,
         user_gateway: UserGateway,
         person_gateway: PersonGateway,
-        photo_gateway: PhotoGateway,
         identity_provider: IdentityProvider,
         current_timestamp: datetime,
     ):
         self._edit_person = edit_person
-        self._create_photo_from_obj = create_photo_from_obj
         self._edit_person_contribution_gateway = (
             edit_person_contribution_gateway
         )
         self._user_gateway = user_gateway
         self._person_gateway = person_gateway
-        self._photo_gateway = photo_gateway
         self._identity_provider = identity_provider
         self._current_timestamp = current_timestamp
 
@@ -123,10 +112,6 @@ class EditPersonProcessor:
         if not person:
             raise PersonDoesNotExistError()
 
-        add_photos = [
-            self._create_photo_from_obj(obj) for obj in command.add_photos
-        ]
-
         contribution = self._edit_person(
             id=EditPersonContributionId(uuid7()),
             author=author,
@@ -136,12 +121,10 @@ class EditPersonProcessor:
             sex=command.sex,
             birth_date=command.birth_date,
             death_date=command.death_date,
-            add_photos=[photo.url for photo in add_photos],
+            add_photos=command.add_photos,
             current_timestamp=self._current_timestamp,
         )
         await self._edit_person_contribution_gateway.save(contribution)
-
-        await self._photo_gateway.save_many(add_photos)
 
         return contribution.id
 
@@ -151,13 +134,11 @@ class EditPersonCallbackProcessor:
         self,
         *,
         processor: AuthorizationProcessor,
-        create_photo_from_obj: CreatePhotoFromObj,
         identity_provider: IdentityProvider,
         on_person_edited: OnEventOccurred[PersonEditedEvent],
         current_timestamp: datetime,
     ):
         self._processor = processor
-        self._create_photo_from_obj = create_photo_from_obj
         self._identity_provider = identity_provider
         self._on_person_edited = on_person_edited
         self._current_timestamp = current_timestamp
@@ -168,9 +149,6 @@ class EditPersonCallbackProcessor:
     ) -> EditPersonContributionId:
         result = await self._processor.process(command)
         current_user_id = await self._identity_provider.user_id()
-        add_photos = [
-            self._create_photo_from_obj(obj) for obj in command.add_photos
-        ]
 
         event = PersonEditedEvent(
             contribution_id=result,
@@ -181,7 +159,7 @@ class EditPersonCallbackProcessor:
             last_name=command.last_name,
             birth_date=command.birth_date,
             death_date=command.death_date,
-            add_photos=[photo.url for photo in add_photos],
+            add_photos=command.add_photos,
             edited_at=self._current_timestamp,
         )
         await self._on_person_edited(event)

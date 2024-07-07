@@ -11,7 +11,6 @@ from contribution.domain import (
 from contribution.application.common import (
     OperationId,
     AccessConcern,
-    CreatePhotoFromObj,
     CommandProcessor,
     AuthorizationProcessor,
     TransactionProcessor,
@@ -20,7 +19,6 @@ from contribution.application.common import (
     AddPersonContributionGateway,
     UserGateway,
     PermissionsGateway,
-    PhotoGateway,
     UnitOfWork,
     IdentityProvider,
     OnEventOccurred,
@@ -36,12 +34,10 @@ def add_person_factory(
     operation_id: OperationId,
     add_person: AddPerson,
     access_concern: AccessConcern,
-    create_photo_from_obj: CreatePhotoFromObj,
     add_person_contribution_gateway: AddPersonContributionGateway,
     user_gateway: UserGateway,
     permissions_gateway: PermissionsGateway,
     unit_of_work: UnitOfWork,
-    photo_gateway: PhotoGateway,
     identity_provider: IdentityProvider,
     on_person_added: OnEventOccurred[PersonAddedEvent],
 ) -> CommandProcessor[AddPersonCommand, AddPersonContributionId]:
@@ -49,10 +45,8 @@ def add_person_factory(
 
     add_person_processor = AddPersonProcessor(
         add_person=add_person,
-        create_photo_from_obj=create_photo_from_obj,
         add_person_contribution_gateway=add_person_contribution_gateway,
         user_gateway=user_gateway,
-        photo_gateway=photo_gateway,
         identity_provider=identity_provider,
         current_timestamp=current_timestamp,
     )
@@ -64,7 +58,6 @@ def add_person_factory(
     )
     callback_processor = AddPersonCallbackProcessor(
         processor=authz_processor,
-        create_photo_from_obj=create_photo_from_obj,
         identity_provider=identity_provider,
         on_person_added=on_person_added,
         current_timestamp=current_timestamp,
@@ -87,18 +80,14 @@ class AddPersonProcessor:
         self,
         *,
         add_person: AddPerson,
-        create_photo_from_obj: CreatePhotoFromObj,
         add_person_contribution_gateway: AddPersonContributionGateway,
         user_gateway: UserGateway,
-        photo_gateway: PhotoGateway,
         identity_provider: IdentityProvider,
         current_timestamp: datetime,
     ):
         self._add_person = add_person
-        self._create_photo_from_obj = create_photo_from_obj
         self._add_person_contribution_gateway = add_person_contribution_gateway
         self._user_gateway = user_gateway
-        self._photo_gateway = photo_gateway
         self._identity_provider = identity_provider
         self._current_timestamp = current_timestamp
 
@@ -112,8 +101,6 @@ class AddPersonProcessor:
         if not author:
             raise UserDoesNotExistError()
 
-        photos = [self._create_photo_from_obj(obj) for obj in command.photos]
-
         contribution = self._add_person(
             id=AddPersonContributionId(uuid7()),
             author=author,
@@ -122,12 +109,10 @@ class AddPersonProcessor:
             sex=command.sex,
             birth_date=command.birth_date,
             death_date=command.death_date,
-            photos=[photo.url for photo in photos],
+            photos=command.photos,
             current_timestamp=self._current_timestamp,
         )
         await self._add_person_contribution_gateway.save(contribution)
-
-        await self._photo_gateway.save_many(photos)
 
         return contribution.id
 
@@ -137,13 +122,11 @@ class AddPersonCallbackProcessor:
         self,
         *,
         processor: AuthorizationProcessor,
-        create_photo_from_obj: CreatePhotoFromObj,
         identity_provider: IdentityProvider,
         on_person_added: OnEventOccurred[PersonAddedEvent],
         current_timestamp: datetime,
     ):
         self._processor = processor
-        self._create_photo_from_obj = create_photo_from_obj
         self._identity_provider = identity_provider
         self._on_person_added = on_person_added
         self._current_timestamp = current_timestamp
@@ -154,7 +137,6 @@ class AddPersonCallbackProcessor:
     ) -> AddPersonContributionId:
         result = await self._processor.process(command)
         current_user_id = await self._identity_provider.user_id()
-        photos = [self._create_photo_from_obj(obj) for obj in command.photos]
 
         event = PersonAddedEvent(
             contribtion_id=result,
@@ -164,7 +146,7 @@ class AddPersonCallbackProcessor:
             sex=command.sex,
             birth_date=command.birth_date,
             death_date=command.death_date,
-            photos=[photo.url for photo in photos],
+            photos=command.photos,
             added_at=self._current_timestamp,
         )
         await self._on_person_added(event)

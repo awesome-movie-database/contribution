@@ -12,7 +12,6 @@ from contribution.application.common import (
     OperationId,
     AccessConcern,
     EnsurePersonsExist,
-    CreatePhotoFromObj,
     CommandProcessor,
     AuthorizationProcessor,
     TransactionProcessor,
@@ -22,7 +21,6 @@ from contribution.application.common import (
     AddMovieContributionGateway,
     UserGateway,
     PermissionsGateway,
-    PhotoGateway,
     UnitOfWork,
     IdentityProvider,
     OnEventOccurred,
@@ -39,11 +37,9 @@ def add_movie_factory(
     add_movie: AddMovie,
     access_concern: AccessConcern,
     ensure_persons_exist: EnsurePersonsExist,
-    create_photo_from_obj: CreatePhotoFromObj,
     add_movie_contribution_gateway: AddMovieContributionGateway,
     user_gateway: UserGateway,
     permissions_gateway: PermissionsGateway,
-    photo_gateway: PhotoGateway,
     unit_of_work: UnitOfWork,
     identity_provider: IdentityProvider,
     on_movie_added: OnEventOccurred[MovieAddedEvent],
@@ -53,10 +49,8 @@ def add_movie_factory(
     add_movie_processor = AddMovieProcessor(
         add_movie=add_movie,
         ensure_persons_exist=ensure_persons_exist,
-        create_photo_from_obj=create_photo_from_obj,
         add_movie_contribution_gateway=add_movie_contribution_gateway,
         user_gateway=user_gateway,
-        photo_gateway=photo_gateway,
         identity_provider=identity_provider,
         current_timestamp=current_timestamp,
     )
@@ -68,7 +62,6 @@ def add_movie_factory(
     )
     callback_processor = AddMovieCallbackProcessor(
         processor=authz_processor,
-        create_photo_from_obj=create_photo_from_obj,
         identity_provider=identity_provider,
         on_movie_added=on_movie_added,
         current_timestamp=current_timestamp,
@@ -92,19 +85,15 @@ class AddMovieProcessor:
         *,
         add_movie: AddMovie,
         ensure_persons_exist: EnsurePersonsExist,
-        create_photo_from_obj: CreatePhotoFromObj,
         add_movie_contribution_gateway: AddMovieContributionGateway,
         user_gateway: UserGateway,
-        photo_gateway: PhotoGateway,
         identity_provider: IdentityProvider,
         current_timestamp: datetime,
     ):
         self._add_movie = add_movie
         self._ensure_persons_exist = ensure_persons_exist
-        self._create_photo_from_obj = create_photo_from_obj
         self._add_movie_contribution_gateway = add_movie_contribution_gateway
         self._user_gateway = user_gateway
-        self._photo_gateway = photo_gateway
         self._identity_provider = identity_provider
         self._current_timestamp = current_timestamp
 
@@ -125,8 +114,6 @@ class AddMovieProcessor:
         ]
         await self._ensure_persons_exist(person_ids)
 
-        photos = [self._create_photo_from_obj(obj) for obj in command.photos]
-
         contribution = self._add_movie(
             id=AddMovieContributionId(uuid7()),
             author=author,
@@ -142,12 +129,10 @@ class AddMovieProcessor:
             roles=command.roles,
             writers=command.writers,
             crew=command.crew,
-            photos=[photo.url for photo in photos],
+            photos=command.photos,
             current_timestamp=self._current_timestamp,
         )
         await self._add_movie_contribution_gateway.save(contribution)
-
-        await self._photo_gateway.save_many(photos)
 
         return contribution.id
 
@@ -157,13 +142,11 @@ class AddMovieCallbackProcessor:
         self,
         *,
         processor: AuthorizationProcessor,
-        create_photo_from_obj: CreatePhotoFromObj,
         identity_provider: IdentityProvider,
         on_movie_added: OnEventOccurred[MovieAddedEvent],
         current_timestamp: datetime,
     ):
         self._processor = processor
-        self._create_photo_from_obj = create_photo_from_obj
         self._identity_provider = identity_provider
         self._on_movie_added = on_movie_added
         self._current_timestamp = current_timestamp
@@ -174,7 +157,6 @@ class AddMovieCallbackProcessor:
     ) -> AddMovieContributionId:
         result = await self._processor.process(command)
         current_user_id = await self._identity_provider.user_id()
-        photos = [self._create_photo_from_obj(obj) for obj in command.photos]
 
         event = MovieAddedEvent(
             contribution_id=result,
@@ -191,7 +173,7 @@ class AddMovieCallbackProcessor:
             roles=command.roles,
             writers=command.writers,
             crew=command.crew,
-            photos=[photo.url for photo in photos],
+            photos=command.photos,
             added_at=self._current_timestamp,
         )
         await self._on_movie_added(event)

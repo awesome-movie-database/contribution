@@ -14,6 +14,7 @@ from contribution.domain import (
     ContributionCrewMember,
     Country,
     Money,
+    PhotoUrl,
     Maybe,
 )
 
@@ -36,4 +37,4 @@ class EditMovieCommand:
     remove_writers: Collection[WriterId]
     add_crew: Iterable[ContributionCrewMember]
     remove_crew: Collection[CrewMemberId]
-    add_photos: Iterable[bytes]
+    add_photos: Iterable[PhotoUrl]

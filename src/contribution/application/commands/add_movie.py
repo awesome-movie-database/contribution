@@ -10,6 +10,7 @@ from contribution.domain import (
     ContributionCrewMember,
     Country,
     Money,
+    PhotoUrl,
 )
 
 
@@ -27,4 +28,4 @@ class AddMovieCommand:
     roles: Iterable[ContributionRole]
     writers: Iterable[ContributionWriter]
     crew: Iterable[ContributionCrewMember]
-    photos: Iterable[bytes]
+    photos: Iterable[PhotoUrl]

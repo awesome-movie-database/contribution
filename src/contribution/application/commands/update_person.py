@@ -5,6 +5,7 @@ from datetime import date
 from contribution.domain import (
     Sex,
     PersonId,
+    PhotoUrl,
     Maybe,
 )
 
@@ -17,4 +18,4 @@ class UpdatePersonCommand:
     sex: Maybe[Sex]
     birth_date: Maybe[date]
     death_date: Maybe[Optional[date]]
-    add_photos: Iterable[bytes]
+    add_photos: Iterable[PhotoUrl]

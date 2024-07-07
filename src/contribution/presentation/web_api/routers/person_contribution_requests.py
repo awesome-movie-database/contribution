@@ -29,7 +29,7 @@ router = APIRouter(tags=["Person contribution requests"])
 @inject
 async def add_person(
     *,
-    command: FromDishka[AddPersonCommand],
+    command: AddPersonCommand,
     command_processor: FromDishka[AddPersonCommandProcessor],
 ) -> AddPersonContributionId:
     """
@@ -43,7 +43,7 @@ async def add_person(
 @inject
 async def edit_person(
     *,
-    command: FromDishka[EditPersonCommand],
+    command: EditPersonCommand,
     command_processor: FromDishka[EditPersonCommandProcessor],
 ) -> EditPersonContributionId:
     """
