@@ -11,7 +11,7 @@ from contribution.presentation.web_api import (
 )
 
 
-def create_app() -> FastAPI:
+def create_web_api_app() -> FastAPI:
     app = FastAPI(
         title="Contribution",
         version="0.1.0",
@@ -25,6 +25,3 @@ def create_app() -> FastAPI:
     setup_exception_handlers(app)
 
     return app
-
-
-app = create_app()

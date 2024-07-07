@@ -33,8 +33,12 @@ dev = [
 ]
 web_api = [
     "fastapi==0.111.*",
-    "uvicorn==0.29.*",
+    "uvicorn[standart]==0.29.*",
+    "gunicorn==22.0.*",
 ]
 event_consumer = [
     "faststream==0.5.*",
 ]
+
+[project.scripts]
+contribution = "contribution.main.cli:main"
