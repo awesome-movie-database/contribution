@@ -224,7 +224,7 @@ class EditPersonLoggingProcessor:
                 extra={
                     "operation_id": self._operation_id,
                     "current_user_permissions": (
-                        await self._identity_provider.permissions(),
+                        await self._identity_provider.permissions()
                     ),
                 },
             )
@@ -237,15 +237,14 @@ class EditPersonLoggingProcessor:
             )
             raise e
         except PersonDoesNotExistError as e:
-            logger.error(
-                "Unexpected error occurred: Person doesn't exist",
+            logger.info(
+                "Expected error occurred: Person doesn't exist",
                 extra={"operation_id": self._operation_id},
             )
             raise e
         except Exception as e:
             logger.exception(
                 "Unexpected error occurred",
-                exc_info=e,
                 extra={
                     "operation_id": self._operation_id,
                     "error": e,

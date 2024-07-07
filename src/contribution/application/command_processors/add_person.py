@@ -202,12 +202,12 @@ class AddPersonLoggingProcessor:
         try:
             result = await self._processor.process(command)
         except NotEnoughPermissionsError as e:
-            logger.debug(
+            logger.info(
                 "Expected error occurred: User has not enough permissions",
                 extra={
                     "operation_id": self._operation_id,
                     "current_user_permissions": (
-                        await self._identity_provider.permissions(),
+                        await self._identity_provider.permissions()
                     ),
                 },
             )
@@ -228,7 +228,6 @@ class AddPersonLoggingProcessor:
         except Exception as e:
             logger.exception(
                 "Unexpected error occurred",
-                exc_info=e,
                 extra={
                     "operation_id": self._operation_id,
                     "error": e,

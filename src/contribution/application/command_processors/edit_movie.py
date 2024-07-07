@@ -321,12 +321,12 @@ class EditMovieLoggingProcessor:
         try:
             result = await self._processor.process(command)
         except NotEnoughPermissionsError as e:
-            logger.debug(
+            logger.info(
                 "Expected error occurred: User has not enough permissions",
                 extra={
                     "operation_id": self._operation_id,
                     "current_user_permissions": (
-                        await self._identity_provider.permissions(),
+                        await self._identity_provider.permissions()
                     ),
                 },
             )
@@ -345,13 +345,13 @@ class EditMovieLoggingProcessor:
             )
             raise e
         except UserIsNotActiveError as e:
-            logger.debug(
+            logger.info(
                 "Expected error occurred: User is not active",
                 extra={"operation_id": self._operation_id},
             )
             raise e
         except RolesDoNotExistError as e:
-            logger.debug(
+            logger.info(
                 "Expected error occurred: "
                 "Roles ids entered by user do not belong to any roles",
                 extra={
@@ -361,7 +361,7 @@ class EditMovieLoggingProcessor:
             )
             raise e
         except WritersDoNotExistError as e:
-            logger.debug(
+            logger.info(
                 "Expected error occurred: "
                 "Writers ids entered by user do not belong to any writers",
                 extra={
@@ -371,18 +371,20 @@ class EditMovieLoggingProcessor:
             )
             raise e
         except CrewMembersDoNotExistError as e:
-            logger.debug(
+            logger.info(
                 "Expected error occurred: "
                 "Crew members ids entered by user do not belong to any"
                 "crew members",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_missing_crew_members": e.ids_of_missing_crew_members,
+                    "ids_of_missing_crew_members": (
+                        e.ids_of_missing_crew_members
+                    ),
                 },
             )
             raise e
         except PersonsDoNotExistError as e:
-            logger.debug(
+            logger.info(
                 "Expected error occurred: "
                 "Person ids entered by user do not belong to any persons",
                 extra={
@@ -394,7 +396,6 @@ class EditMovieLoggingProcessor:
         except Exception as e:
             logger.exception(
                 "Unexpected error occurred",
-                exc_info=e,
                 extra={
                     "operation_id": self._operation_id,
                     "error": e,
