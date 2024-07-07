@@ -15,25 +15,25 @@ from contribution.presentation.cli.exceptions import ValueIsNotDictError
 _retort = Retort()
 
 
-def json_to_money(json_: str) -> Money:
+def json_to_money(_, json_: str) -> Money:
     json_as_dict = _ensure_dict(json.loads(json_))
     money = _retort.load(json_as_dict, Money)
     return money
 
 
-def jsons_to_movie_roles(jsons: str) -> list[MovieRole]:
+def jsons_to_movie_roles(_, jsons: str) -> list[MovieRole]:
     jsons_as_dicts = [_ensure_dict(json.loads(json_)) for json_ in jsons]
     movie_roles = _retort.load(jsons_as_dicts, list[MovieRole])
     return movie_roles
 
 
-def jsons_to_movie_writers(jsons: str) -> list[MovieWriter]:
+def jsons_to_movie_writers(_, jsons: str) -> list[MovieWriter]:
     jsons_as_dicts = [_ensure_dict(json.loads(json_)) for json_ in jsons]
     movie_writers = _retort.load(jsons_as_dicts, list[MovieWriter])
     return movie_writers
 
 
-def jsons_to_movie_crew(jsons: str) -> list[MovieCrewMember]:
+def jsons_to_movie_crew(_, jsons: str) -> list[MovieCrewMember]:
     jsons_as_dicts = [_ensure_dict(json.loads(json_)) for json_ in jsons]
     movie_crew = _retort.load(jsons_as_dicts, list[MovieCrewMember])
     return movie_crew

@@ -49,7 +49,7 @@ async def create_movie(
     revenue: Annotated[
         Optional[Money],
         Parameter(
-            "--budget",
+            "--revenue",
             converter=json_to_money,
             help=(
                 """
@@ -61,7 +61,7 @@ async def create_movie(
         ),
     ] = None,
     roles: Annotated[
-        Iterable[MovieRole],
+        Optional[Iterable[MovieRole]],
         Parameter(
             "--roles",
             converter=jsons_to_movie_roles,
@@ -81,9 +81,9 @@ async def create_movie(
                 """
             ),
         ),
-    ] = [],
+    ] = None,
     writers: Annotated[
-        Iterable[MovieWriter],
+        Optional[Iterable[MovieWriter]],
         Parameter(
             "--writers",
             converter=jsons_to_movie_writers,
@@ -101,9 +101,9 @@ async def create_movie(
                 """
             ),
         ),
-    ] = [],
+    ] = None,
     crew: Annotated[
-        Iterable[MovieCrewMember],
+        Optional[Iterable[MovieCrewMember]],
         Parameter(
             "--crew",
             converter=jsons_to_movie_crew,
@@ -121,8 +121,11 @@ async def create_movie(
                 """
             ),
         ),
-    ] = [],
+    ] = None,
 ) -> None:
+    """
+    Creates new movie. Does not notify other services about a new movie.
+    """
     ioc_container = ioc_container_factory()
 
     command = CreateMovieCommand(
@@ -136,9 +139,9 @@ async def create_movie(
         duration=duration,
         budget=budget,
         revenue=revenue,
-        roles=roles,
-        writers=writers,
-        crew=crew,
+        roles=roles or [],
+        writers=writers or [],
+        crew=crew or [],
     )
     command_processor = await ioc_container.get(
         CommandProcessor[CreateMovieCommand, None],

@@ -7,6 +7,9 @@ from contribution.presentation.cli import create_movie
 
 
 def run_web_api() -> None:
+    """
+    Runs the server with web api at 0.0.0.0:8000.
+    """
     sys.argv = [
         "gunicorn",
         "--bind",
