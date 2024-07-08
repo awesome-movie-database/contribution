@@ -10,6 +10,7 @@ from contribution.application import (
     AddMovieCommand,
     EditMovieCommand,
 )
+from contribution.presentation.web_api.requests import EditMovieRequest
 
 
 AddMovieCommandProcessor = CommandProcessor[
@@ -39,15 +40,16 @@ async def add_movie(
     return await command_processor.process(command)
 
 
-@router.post("/edit-movie-contribution-requests")
+@router.post("/edit-movie-contribution-requests", response_model=None)
 @inject
 async def edit_movie(
     *,
-    command: EditMovieCommand,
+    request: EditMovieRequest,
     command_processor: FromDishka[EditMovieCommandProcessor],
 ) -> EditMovieContributionId:
     """
     Creates request to edit movie on **amdb** and returns
     its id.
     """
+    command = request.to_command()
     return await command_processor.process(command)

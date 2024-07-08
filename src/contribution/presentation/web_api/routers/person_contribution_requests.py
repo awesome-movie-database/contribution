@@ -10,6 +10,7 @@ from contribution.application import (
     AddPersonCommand,
     EditPersonCommand,
 )
+from contribution.presentation.web_api.requests import EditPersonRequest
 
 
 AddPersonCommandProcessor = CommandProcessor[
@@ -43,11 +44,12 @@ async def add_person(
 @inject
 async def edit_person(
     *,
-    command: EditPersonCommand,
+    request: EditPersonRequest,
     command_processor: FromDishka[EditPersonCommandProcessor],
 ) -> EditPersonContributionId:
     """
     Creates request to edit person on **amdb** and returns
     its id.
     """
+    command = request.to_command()
     return await command_processor.process(command)
