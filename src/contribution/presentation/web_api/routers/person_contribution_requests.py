@@ -33,7 +33,7 @@ async def add_person(
     command_processor: FromDishka[AddPersonCommandProcessor],
 ) -> AddPersonContributionId:
     """
-    Create request to add person on **amdb** and returns
+    Creates request to add person on **amdb** and returns
     its id.
     """
     return await command_processor.process(command)
@@ -47,7 +47,7 @@ async def edit_person(
     command_processor: FromDishka[EditPersonCommandProcessor],
 ) -> EditPersonContributionId:
     """
-    Create request to edit person on **amdb** and returns
+    Creates request to edit person on **amdb** and returns
     its id.
     """
     return await command_processor.process(command)
