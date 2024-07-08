@@ -17,7 +17,7 @@ from contribution.application import (
     MovieCrewMember,
     CreateMovieCommand,
 )
-from contribution.infrastructure import ioc_container_factory
+from contribution.infrastructure import cli_ioc_container_factory
 from contribution.presentation.cli.converters import (
     json_to_money,
     jsons_to_movie_roles,
@@ -126,7 +126,7 @@ async def create_movie(
     """
     Creates new movie. Does not notify other services about a new movie.
     """
-    ioc_container = ioc_container_factory()
+    ioc_container = cli_ioc_container_factory()
 
     command = CreateMovieCommand(
         id=id,

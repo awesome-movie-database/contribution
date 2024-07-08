@@ -6,7 +6,15 @@ from contribution.infrastructure.message_broker import rabbitmq_config_from_env
 from contribution.infrastructure.s3 import minio_config_from_env
 
 
-def configs_provider_factory() -> Provider:
+def cli_configs_provider_factory() -> Provider:
+    provider = Provider(Scope.APP)
+
+    provider.provide(mongodb_config_from_env)
+
+    return provider
+
+
+def web_api_configs_provider_factory() -> Provider:
     provider = Provider(Scope.APP)
 
     provider.provide(mongodb_config_from_env)

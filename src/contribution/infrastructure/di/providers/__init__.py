@@ -1,5 +1,6 @@
 __all__ = (
-    "configs_provider_factory",
+    "cli_configs_provider_factory",
+    "web_api_configs_provider_factory",
     "domain_validators_provider_factory",
     "domain_services_provider_factrory",
     "motor_provider_factory",
@@ -14,12 +15,19 @@ __all__ = (
     "cache_provider_factory",
     "permissions_storage_provider_factory",
     "photo_storage_provider_factory",
-    "identity_provider_provider_factory",
+    "fastapi_request_provider_factory",
+    "web_api_identity_provider_provider_factory",
+    "cli_operation_id_provider_factory",
+    "web_api_operation_id_provider_factory",
     "application_services_provider_factory",
-    "command_processors_provider_factory",
+    "cli_command_processors_provider_factory",
+    "web_api_command_processors_provider_factory",
 )
 
-from .configs import configs_provider_factory
+from .configs import (
+    cli_configs_provider_factory,
+    web_api_configs_provider_factory,
+)
 from .domain_validators import domain_validators_provider_factory
 from .domain_services import domain_services_provider_factrory
 from .motor_ import motor_provider_factory
@@ -34,6 +42,14 @@ from .data_mappers import data_mappers_provider_factory
 from .cache import cache_provider_factory
 from .permissions_storage import permissions_storage_provider_factory
 from .photo_storage import photo_storage_provider_factory
-from .identity_provider import identity_provider_provider_factory
+from .fastapi_request import fastapi_request_provider_factory
+from .identity_provider import web_api_identity_provider_provider_factory
+from .operation_id import (
+    cli_operation_id_provider_factory,
+    web_api_operation_id_provider_factory,
+)
 from .application_services import application_services_provider_factory
-from .command_processors import command_processors_provider_factory
+from .command_processors import (
+    cli_command_processors_provider_factory,
+    web_api_command_processors_provider_factory,
+)

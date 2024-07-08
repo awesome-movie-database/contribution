@@ -5,76 +5,36 @@ from contribution.domain import (
     EditMovieContributionId,
     AddPersonContributionId,
     EditPersonContributionId,
-    AchievementId,
 )
 from contribution.application import (
     CommandProcessor,
-    create_user_factory,
-    update_user_factory,
     create_movie_factory,
-    update_movie_factory,
-    create_person_factory,
-    update_person_factory,
     add_movie_factory,
     edit_movie_factory,
     add_person_factory,
     edit_person_factory,
-    accept_movie_adding_factory,
-    accept_movie_editing_factory,
-    reject_movie_adding_factory,
-    reject_movie_editing_factory,
-    accept_person_adding_factory,
-    accept_person_editing_factory,
-    reject_person_adding_factory,
-    reject_person_editing_factory,
-    CreateUserCommand,
-    UpdateUserCommand,
     CreateMovieCommand,
-    UpdateMovieCommand,
-    CreatePersonCommand,
-    UpdatePersonCommand,
     AddMovieCommand,
     EditMovieCommand,
     AddPersonCommand,
     EditPersonCommand,
-    AcceptMovieAddingCommand,
-    AcceptMovieEditingCommand,
-    RejectMovieAddingCommand,
-    RejectMovieEditingCommand,
-    AcceptPersonAddingCommand,
-    AcceptPersonEditingCommand,
-    RejectPersonAddingCommand,
-    RejectPersonEditingCommand,
 )
 
 
-def command_processors_provider_factory() -> Provider:
+def cli_command_processors_provider_factory() -> Provider:
     provider = Provider(Scope.REQUEST)
 
-    provider.provide(
-        create_user_factory,
-        provides=CommandProcessor[CreateUserCommand, None],
-    )
-    provider.provide(
-        update_user_factory,
-        provides=CommandProcessor[UpdateUserCommand, None],
-    )
     provider.provide(
         create_movie_factory,
         provides=CommandProcessor[CreateMovieCommand, None],
     )
-    provider.provide(
-        update_movie_factory,
-        provides=CommandProcessor[UpdateMovieCommand, None],
-    )
-    provider.provide(
-        create_person_factory,
-        provides=CommandProcessor[CreatePersonCommand, None],
-    )
-    provider.provide(
-        update_person_factory,
-        provides=CommandProcessor[UpdatePersonCommand, None],
-    )
+
+    return provider
+
+
+def web_api_command_processors_provider_factory() -> Provider:
+    provider = Provider(Scope.REQUEST)
+
     provider.provide(
         add_movie_factory,
         provides=CommandProcessor[AddMovieCommand, AddMovieContributionId],
@@ -90,38 +50,6 @@ def command_processors_provider_factory() -> Provider:
     provider.provide(
         edit_person_factory,
         provides=CommandProcessor[EditPersonCommand, EditPersonContributionId],
-    )
-    provider.provide(
-        accept_movie_adding_factory,
-        provides=CommandProcessor[AcceptMovieAddingCommand, AchievementId],
-    )
-    provider.provide(
-        accept_movie_editing_factory,
-        provides=CommandProcessor[AcceptMovieEditingCommand, AchievementId],
-    )
-    provider.provide(
-        reject_movie_adding_factory,
-        provides=CommandProcessor[RejectMovieAddingCommand, AchievementId],
-    )
-    provider.provide(
-        reject_movie_editing_factory,
-        provides=CommandProcessor[RejectMovieEditingCommand, AchievementId],
-    )
-    provider.provide(
-        accept_person_adding_factory,
-        provides=CommandProcessor[AcceptPersonAddingCommand, AchievementId],
-    )
-    provider.provide(
-        accept_person_editing_factory,
-        provides=CommandProcessor[AcceptPersonEditingCommand, AchievementId],
-    )
-    provider.provide(
-        reject_person_adding_factory,
-        provides=CommandProcessor[RejectPersonAddingCommand, AchievementId],
-    )
-    provider.provide(
-        reject_person_editing_factory,
-        provides=CommandProcessor[RejectPersonEditingCommand, AchievementId],
     )
 
     return provider
