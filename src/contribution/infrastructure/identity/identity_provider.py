@@ -6,7 +6,7 @@ from contribution.domain import UserId
 from .permissions_storage import PermissionsStorage
 
 
-def web_api_raw_identity_factory_provider_factory(
+def web_api_identity_provider_factory(
     request: Request,
     permissions_storage: PermissionsStorage,
 ) -> "RawIdentityProvider":
