@@ -10,7 +10,7 @@ from contribution.infrastructure.identity import (
 def identity_provider_provider_factory() -> Provider:
     provider = Provider(Scope.REQUEST)
 
-    provider.from_context(provides=Request, scope=Scope.REQUEST)
+    provider.from_context(provides=Request)
     provider.provide(
         web_api_identity_provider_factory,
         provides=IdentityProvider,
