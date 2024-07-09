@@ -6,10 +6,15 @@ from aio_pika import Connection, Channel, Exchange, connect_robust
 from .config import RabbitMQConfig
 
 
+@asynccontextmanager
 async def aio_pika_connection_factory(
     rabbitmq_config: RabbitMQConfig,
-) -> Connection:
-    return await connect_robust(url=rabbitmq_config.url)
+) -> AsyncGenerator[Connection, None]:
+    connection = await connect_robust(url=rabbitmq_config.url)
+    try:
+        yield connection
+    finally:
+        await connection.close()
 
 
 @asynccontextmanager
