@@ -52,11 +52,8 @@ async def create_movie(
             "--revenue",
             converter=json_to_money,
             help=(
-                """
-                Revenue in json format.
-
-                Example: {"amount": "100", "currency": "USD"}
-                """
+                "Revenue in json format."
+                'Example: {"amount": "100", "currency": "USD"}'
             ),
         ),
     ] = None,
