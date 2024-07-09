@@ -6,6 +6,7 @@ __all__ = (
     "motor_provider_factory",
     "redis_provider_factory",
     "aioboto3_provider_factory",
+    "aio_pika_provider_factory",
     "identity_maps_provider_factory",
     "collections_provider_factory",
     "collection_committers_provider_factory",
@@ -19,6 +20,7 @@ __all__ = (
     "web_api_identity_provider_provider_factory",
     "cli_operation_id_provider_factory",
     "web_api_operation_id_provider_factory",
+    "event_publishers_provider_factory",
     "application_services_provider_factory",
     "cli_command_processors_provider_factory",
     "web_api_command_processors_provider_factory",
@@ -33,6 +35,7 @@ from .domain_services import domain_services_provider_factrory
 from .motor_ import motor_provider_factory
 from .redis_ import redis_provider_factory
 from .aioboto3_ import aioboto3_provider_factory
+from .aio_pika_ import aio_pika_provider_factory
 from .identity_maps import identity_maps_provider_factory
 from .collections import collections_provider_factory
 from .collection_committers import collection_committers_provider_factory
@@ -48,6 +51,7 @@ from .operation_id import (
     cli_operation_id_provider_factory,
     web_api_operation_id_provider_factory,
 )
+from .event_publishers import event_publishers_provider_factory
 from .application_services import application_services_provider_factory
 from .command_processors import (
     cli_command_processors_provider_factory,
