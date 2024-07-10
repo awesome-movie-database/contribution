@@ -1,5 +1,4 @@
-from contextlib import asynccontextmanager, contextmanager
-from typing import AsyncGenerator, Generator
+from typing import AsyncGenerator
 
 from motor.motor_asyncio import (
     AsyncIOMotorClient,
@@ -10,21 +9,15 @@ from motor.motor_asyncio import (
 from .config import MongoDBConfig
 
 
-@contextmanager
 def motor_client_factory(
     mongodb_config: MongoDBConfig,
-) -> Generator[AsyncIOMotorClient, None, None]:
-    client = AsyncIOMotorClient(
+) -> AsyncIOMotorClient:
+    return AsyncIOMotorClient(
         host=mongodb_config.url,
         port=mongodb_config.port,
     )
-    try:
-        yield client
-    finally:
-        client.close()
 
 
-@asynccontextmanager
 async def motor_session_factory(
     motor_client: AsyncIOMotorClient,
 ) -> AsyncGenerator[AsyncIOMotorClientSession, None]:

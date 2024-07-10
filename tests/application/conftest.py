@@ -126,7 +126,7 @@ def on_event_occurred() -> OnEventOccurred:
 async def motor_session(
     motor_client: AsyncIOMotorClient,
 ) -> AsyncGenerator[AsyncIOMotorClientSession, None]:
-    async with motor_session_factory(motor_client) as motor_session:
+    async for motor_session in motor_session_factory(motor_client):
         yield motor_session
 
 

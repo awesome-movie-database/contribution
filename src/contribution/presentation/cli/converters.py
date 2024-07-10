@@ -1,5 +1,7 @@
 import json
 from typing import Any
+from datetime import date
+from uuid import UUID
 
 from adaptix import Retort
 
@@ -13,6 +15,14 @@ from contribution.presentation.cli.exceptions import ValueIsNotDictError
 
 
 _retort = Retort()
+
+
+def str_to_uuid(_, uuid_as_str: str) -> UUID:
+    return UUID(uuid_as_str)
+
+
+def str_to_date(_, date_as_str: str) -> date:
+    return date.fromisoformat(date_as_str)
 
 
 def json_to_money(_, json_: str) -> Money:

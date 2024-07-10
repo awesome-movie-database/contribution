@@ -19,6 +19,8 @@ from contribution.application import (
 )
 from contribution.infrastructure import cli_ioc_container_factory
 from contribution.presentation.cli.converters import (
+    str_to_uuid,
+    str_to_date,
     json_to_money,
     jsons_to_movie_roles,
     jsons_to_movie_writers,
@@ -27,10 +29,16 @@ from contribution.presentation.cli.converters import (
 
 
 async def create_movie(
-    id: Annotated[MovieId, Parameter("--id")],
+    id: Annotated[
+        MovieId,
+        Parameter("--id", converter=str_to_uuid),
+    ],
     eng_title: Annotated[str, Parameter("--eng-title")],
     original_title: Annotated[str, Parameter("--original-title")],
-    release_date: Annotated[date, Parameter("--release-date")],
+    release_date: Annotated[
+        date,
+        Parameter("--release-date", converter=str_to_date),
+    ],
     countries: Annotated[Iterable[Country], Parameter("--countries")],
     genres: Annotated[Iterable[Genre], Parameter("--genres")],
     mpaa: Annotated[MPAA, Parameter("--mpaa")],
@@ -140,9 +148,10 @@ async def create_movie(
         writers=writers or [],
         crew=crew or [],
     )
-    command_processor = await ioc_container.get(
-        CommandProcessor[CreateMovieCommand, None],
-    )
-    await command_processor.process(command)
+    async with ioc_container() as request_ioc_contanier:
+        command_processor = await request_ioc_contanier.get(
+            CommandProcessor[CreateMovieCommand, None],
+        )
+        await command_processor.process(command)
 
     print("Movie has been added successfully")

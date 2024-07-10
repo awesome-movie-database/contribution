@@ -1,4 +1,3 @@
-from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 from aio_pika import Connection, Channel, Exchange, connect_robust
@@ -6,18 +5,12 @@ from aio_pika import Connection, Channel, Exchange, connect_robust
 from .config import RabbitMQConfig
 
 
-@asynccontextmanager
 async def aio_pika_connection_factory(
     rabbitmq_config: RabbitMQConfig,
-) -> AsyncGenerator[Connection, None]:
-    connection = await connect_robust(url=rabbitmq_config.url)
-    try:
-        yield connection
-    finally:
-        await connection.close()
+) -> Connection:
+    return await connect_robust(url=rabbitmq_config.url)
 
 
-@asynccontextmanager
 async def aio_pika_channel_factory(
     aio_pika_connection: Connection,
 ) -> AsyncGenerator[Channel, None]:
