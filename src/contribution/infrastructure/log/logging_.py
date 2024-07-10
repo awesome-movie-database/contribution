@@ -4,10 +4,17 @@ from .json_formatter import JsonFormatter
 
 
 def setup_logging() -> None:
-    root_logger = logging.getLogger()
+    loggers = [
+        logging.getLogger(logger_name)
+        for logger_name in logging.root.manager.loggerDict
+        if logger_name.startswith(
+            "contribution.application.command_processors.",
+        )
+    ]
+    for logger in loggers:
+        logger.setLevel(logging.DEBUG)
 
-    stream_handler = logging.StreamHandler()
-    stream_handler.setLevel(logging.DEBUG)
-    stream_handler.setFormatter(JsonFormatter())
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(JsonFormatter())
 
-    root_logger.addHandler(stream_handler)
+        logger.addHandler(stream_handler)

@@ -26,18 +26,25 @@ class JsonFormatter(logging.Formatter):
         self,
         record_as_dict: dict,
     ) -> None:
-        record_as_dict.pop("args")
-        record_as_dict.pop("levelname")
-        record_as_dict.pop("pathname")
-        record_as_dict.pop("funcName")
-        record_as_dict.pop("created")
-        record_as_dict.pop("msecs")
-        record_as_dict.pop("relativeCreated")
-        record_as_dict.pop("thread")
-        record_as_dict.pop("threadName")
-        record_as_dict.pop("processName")
-        record_as_dict.pop("process")
-        record_as_dict.pop("taskName")
+        record_as_dict.pop("args", None)
+        record_as_dict.pop("levelname", None)
+        record_as_dict.pop("levelno", None)
+        record_as_dict.pop("filename", None)
+        record_as_dict.pop("module", None)
+        record_as_dict.pop("pathname", None)
+        record_as_dict.pop("funcName", None)
+        record_as_dict.pop("exc_info", None)
+        record_as_dict.pop("exc_text", None)
+        record_as_dict.pop("stack_info", None)
+        record_as_dict.pop("lineno", None)
+        record_as_dict.pop("created", None)
+        record_as_dict.pop("msecs", None)
+        record_as_dict.pop("relativeCreated", None)
+        record_as_dict.pop("thread", None)
+        record_as_dict.pop("threadName", None)
+        record_as_dict.pop("processName", None)
+        record_as_dict.pop("process", None)
+        record_as_dict.pop("taskName", None)
 
     def _add_usefull_fields_to_record_as_dict(
         self,
@@ -51,7 +58,9 @@ class JsonFormatter(logging.Formatter):
             dict_[key] = self._make_value_serializable(value)
 
     def _make_value_serializable(self, value: Any) -> Any:
-        if isinstance(value, (date, datetime)):
+        if isinstance(value, dict):
+            return self._make_dict_serializable(value)
+        elif isinstance(value, (date, datetime)):
             return value.isoformat()
         elif isinstance(value, UUID):
             return value.hex

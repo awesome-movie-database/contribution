@@ -3,6 +3,7 @@ import sys
 from cyclopts import App
 from gunicorn.app.wsgiapp import run
 
+from contribution.infrastructure import setup_logging
 from contribution.presentation.cli import create_movie
 
 
@@ -36,5 +37,6 @@ def create_cli_app() -> App:
 
 
 def main() -> None:
+    setup_logging()
     app = create_cli_app()
     app()
