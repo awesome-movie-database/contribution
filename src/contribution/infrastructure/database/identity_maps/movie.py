@@ -4,7 +4,7 @@ from typing import Optional
 from contribution.domain import MovieId, Movie
 
 
-@dataclass(slots=True, unsafe_hash=True)
+@dataclass(slots=True)
 class MovieMapUnit:
     movie: Movie
     is_acquired: bool
@@ -12,7 +12,7 @@ class MovieMapUnit:
 
 class MovieMap:
     def __init__(self):
-        self._units: set[MovieMapUnit] = set()
+        self._units: list[MovieMapUnit] = list()
 
     def by_id(self, id: MovieId) -> Optional[Movie]:
         for unit in self._units:
@@ -30,7 +30,7 @@ class MovieMap:
             message = "Movie already exists in identity map"
             raise ValueError(message)
         unit = MovieMapUnit(movie=movie, is_acquired=False)
-        self._units.add(unit)
+        self._units.append(unit)
 
     def save_acquired(self, movie: Movie) -> None:
         """
@@ -41,7 +41,7 @@ class MovieMap:
         movie_from_map = self.by_id(movie.id)
         if not movie_from_map:
             unit = MovieMapUnit(movie=movie, is_acquired=True)
-            self._units.add(unit)
+            self._units.append(unit)
 
         movie_is_acquired = self.is_acquired(movie)
         if movie_is_acquired:

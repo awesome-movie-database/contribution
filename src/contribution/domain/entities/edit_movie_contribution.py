@@ -24,7 +24,7 @@ from contribution.domain.maybe import Maybe
 from .contribution import Contribution
 
 
-@dataclass(slots=True, unsafe_hash=True)
+@dataclass(slots=True)
 class EditMovieContribution(Contribution):
     id: EditMovieContributionId
     author_id: UserId

@@ -7,7 +7,7 @@ from contribution.domain import (
 )
 
 
-@dataclass(slots=True, unsafe_hash=True)
+@dataclass(slots=True)
 class AddPersonContributionMapUnit:
     contribution: AddPersonContribution
     is_acquired: bool
@@ -15,7 +15,7 @@ class AddPersonContributionMapUnit:
 
 class AddPersonContributionMap:
     def __init__(self):
-        self._units: set[AddPersonContributionMapUnit] = set()
+        self._units: list[AddPersonContributionMapUnit] = list()
 
     def by_id(
         self,
@@ -40,7 +40,7 @@ class AddPersonContributionMap:
             contribution=contribution,
             is_acquired=False,
         )
-        self._units.add(unit)
+        self._units.append(unit)
 
     def save_acquired(self, contribution: AddPersonContribution) -> None:
         """
@@ -54,7 +54,7 @@ class AddPersonContributionMap:
                 contribution=contribution,
                 is_acquired=True,
             )
-            self._units.add(unit)
+            self._units.append(unit)
 
         contribution_is_acquired = self.is_acquired(contribution)
         if contribution_is_acquired:

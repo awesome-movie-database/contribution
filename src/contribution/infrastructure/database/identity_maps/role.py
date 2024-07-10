@@ -5,7 +5,7 @@ from contribution.domain import RoleId, Role
 
 class RoleMap:
     def __init__(self):
-        self._roles: set[Role] = set()
+        self._roles: list[Role] = list()
 
     def by_id(self, id: RoleId) -> Optional[Role]:
         for role in self._roles:
@@ -22,4 +22,4 @@ class RoleMap:
         if role_from_map:
             message = "Role already exists in identity map"
             raise ValueError(message)
-        self._roles.add(role)
+        self._roles.append(role)

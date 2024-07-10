@@ -4,7 +4,7 @@ from typing import Optional
 from contribution.domain.value_objects import UserId
 
 
-@dataclass(slots=True, unsafe_hash=True)
+@dataclass(slots=True)
 class User:
     id: UserId
     name: str

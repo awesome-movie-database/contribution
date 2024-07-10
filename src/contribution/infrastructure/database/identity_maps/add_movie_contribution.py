@@ -7,7 +7,7 @@ from contribution.domain import (
 )
 
 
-@dataclass(slots=True, unsafe_hash=True)
+@dataclass(slots=True)
 class AddMovieContributionMapUnit:
     contribution: AddMovieContribution
     is_acquired: bool
@@ -15,7 +15,7 @@ class AddMovieContributionMapUnit:
 
 class AddMovieContributionMap:
     def __init__(self):
-        self._units: set[AddMovieContributionMapUnit] = set()
+        self._units: list[AddMovieContributionMapUnit] = list()
 
     def by_id(
         self,
@@ -40,7 +40,7 @@ class AddMovieContributionMap:
             contribution=contribution,
             is_acquired=False,
         )
-        self._units.add(unit)
+        self._units.append(unit)
 
     def save_acquired(self, contribution: AddMovieContribution) -> None:
         """
@@ -54,7 +54,7 @@ class AddMovieContributionMap:
                 contribution=contribution,
                 is_acquired=True,
             )
-            self._units.add(unit)
+            self._units.append(unit)
 
         contribution_is_acquired = self.is_acquired(contribution)
         if contribution_is_acquired:

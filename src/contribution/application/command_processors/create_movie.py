@@ -78,7 +78,7 @@ class CreateMovieProcessor:
 
     async def process(self, command: CreateMovieCommand) -> None:
         movie = await self._movie_gateway.by_id(command.id)
-        if not movie:
+        if movie:
             raise MovieIdIsAlreadyTakenError()
 
         new_movie = self._create_movie(

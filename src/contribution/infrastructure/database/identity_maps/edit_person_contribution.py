@@ -7,7 +7,7 @@ from contribution.domain import (
 )
 
 
-@dataclass(slots=True, unsafe_hash=True)
+@dataclass(slots=True)
 class EditPersonContributionMapUnit:
     contribution: EditPersonContribution
     is_acquired: bool

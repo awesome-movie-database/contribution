@@ -4,7 +4,7 @@ from typing import Optional
 from contribution.domain import UserId, User
 
 
-@dataclass(slots=True, unsafe_hash=True)
+@dataclass(slots=True)
 class UserMapUnit:
     user: User
     is_acquired: bool
@@ -12,7 +12,7 @@ class UserMapUnit:
 
 class UserMap:
     def __init__(self):
-        self._units: set[UserMapUnit] = set()
+        self._units: list[UserMapUnit] = list()
 
     def by_id(self, id: UserId) -> Optional[User]:
         for unit in self._units:
@@ -49,7 +49,7 @@ class UserMap:
             raise ValueError(message)
 
         unit = UserMapUnit(user=user, is_acquired=False)
-        self._units.add(unit)
+        self._units.append(unit)
 
     def save_acquired(self, user: User) -> None:
         """
@@ -60,7 +60,7 @@ class UserMap:
         user_from_map = self.by_id(user.id)
         if not user_from_map:
             unit = UserMapUnit(user=user, is_acquired=True)
-            self._units.add(unit)
+            self._units.append(unit)
 
         user_is_acquired = self.is_acquired(user)
         if user_is_acquired:

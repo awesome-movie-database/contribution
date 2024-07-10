@@ -5,7 +5,7 @@ from contribution.domain import CrewMemberId, CrewMember
 
 class CrewMemberMap:
     def __init__(self):
-        self._crew_members: set[CrewMember] = set()
+        self._crew_members: list[CrewMember] = list()
 
     def by_id(self, id: CrewMemberId) -> Optional[CrewMember]:
         for crew_member in self._crew_members:
@@ -22,4 +22,4 @@ class CrewMemberMap:
         if crew_member_from_map:
             message = "Crew member already exists in identity map"
             raise ValueError(message)
-        self._crew_members.add(crew_member)
+        self._crew_members.append(crew_member)

@@ -19,7 +19,7 @@ from contribution.domain.value_objects import (
 from .contribution import Contribution
 
 
-@dataclass(slots=True, unsafe_hash=True)
+@dataclass(slots=True)
 class AddMovieContribution(Contribution):
     id: AddMovieContributionId
     author_id: UserId

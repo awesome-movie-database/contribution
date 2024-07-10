@@ -4,7 +4,7 @@ from typing import Optional
 from contribution.domain import PersonId, Person
 
 
-@dataclass(slots=True, unsafe_hash=True)
+@dataclass(slots=True)
 class PersonMapUnit:
     person: Person
     is_acquired: bool
@@ -12,7 +12,7 @@ class PersonMapUnit:
 
 class PersonMap:
     def __init__(self):
-        self._units: set[PersonMapUnit] = set()
+        self._units: list[PersonMapUnit] = list()
 
     def by_id(self, id: PersonId) -> Optional[Person]:
         for unit in self._units:
@@ -30,7 +30,7 @@ class PersonMap:
             message = "Person already exists in identity map"
             raise ValueError(message)
         unit = PersonMapUnit(person=person, is_acquired=False)
-        self._units.add(unit)
+        self._units.append(unit)
 
     def save_acquired(self, person: Person) -> None:
         """
@@ -41,7 +41,7 @@ class PersonMap:
         person_from_map = self.by_id(person.id)
         if not person_from_map:
             unit = PersonMapUnit(person=person, is_acquired=True)
-            self._units.add(unit)
+            self._units.append(unit)
 
         person_is_acquired = self.is_acquired(person)
         if person_is_acquired:

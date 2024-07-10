@@ -8,7 +8,7 @@ from contribution.domain.value_objects import (
 )
 
 
-@dataclass(slots=True, unsafe_hash=True)
+@dataclass(slots=True)
 class Writer:
     id: WriterId
     movie_id: MovieId

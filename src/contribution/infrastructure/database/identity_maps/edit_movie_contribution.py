@@ -15,7 +15,7 @@ class EditMovieContributionMapUnit:
 
 class EditMovieContributionMap:
     def __init__(self):
-        self._units: set[EditMovieContributionMapUnit] = set()
+        self._units: list[EditMovieContributionMapUnit] = list()
 
     def by_id(
         self,
@@ -40,7 +40,7 @@ class EditMovieContributionMap:
             contribution=contribution,
             is_acquired=False,
         )
-        self._units.add(unit)
+        self._units.append(unit)
 
     def save_acquired(self, contribution: EditMovieContribution) -> None:
         """
@@ -54,7 +54,7 @@ class EditMovieContributionMap:
                 contribution=contribution,
                 is_acquired=True,
             )
-            self._units.add(unit)
+            self._units.append(unit)
 
         contribution_is_acquired = self.is_acquired(contribution)
         if contribution_is_acquired:

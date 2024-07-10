@@ -5,7 +5,7 @@ from contribution.domain import WriterId, Writer
 
 class WriterMap:
     def __init__(self):
-        self._writers: set[Writer] = set()
+        self._writers: list[Writer] = list()
 
     def by_id(self, id: WriterId) -> Optional[Writer]:
         for writer in self._writers:
@@ -22,4 +22,4 @@ class WriterMap:
         if writer_from_map:
             message = "Writer already exists in identity map"
             raise ValueError(message)
-        self._writers.add(writer)
+        self._writers.append(writer)

@@ -6,7 +6,7 @@ from contribution.domain.constants import Sex
 from contribution.domain.value_objects import PersonId
 
 
-@dataclass(slots=True, unsafe_hash=True)
+@dataclass(slots=True)
 class Person:
     id: PersonId
     first_name: str
