@@ -61,7 +61,7 @@ class CommitMovieCollectionChanges:
 
         if movie.budget:
             document["budget"] = {
-                "amount": movie.budget.amount,
+                "amount": str(movie.budget.amount),
                 "currency": movie.budget.currency,
             }
         else:
@@ -69,7 +69,7 @@ class CommitMovieCollectionChanges:
 
         if movie.revenue:
             document["revenue"] = {
-                "amount": movie.revenue.amount,
+                "amount": str(movie.revenue.amount),
                 "currency": movie.revenue.currency,
             }
         else:

@@ -100,7 +100,7 @@ class CommitEditMovieContributionCollectionChanges:
             budget = contribution.budget.value
             if budget:
                 document["budget"] = {
-                    "amount": budget.amount,
+                    "amount": str(budget.amount),
                     "currency": budget.currency,
                 }
             else:
@@ -109,7 +109,7 @@ class CommitEditMovieContributionCollectionChanges:
             revenue = contribution.revenue.value
             if revenue:
                 document["revenue"] = {
-                    "amount": revenue.amount,
+                    "amount": str(revenue.amount),
                     "currency": revenue.currency,
                 }
             else:
@@ -196,7 +196,7 @@ class CommitEditMovieContributionCollectionChanges:
                 budget = dirty.budget.value
                 if budget:
                     pipeline["$set"]["budget"] = {
-                        "amount": budget.amount,
+                        "amount": str(budget.amount),
                         "currency": budget.currency,
                     }
                 else:
@@ -208,7 +208,7 @@ class CommitEditMovieContributionCollectionChanges:
                 revenue = dirty.revenue.value
                 if revenue:
                     pipeline["$set"]["revenue"] = {
-                        "amount": revenue.amount,
+                        "amount": str(revenue.amount),
                         "currency": revenue.currency,
                     }
                 else:

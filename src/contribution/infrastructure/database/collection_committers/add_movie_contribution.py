@@ -88,14 +88,14 @@ class CommitAddMovieContributionCollectionChanges:
             document["status_updated_at"] = None
         if contribution.budget:
             document["budget"] = {
-                "amount": contribution.budget.amount,
+                "amount": str(contribution.budget.amount),
                 "currency": contribution.budget.currency,
             }
         else:
             document["budget"] = None
         if contribution.revenue:
             document["revenue"] = {
-                "amount": contribution.revenue.amount,
+                "amount": str(contribution.revenue.amount),
                 "currency": contribution.revenue.currency,
             }
         else:
