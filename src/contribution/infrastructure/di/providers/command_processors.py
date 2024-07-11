@@ -6,6 +6,14 @@ from contribution.application import (
     edit_movie_factory,
     add_person_factory,
     edit_person_factory,
+    accept_movie_adding_factory,
+    accept_movie_editing_factory,
+    accept_person_adding_factory,
+    accept_person_editing_factory,
+    reject_movie_adding_factory,
+    reject_movie_editing_factory,
+    reject_person_adding_factory,
+    reject_person_editing_factory,
 )
 
 
@@ -24,5 +32,20 @@ def web_api_command_processors_provider_factory() -> Provider:
     provider.provide(edit_movie_factory)
     provider.provide(add_person_factory)
     provider.provide(edit_person_factory)
+
+    return provider
+
+
+def event_consumer_command_processors_provider_factory() -> Provider:
+    provider = Provider(Scope.REQUEST)
+
+    provider.provide(accept_movie_adding_factory)
+    provider.provide(accept_movie_editing_factory)
+    provider.provide(accept_person_adding_factory)
+    provider.provide(accept_person_editing_factory)
+    provider.provide(reject_movie_adding_factory)
+    provider.provide(reject_movie_editing_factory)
+    provider.provide(reject_person_adding_factory)
+    provider.provide(reject_person_editing_factory)
 
     return provider

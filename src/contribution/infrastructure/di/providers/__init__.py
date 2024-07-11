@@ -21,10 +21,12 @@ __all__ = (
     "web_api_identity_provider_provider_factory",
     "cli_operation_id_provider_factory",
     "web_api_operation_id_provider_factory",
+    "event_consumer_operation_id_provider_factory",
     "event_publishers_provider_factory",
     "application_services_provider_factory",
     "cli_command_processors_provider_factory",
     "web_api_command_processors_provider_factory",
+    "event_consumer_command_processors_provider_factory",
 )
 
 from .configs import (
@@ -52,10 +54,12 @@ from .identity_provider import web_api_identity_provider_provider_factory
 from .operation_id import (
     cli_operation_id_provider_factory,
     web_api_operation_id_provider_factory,
+    event_consumer_operation_id_provider_factory,
 )
 from .event_publishers import event_publishers_provider_factory
 from .application_services import application_services_provider_factory
 from .command_processors import (
     cli_command_processors_provider_factory,
     web_api_command_processors_provider_factory,
+    event_consumer_command_processors_provider_factory,
 )
