@@ -1,6 +1,7 @@
 __all__ = (
     "cli_configs_provider_factory",
     "web_api_configs_provider_factory",
+    "event_consumer_configs_provider_factory",
     "domain_validators_provider_factory",
     "domain_services_provider_factrory",
     "motor_provider_factory",
@@ -32,6 +33,7 @@ __all__ = (
 from .configs import (
     cli_configs_provider_factory,
     web_api_configs_provider_factory,
+    event_consumer_configs_provider_factory,
 )
 from .domain_validators import domain_validators_provider_factory
 from .domain_services import domain_services_provider_factrory
