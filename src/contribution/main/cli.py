@@ -5,6 +5,7 @@ from gunicorn.app.wsgiapp import run
 
 from contribution.infrastructure import setup_logging
 from contribution.presentation.cli import create_movie
+from .event_consumer import create_event_consumer_app
 
 
 def run_web_api() -> None:
@@ -24,6 +25,11 @@ def run_web_api() -> None:
     run()
 
 
+async def run_event_consumer() -> None:
+    event_consumer_app = create_event_consumer_app()
+    await event_consumer_app.run()
+
+
 def create_cli_app() -> App:
     app = App(
         name="Contribution",
@@ -31,6 +37,7 @@ def create_cli_app() -> App:
     )
 
     app.command(run_web_api)
+    app.command(run_event_consumer)
     app.command(create_movie)
 
     return app
