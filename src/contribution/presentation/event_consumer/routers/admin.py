@@ -4,6 +4,12 @@ from dishka.integrations.faststream import FromDishka, inject
 from contribution.domain import AchievementId
 from contribution.application import (
     CommandProcessor,
+    CreateUserCommand,
+    UpdateUserCommand,
+    CreateMovieCommand,
+    UpdateMovieCommand,
+    CreatePersonCommand,
+    UpdatePersonCommand,
     AcceptMovieAddingCommand,
     AcceptMovieEditingCommand,
     AcceptPersonAddingCommand,
@@ -15,6 +21,30 @@ from contribution.application import (
 )
 
 
+CreateUserProcessor = CommandProcessor[
+    CreateUserCommand,
+    None,
+]
+UpdateUserProcessor = CommandProcessor[
+    UpdateUserCommand,
+    None,
+]
+CreateMovieProcessor = CommandProcessor[
+    CreateMovieCommand,
+    None,
+]
+UpdateMovieProcessor = CommandProcessor[
+    UpdateMovieCommand,
+    None,
+]
+CreatePersonProcessor = CommandProcessor[
+    CreatePersonCommand,
+    None,
+]
+UpdatePersonProcessor = CommandProcessor[
+    UpdatePersonCommand,
+    None,
+]
 AcceptMovieAddingProcessor = CommandProcessor[
     AcceptMovieAddingCommand,
     AchievementId,
@@ -50,6 +80,60 @@ RejectPersonEditingProcessor = CommandProcessor[
 
 
 router = RabbitRouter()
+
+
+@router.subscriber("user_created")
+@inject
+async def create_user(
+    command: CreateUserCommand,
+    command_processor: FromDishka[CreateUserProcessor],
+) -> None:
+    await command_processor.process(command)
+
+
+@router.subscriber("user_updated")
+@inject
+async def update_user(
+    command: UpdateUserCommand,
+    command_processor: FromDishka[UpdateUserProcessor],
+) -> None:
+    await command_processor.process(command)
+
+
+@router.subscriber("movie_created")
+@inject
+async def create_movie(
+    command: CreateMovieCommand,
+    command_processor: FromDishka[CreateMovieProcessor],
+) -> None:
+    await command_processor.process(command)
+
+
+@router.subscriber("movie_updated")
+@inject
+async def update_movie(
+    command: UpdateMovieCommand,
+    command_processor: FromDishka[UpdateMovieProcessor],
+) -> None:
+    await command_processor.process(command)
+
+
+@router.subscriber("person_created")
+@inject
+async def create_person(
+    command: CreatePersonCommand,
+    command_processor: FromDishka[CreatePersonProcessor],
+) -> None:
+    await command_processor.process(command)
+
+
+@router.subscriber("person_updated")
+@inject
+async def update_person(
+    command: UpdatePersonCommand,
+    command_processor: FromDishka[UpdatePersonProcessor],
+) -> None:
+    await command_processor.process(command)
 
 
 @router.subscriber("add_movie_contribution_accepted")

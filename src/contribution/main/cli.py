@@ -36,7 +36,7 @@ def run_web_api(
     workers: Annotated[
         str,
         Parameter("--workers", show_default=True),
-    ] = "2",
+    ] = "1",
 ) -> None:
     """Runs the server with web api at specified address."""
     sys.argv = [
@@ -56,7 +56,7 @@ def run_event_consumer(
     workers: Annotated[
         str,
         Parameter("--workers", show_default=True),
-    ] = "2",
+    ] = "1",
 ) -> None:
     """Runs event consumer."""
     sys.argv = [
