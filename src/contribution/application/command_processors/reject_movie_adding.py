@@ -39,7 +39,7 @@ def reject_movie_adding_factory(
     unit_of_work: UnitOfWork,
     on_achievement_earned: OnEventOccurred[AchievementEarnedEvent],
 ) -> CommandProcessor[RejectMovieAddingCommand, Optional[AchievementId]]:
-    accept_movie_addition_processor = RejectMovieAddingProcessor(
+    reject_movie_adding_processor = RejectMovieAddingProcessor(
         reject_contribution=reject_contribution,
         add_movie_contribution_gateway=add_movie_contribution_gateway,
         user_gateway=user_gateway,
@@ -47,7 +47,7 @@ def reject_movie_adding_factory(
         photo_gateway=photo_gateway,
     )
     callback_processor = AchievementEearnedCallbackProcessor(
-        processor=accept_movie_addition_processor,
+        processor=reject_movie_adding_processor,
         achievement_gateway=achievement_gateway,
         on_achievement_earned=on_achievement_earned,
     )

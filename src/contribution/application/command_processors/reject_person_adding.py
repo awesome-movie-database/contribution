@@ -39,7 +39,7 @@ def reject_person_adding_factory(
     photo_gateway: PhotoGateway,
     on_achievement_earned: OnEventOccurred[AchievementEarnedEvent],
 ) -> CommandProcessor[RejectPersonAddingCommand, Optional[AchievementId]]:
-    reject_person_addition_processor = RejectPersonAddingProcessor(
+    reject_person_adding_processor = RejectPersonAddingProcessor(
         reject_contribution=reject_contribution,
         add_person_contribution_gateway=add_person_contribution_gateway,
         user_gateway=user_gateway,
@@ -47,7 +47,7 @@ def reject_person_adding_factory(
         photo_gateway=photo_gateway,
     )
     callback_processor = AchievementEearnedCallbackProcessor(
-        processor=reject_person_addition_processor,
+        processor=reject_person_adding_processor,
         achievement_gateway=achievement_gateway,
         on_achievement_earned=on_achievement_earned,
     )

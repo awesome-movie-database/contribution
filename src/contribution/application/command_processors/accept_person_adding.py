@@ -45,7 +45,7 @@ def accept_person_adding_factory(
     unit_of_work: UnitOfWork,
     on_achievement_earned: OnEventOccurred[AchievementEarnedEvent],
 ) -> CommandProcessor[AcceptPersonAddingCommand, Optional[AchievementId]]:
-    accept_person_addition_processor = AcceptPersonAddingProcessor(
+    accept_person_adding_processor = AcceptPersonAddingProcessor(
         accept_contribution=accept_contribution,
         create_person=create_person,
         add_person_contribution_gateway=add_person_contribution_gateway,
@@ -54,7 +54,7 @@ def accept_person_adding_factory(
         achievement_gateway=achievement_gateway,
     )
     callback_processor = AchievementEearnedCallbackProcessor(
-        processor=accept_person_addition_processor,
+        processor=accept_person_adding_processor,
         achievement_gateway=achievement_gateway,
         on_achievement_earned=on_achievement_earned,
     )

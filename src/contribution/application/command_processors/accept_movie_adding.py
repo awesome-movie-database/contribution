@@ -55,7 +55,7 @@ def accept_movie_adding_factory(
     unit_of_work: UnitOfWork,
     on_achievement_earned: OnEventOccurred[AchievementEarnedEvent],
 ) -> CommandProcessor[AcceptMovieAddingCommand, Optional[AchievementId]]:
-    accept_movie_addition_processor = AcceptMovieAddingProcessor(
+    accept_movie_adding_processor = AcceptMovieAddingProcessor(
         accept_contribution=accept_contribution,
         create_movie=create_movie,
         create_and_save_roles=create_and_save_roles,
@@ -67,7 +67,7 @@ def accept_movie_adding_factory(
         achievement_gateway=achievement_gateway,
     )
     callback_processor = AchievementEearnedCallbackProcessor(
-        processor=accept_movie_addition_processor,
+        processor=accept_movie_adding_processor,
         achievement_gateway=achievement_gateway,
         on_achievement_earned=on_achievement_earned,
     )
