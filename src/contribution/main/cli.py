@@ -1,33 +1,18 @@
 import sys
+from typing import Annotated
 
-from cyclopts import App
-from gunicorn.app.wsgiapp import run
+from cyclopts import App, Parameter
+from gunicorn.app.wsgiapp import run as run_gunicorn
+from faststream.cli.main import cli as run_faststream
 
 from contribution.infrastructure import setup_logging
 from contribution.presentation.cli import create_movie
-from .event_consumer import create_event_consumer_app
 
 
-def run_web_api() -> None:
-    """
-    Runs the server with web api at 0.0.0.0:8000.
-    """
-    sys.argv = [
-        "gunicorn",
-        "--bind",
-        "0.0.0.0:8000",
-        "--workers",
-        "1",
-        "--worker-class",
-        "uvicorn.workers.UvicornWorker",
-        "contribution.main.web_api:create_web_api_app()",
-    ]
-    run()
-
-
-async def run_event_consumer() -> None:
-    event_consumer_app = create_event_consumer_app()
-    await event_consumer_app.run()
+def main() -> None:
+    setup_logging()
+    app = create_cli_app()
+    app()
 
 
 def create_cli_app() -> App:
@@ -43,7 +28,43 @@ def create_cli_app() -> App:
     return app
 
 
-def main() -> None:
-    setup_logging()
-    app = create_cli_app()
-    app()
+def run_web_api(
+    address: Annotated[
+        str,
+        Parameter("--address", show_default=True),
+    ] = "0.0.0.0:8000",
+    workers: Annotated[
+        str,
+        Parameter("--workers", show_default=True),
+    ] = "2",
+) -> None:
+    """Runs the server with web api at specified address."""
+    sys.argv = [
+        "gunicorn",
+        "--bind",
+        address,
+        "--workers",
+        workers,
+        "--worker-class",
+        "uvicorn.workers.UvicornWorker",
+        "contribution.main.web_api:create_web_api_app()",
+    ]
+    run_gunicorn()
+
+
+def run_event_consumer(
+    workers: Annotated[
+        str,
+        Parameter("--workers", show_default=True),
+    ] = "2",
+) -> None:
+    """Runs event consumer."""
+    sys.argv = [
+        "faststream",
+        "run",
+        "contribution.main.event_consumer:create_event_consumer_app",
+        "--workers",
+        workers,
+        "--factory",
+    ]
+    run_faststream()
