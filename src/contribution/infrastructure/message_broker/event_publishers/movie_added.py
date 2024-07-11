@@ -77,7 +77,7 @@ class PublishMovieAddedEvent:
             crew_as_dicts.append(crew_member_as_dict)
 
         event_as_dict = {
-            "operation_id": self._operation_id.hex,
+            "operation_id": self._operation_id,
             "contribution_id": event.contribution_id.hex,
             "author_id": event.author_id.hex,
             "eng_title": event.eng_title,

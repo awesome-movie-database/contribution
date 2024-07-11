@@ -37,7 +37,7 @@ class PublishPersonEditedEvent:
 
     def _event_to_json(self, event: PersonEditedEvent) -> str:
         event_as_dict = {
-            "operation_id": self._operation_id.hex,
+            "operation_id": self._operation_id,
             "contribution_id": event.contribution_id.hex,
             "author_id": event.author_id.hex,
             "person_id": event.person_id.hex,

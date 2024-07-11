@@ -40,7 +40,7 @@ class PublishPersonAddedEvent:
             death_date = None
 
         event_as_dict = {
-            "operation_id": self._operation_id.hex,
+            "operation_id": self._operation_id,
             "contribution_id": event.contribtion_id,
             "author_id": event.author_id,
             "first_name": event.first_name,

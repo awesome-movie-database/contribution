@@ -37,7 +37,7 @@ class PublishMovieEditedEvent:
 
     def _event_to_json(self, event: MovieEditedEvent) -> str:
         event_as_dict = {
-            "operation_id": self._operation_id.hex,
+            "operation_id": self._operation_id,
             "contribution_id": event.contribution_id.hex,
             "author_id": event.author_id.hex,
             "movie_id": event.movie_id.hex,

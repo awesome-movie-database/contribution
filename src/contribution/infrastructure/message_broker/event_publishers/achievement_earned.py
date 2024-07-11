@@ -35,7 +35,7 @@ class PublishAchievementEarnedEvent:
 
     def _event_to_json(self, event: AchievementEarnedEvent) -> str:
         event_as_dict = {
-            "operation_id": self._operation_id.hex,
+            "operation_id": self._operation_id,
             "achievement_id": event.achievement_id.hex,
             "user_id": event.user_id.hex,
             "achieved": event.achieved,

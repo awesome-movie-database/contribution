@@ -1,36 +1,38 @@
 import logging
-from typing import Any, cast
 
 from faststream.broker.message import StreamMessage
-from faststream.types import DecodedMessage
 
 from contribution.application import OperationId
+from .default import default_operation_id_factory
 
 
 logger = logging.getLogger(__name__)
 
 
 def event_consumer_operation_id_factory(message: StreamMessage) -> OperationId:
-    message_as_dict = _ensure_dict(message)
-
-    operation_id_as_str = message_as_dict.get("operation_id")
-    if not operation_id_as_str:
-        logger.error(
-            "Unexpected error occurred: "
-            "Message receieved from message broker has no operation id",
-            extra={"received_message": message},
+    if not isinstance(message.decoded_body, dict):
+        default_operation_id = default_operation_id_factory()
+        logger.warning(
+            "Message received from message broker cannot be converted to dict. "
+            "Default operation id will be used instead.",
+            extra={
+                "received_message": message.decoded_body,
+                "default_operation_id": default_operation_id,
+            },
         )
-        raise ValueError()
+        return default_operation_id
+
+    operation_id_as_str = message.decoded_body.get("operation_id")
+    if not operation_id_as_str:
+        default_operation_id = default_operation_id_factory()
+        logger.warning(
+            "Message receieved from message broker has no operation id. "
+            "Default operation id will be used instead.",
+            extra={
+                "received_message": message.decoded_body,
+                "default_operation_id": default_operation_id,
+            },
+        )
+        return default_operation_id
 
     return OperationId(operation_id_as_str)
-
-
-def _ensure_dict(decoded_message: DecodedMessage) -> dict[str, Any]:
-    if not isinstance(decoded_message, dict):
-        logger.error(
-            "Unexpected error occurred: "
-            "Message received from message broker cannot be converted to dict",
-            extra={"received_message": decoded_message},
-        )
-        raise ValueError()
-    return cast(dict, decoded_message)
