@@ -16,7 +16,8 @@ __all__ = (
     "cache_provider_factory",
     "permissions_storage_provider_factory",
     "photo_storage_provider_factory",
-    "fastapi_request_provider_factory",
+    "fastapi_provider_factory",
+    "faststream_provider_factory",
     "web_api_identity_provider_provider_factory",
     "cli_operation_id_provider_factory",
     "web_api_operation_id_provider_factory",
@@ -45,7 +46,8 @@ from .data_mappers import data_mappers_provider_factory
 from .cache import cache_provider_factory
 from .permissions_storage import permissions_storage_provider_factory
 from .photo_storage import photo_storage_provider_factory
-from .fastapi_request import fastapi_request_provider_factory
+from .fastapi_ import fastapi_provider_factory
+from .faststream_ import faststream_provider_factory
 from .identity_provider import web_api_identity_provider_provider_factory
 from .operation_id import (
     cli_operation_id_provider_factory,
