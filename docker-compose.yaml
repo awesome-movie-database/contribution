@@ -1,0 +1,48 @@
+version: "3.9"
+
+networks:
+  contribution.grafana_stack: {}
+
+services:
+  grafana:
+    profiles: ["grafana-stack"]
+    image: grafana/grafana
+    container_name: contribution.grafana
+    hostname: contribution.grafana
+    networks: [contribution.grafana_stack]
+    expose: ["3000"]
+    ports: ["3000:3000"]
+    restart: unless-stopped
+
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./config/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/loki.yaml:rw
+
+  loki:
+    profiles: ["grafana-stack"]
+    image: grafana/loki
+    container_name: contribution.loki
+    hostname: contribution.loki
+    networks: [contribution.grafana_stack]
+    expose: ["3100"]
+    ports: ["3100:3100"]
+    restart: unless-stopped
+
+    volumes:
+      - ./config/loki.yaml:/etc/loki/config.yaml:ro
+
+  promtail:
+    profiles: ["grafana-stack"]
+    image: grafana/promtail
+    container_name: contribution.promtail
+    hostname: contribution.promtail
+    networks: [contribution.grafana_stack]
+    depends_on: ["loki"]
+    restart: unless-stopped
+
+    volumes:
+      - ./config/promtail.yaml:/etc/promtail/promtail-config.yaml:ro
+      - ./error.log:/var/log/contribution/error.log:ro
