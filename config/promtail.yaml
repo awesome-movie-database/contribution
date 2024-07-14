@@ -1,6 +1,5 @@
 server:
   http_listen_port: 9080
-  log_level: debug
 
 positions:
   filename: /tmp/positions.yaml
@@ -9,10 +8,10 @@ clients:
   - url: http://contribution.loki:3100/loki/api/v1/push
 
 scrape_configs:
-  - job_name: system
+  - job_name: application
     static_configs:
       - targets:
           - localhost
         labels:
-          job: varlogs
-          __path__: /var/log/contribution/error.log
+          job: application
+          __path__: /var/log/contribution/*.log
