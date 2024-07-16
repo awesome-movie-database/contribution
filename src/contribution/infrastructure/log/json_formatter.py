@@ -27,9 +27,7 @@ class JsonFormatter(logging.Formatter):
         record_as_dict: dict,
     ) -> None:
         record_as_dict.pop("args", None)
-        record_as_dict.pop("levelname", None)
         record_as_dict.pop("levelno", None)
-        record_as_dict.pop("filename", None)
         record_as_dict.pop("module", None)
         record_as_dict.pop("pathname", None)
         record_as_dict.pop("funcName", None)
