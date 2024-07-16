@@ -152,13 +152,10 @@ class UpdateUserLoggingProcessor:
                 extra={"operation_id": self._operation_id},
             )
             raise e
-        except Exception as e:
+        except Exception:
             logger.exception(
                 "Unexpected error occurred",
-                extra={
-                    "operation_id": self._operation_id,
-                    "error": e,
-                },
+                extra={"operation_id": self._operation_id},
             )
             raise e
 
