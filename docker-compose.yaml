@@ -30,8 +30,7 @@ services:
     expose: ["3100"]
     ports: ["3100:3100"]
     restart: unless-stopped
-    command: -config.file=/etc/loki/config.yaml -log.level=debug
-
+    command: -config.file=/etc/loki/config.yaml
     volumes:
       - ./config/loki.yaml:/etc/loki/config.yaml:ro
 
@@ -43,7 +42,7 @@ services:
     networks: [contribution.grafana_stack]
     depends_on: ["loki"]
     restart: unless-stopped
-    command: -config.file=/etc/promtail/promtail-config.yaml -log.level=debug
+    command: -config.file=/etc/promtail/promtail-config.yaml
 
     volumes:
       - ./config/promtail.yaml:/etc/promtail/promtail-config.yaml:ro
