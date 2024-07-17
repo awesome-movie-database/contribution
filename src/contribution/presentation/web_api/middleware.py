@@ -15,7 +15,7 @@ def setup_middleware(app: FastAPI, suppress_exceptions: bool) -> None:
 def _handle_unknown_exception_factory(
     suppress_exceptions: bool,
 ) -> Callable[[Request, Callable[[Request], Response]], Response]:
-    async def suppress_exceptions_middleware(
+    async def handle_unknown_exception(
         request: Request,
         call_next: Callable[[Request], Response],
     ) -> Response:
@@ -27,4 +27,4 @@ def _handle_unknown_exception_factory(
         except:
             return on_unknown_error()
 
-    return suppress_exceptions_middleware
+    return handle_unknown_exception
