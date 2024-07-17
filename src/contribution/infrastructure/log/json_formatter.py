@@ -23,8 +23,10 @@ class JsonFormatter(logging.Formatter):
         self._replace_record_as_dict_exc_info_with_traceback(record_as_dict)
         self._add_usefull_fields_to_record_as_dict(record_as_dict)
 
-        self._make_dict_serializable(record_as_dict)
-        record_as_json = json.dumps(record_as_dict)
+        serializable_record_as_dict = self._make_dict_serializable(
+            dict_=record_as_dict,
+        )
+        record_as_json = json.dumps(serializable_record_as_dict)
 
         return record_as_json
 
@@ -71,9 +73,11 @@ class JsonFormatter(logging.Formatter):
         current_timestamp = datetime.now(timezone.utc).isoformat()
         record_as_dict.update(timestamp=current_timestamp)
 
-    def _make_dict_serializable(self, dict_: dict) -> None:
+    def _make_dict_serializable(self, dict_: dict) -> dict:
+        serializable_dict = {}
         for key, value in dict_.items():
-            dict_[key] = self._make_value_serializable(value)
+            serializable_dict[key] = self._make_value_serializable(value)
+        return serializable_dict
 
     def _make_value_serializable(self, value: Any) -> Any:
         if isinstance(value, dict):
@@ -88,7 +92,6 @@ class JsonFormatter(logging.Formatter):
             return self._make_value_serializable(value.value)
         elif dataclasses.is_dataclass(value):
             dataclass_as_dict = dataclasses.asdict(value)
-            self._make_dict_serializable(dataclass_as_dict)
-            return dataclass_as_dict
+            return self._make_dict_serializable(dataclass_as_dict)
 
         return value
