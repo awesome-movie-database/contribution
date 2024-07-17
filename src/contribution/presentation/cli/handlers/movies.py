@@ -48,8 +48,9 @@ async def create_movie(
         Parameter(
             "--budget",
             converter=json_to_money,
+            show_default=True,
             help=(
-                "Budget in json format \n"
+                "Budget in json format. "
                 'Example: {"amount": "100", "currency": "USD"}'
             ),
         ),
@@ -59,8 +60,9 @@ async def create_movie(
         Parameter(
             "--revenue",
             converter=json_to_money,
+            show_default=True,
             help=(
-                "Revenue in json format."
+                "Revenue in json format. "
                 'Example: {"amount": "100", "currency": "USD"}'
             ),
         ),
