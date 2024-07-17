@@ -152,6 +152,9 @@ async def create_movie(
         command_processor = await request_ioc_contanier.get(
             CommandProcessor[CreateMovieCommand, None],
         )
-        await command_processor.process(command)
+        try:
+            await command_processor.process(command)
+        except:
+            return
 
     print("Movie has been added successfully")

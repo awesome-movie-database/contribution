@@ -37,6 +37,14 @@ def run_web_api(
         str,
         Parameter("--workers", show_default=True),
     ] = "1",
+    suppress_exceptions: Annotated[
+        bool,
+        Parameter(
+            "--suppress-exceptions",
+            show_default=True,
+            help="Do not write tracebacks of uncaught exceptions to stderr.",
+        ),
+    ] = False,
 ) -> None:
     """Runs the server with web api at specified address."""
     sys.argv = [
@@ -47,7 +55,7 @@ def run_web_api(
         workers,
         "--worker-class",
         "uvicorn.workers.UvicornWorker",
-        "contribution.main.web_api:create_web_api_app()",
+        f"contribution.main.web_api:create_web_api_app({suppress_exceptions})",
     ]
     run_gunicorn()
 

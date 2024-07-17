@@ -39,6 +39,9 @@ web_api = [
 event_consumer = [
     "faststream==0.5.*",
 ]
+tui = [
+    "textual==0.72.*",
+]
 
 [project.scripts]
 contribution = "contribution.main.cli:main"
