@@ -2,8 +2,17 @@ from typing import Callable
 
 from fastapi import FastAPI, Request, Response
 
+from .exception_handlers import on_unknown_error
 
-def suppress_exceptions_middleware_factory(
+
+def setup_middleware(app: FastAPI, suppress_exceptions: bool) -> None:
+    handle_unknown_exception = _handle_unknown_exception_factory(
+        suppress_exceptions=suppress_exceptions,
+    )
+    app.middleware("http")(handle_unknown_exception)
+
+
+def _handle_unknown_exception_factory(
     suppress_exceptions: bool,
 ) -> Callable[[Request, Callable[[Request], Response]], Response]:
     async def suppress_exceptions_middleware(
@@ -16,13 +25,6 @@ def suppress_exceptions_middleware_factory(
         try:
             return await call_next(request)
         except:
-            return Response(status_code=500)
+            return on_unknown_error()
 
     return suppress_exceptions_middleware
-
-
-def setup_middleware(app: FastAPI, suppress_exceptions: bool) -> None:
-    supress_exceptions_middleware = suppress_exceptions_middleware_factory(
-        suppress_exceptions=suppress_exceptions,
-    )
-    app.middleware("http")(supress_exceptions_middleware)

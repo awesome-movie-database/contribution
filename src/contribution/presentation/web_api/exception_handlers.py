@@ -95,7 +95,11 @@ def setup_exception_handlers(app: FastAPI) -> None:
         PersonDoesNotExistError,
         _on_person_does_not_exist_error,
     )
-    app.add_exception_handler(Exception, _on_unknown_error)
+    app.add_exception_handler(Exception, on_unknown_error)
+
+
+def on_unknown_error(*_) -> Response:
+    return Response(status_code=500)
 
 
 def _on_user_is_not_active_error(*_) -> JSONResponse:
@@ -302,10 +306,6 @@ def _on_person_does_not_exist_error(*_) -> JSONResponse:
         ),
         status_code=400,
     )
-
-
-def _on_unknown_error(*_) -> Response:
-    return Response(status_code=500)
 
 
 def _error_json_as_dict_factory(
