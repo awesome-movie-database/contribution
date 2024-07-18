@@ -40,7 +40,7 @@ async def add_movie(
     return await command_processor.process(command)
 
 
-@router.post("/edit-movie-contribution-requests", response_model=None)
+@router.post("/edit-movie-contribution-requests")
 @inject
 async def edit_movie(
     *,
