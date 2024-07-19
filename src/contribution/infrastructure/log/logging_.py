@@ -1,3 +1,4 @@
+import sys
 import logging
 
 from .json_formatter import JsonFormatter
@@ -15,7 +16,7 @@ def setup_logging() -> None:
     for logger in loggers:
         logger.setLevel(logging.DEBUG)
 
-        stream_handler = logging.StreamHandler()
+        stream_handler = logging.StreamHandler(sys.stdout)
         stream_handler.setFormatter(JsonFormatter())
 
         logger.addHandler(stream_handler)
