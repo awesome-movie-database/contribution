@@ -226,7 +226,7 @@ def _on_persons_do_not_exist_error(
 ) -> JSONResponse:
     return JSONResponse(
         content=_error_json_as_dict_factory(
-            code=410,
+            code=310,
             message=(
                 "Some of persons do not exist. "
                 f"Ids of non existing persons: {error.ids_of_missing_persons}"
