@@ -1,9 +1,15 @@
-from typing import Any, Sequence
+from typing import Any, Sequence, Optional
 
 from pymongo import InsertOne, UpdateOne, DeleteOne
+from pymongo.errors import OperationFailure
 from motor.motor_asyncio import AsyncIOMotorClientSession
 
 from contribution.domain import User
+from contribution.application import (
+    UserIdIsAlreadyTakenError,
+    UserNameIsAlreadyTakenError,
+    UserEmailIsAlreadyTakenError,
+)
 from contribution.infrastructure.database.collections import (
     UserCollection,
 )
@@ -42,10 +48,13 @@ class CommitUserCollectionChanges:
             *deletes,
         ]
         if changes:
-            await self._collection.bulk_write(
-                requests=changes,
-                session=self._session,
-            )
+            try:
+                await self._collection.bulk_write(
+                    requests=changes,
+                    session=self._session,
+                )
+            except OperationFailure as e:
+                await self._on_operation_failure_error(e)
 
     def _user_to_document(self, user: User) -> dict[str, Any]:
         document = {
@@ -97,3 +106,54 @@ class CommitUserCollectionChanges:
             ] = dirty.rejected_contributions_count
 
         return pipeline
+
+    async def _on_operation_failure_error(
+        self,
+        error: OperationFailure,
+    ) -> None:
+        await self._session.abort_transaction()
+
+        if not error.details:
+            raise error
+
+        write_errors: Optional[list[dict[str, Any]]] = error.details.get(
+            "writeErrors",
+        )
+        if not write_errors:
+            raise error
+
+        first_write_error: dict[str, Any] = write_errors[0]
+        first_write_error_code = first_write_error.get("code")
+        if not first_write_error_code:
+            message = (
+                "First write error of write errors "
+                "in OperationFailure details has no code"
+            )
+            raise ValueError(message)
+
+        is_duplicate_error = first_write_error_code == 11000
+        if not is_duplicate_error:
+            raise error
+
+        caused_error_key_value: Optional[
+            dict[str, Any]
+        ] = first_write_error.get("keyValue")
+        if not caused_error_key_value:
+            message = (
+                "First write error of write errors "
+                "in OperationFailure details has no 'KeyValue' field"
+            )
+            raise ValueError(message)
+
+        caused_error_key = list(caused_error_key_value.keys())[0]
+        if caused_error_key == "id":
+            raise UserIdIsAlreadyTakenError()
+        elif caused_error_key == "name":
+            raise UserNameIsAlreadyTakenError()
+        elif caused_error_key == "email":
+            raise UserEmailIsAlreadyTakenError()
+
+        message = (
+            f"DuplicateError was caused by unexpected key: {caused_error_key}"
+        )
+        raise ValueError(message)
