@@ -130,76 +130,76 @@ class CreateMovieLoggingProcessor:
 
         try:
             result = await self._processor.process(command)
-        except MovieIdIsAlreadyTakenError as e:
+        except MovieIdIsAlreadyTakenError as error:
             logger.error(
                 "Unexpected error occurred: Movie id is already taken",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except InvalidMovieEngTitleError as e:
+            raise error
+        except InvalidMovieEngTitleError as error:
             logger.error(
                 "Unexpected error occurred: Invalid movie eng title",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except InvalidMovieOriginalTitleError as e:
+            raise error
+        except InvalidMovieOriginalTitleError as error:
             logger.error(
                 "Unexpected error occurred: Invalid movie original title",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except InvalidMovieDurationError as e:
+            raise error
+        except InvalidMovieDurationError as error:
             logger.error(
                 "Unexpected error occurred: Invalid movie duration",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except PersonsDoNotExistError as e:
+            raise error
+        except PersonsDoNotExistError as error:
             logger.error(
                 "Unexpected error occurred: "
                 "Person ids do not belong to any persons",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_missing_persons": e.ids_of_missing_persons,
+                    "ids_of_missing_persons": error.ids_of_missing_persons,
                 },
             )
-            raise e
-        except RolesAlreadyExistError as e:
+            raise error
+        except RolesAlreadyExistError as error:
             logger.error(
                 "Unexpected error occurred: "
                 "Role ids already belong to some roles",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_existing_roles": e.ids_of_existing_roles,
+                    "ids_of_existing_roles": error.ids_of_existing_roles,
                 },
             )
-            raise e
-        except WritersAlreadyExistError as e:
+            raise error
+        except WritersAlreadyExistError as error:
             logger.error(
                 "Unexpected error occurred: "
                 "Writer ids already belong to some writers",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_existing_writers": e.ids_of_existing_writers,
+                    "ids_of_existing_writers": error.ids_of_existing_writers,
                 },
             )
-            raise e
-        except CrewMembersAlreadyExistError as e:
+            raise error
+        except CrewMembersAlreadyExistError as error:
             logger.error(
                 "Unexpected error occurred: "
                 "Crew member ids already belong to some crew members",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_existing_crew_members": e.ids_of_existing_crew_members,
+                    "ids_of_existing_crew_members": error.ids_of_existing_crew_members,
                 },
             )
-            raise e
+            raise error
         except Exception:
             logger.exception(
                 "Unexpected error occurred",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
+            raise error
 
         logger.debug(
             "'Create Movie' command processing completed",

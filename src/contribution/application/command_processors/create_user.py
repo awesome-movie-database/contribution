@@ -112,54 +112,54 @@ class CreateUserLoggingProcessor:
 
         try:
             result = await self._processor.process(command)
-        except UserIdIsAlreadyTakenError as e:
+        except UserIdIsAlreadyTakenError as error:
             logger.error(
                 "Unexpected error occurred: User id is already taken",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except UserNameIsAlreadyTakenError as e:
+            raise error
+        except UserNameIsAlreadyTakenError as error:
             logger.error(
                 "Unexpected error occurred: User name is already taken",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except UserEmailIsAlreadyTakenError as e:
+            raise error
+        except UserEmailIsAlreadyTakenError as error:
             logger.error(
                 "Unexpected error occurred: User email already taken",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except UserTelegramIsAlreadyTakenError as e:
+            raise error
+        except UserTelegramIsAlreadyTakenError as error:
             logger.error(
                 "Unexpected error occurred: User telegram is already taken",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except InvalidUserNameError as e:
+            raise error
+        except InvalidUserNameError as error:
             logger.error(
                 "Unexpected error occurred: Invalid user name",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except InvalidEmailError as e:
+            raise error
+        except InvalidEmailError as error:
             logger.error(
                 "Unexpected error occurred: Invalid user email",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except InvalidTelegramError as e:
+            raise error
+        except InvalidTelegramError as error:
             logger.error(
                 "Unexpected error occurred: Invalid user telegram",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
+            raise error
         except Exception:
             logger.exception(
                 "Unexpected error occurred",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
+            raise error
 
         logger.debug(
             "'Create User' command processing completed",

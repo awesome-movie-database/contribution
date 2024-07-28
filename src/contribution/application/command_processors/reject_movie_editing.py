@@ -138,20 +138,20 @@ class RejectMovieEditingLoggingProcessor:
 
         try:
             result = await self._processor.process(command)
-        except ContributionDoesNotExistError as e:
+        except ContributionDoesNotExistError as error:
             logger.error(
                 "Unexpected error occurred: Contribution doesn't exist",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except UserDoesNotExistError as e:
+            raise error
+        except UserDoesNotExistError as error:
             logger.error(
                 "Unexpected error occurred: Contribution has author id, "
                 "using which user gateway returns None",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except AchievementDoesNotExistError as e:
+            raise error
+        except AchievementDoesNotExistError as error:
             logger.error(
                 "Unexpected error occurred: Achievement was created, "
                 "but achievement gateway returns None",
@@ -162,7 +162,7 @@ class RejectMovieEditingLoggingProcessor:
                 "Unexpected error occurred",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
+            raise error
 
         logger.debug(
             "'Reject Movie Editing' command processing completed",

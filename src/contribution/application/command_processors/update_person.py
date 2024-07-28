@@ -89,36 +89,36 @@ class UpdatePersonLoggingProcessor:
 
         try:
             result = await self._processor.process(command)
-        except PersonDoesNotExistError as e:
+        except PersonDoesNotExistError as error:
             logger.error(
                 "Unexpected error occurred: Person doesn't exist",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except InvalidPersonFirstNameError as e:
+            raise error
+        except InvalidPersonFirstNameError as error:
             logger.error(
                 "Unexpected error occurred: Invalid person first name",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except InvalidPersonLastNameError as e:
+            raise error
+        except InvalidPersonLastNameError as error:
             logger.error(
                 "Unexpected error occurred: Invalid person last name",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except InvalidPersonBirthOrDeathDateError as e:
+            raise error
+        except InvalidPersonBirthOrDeathDateError as error:
             logger.error(
                 "Unexpected error occurred: Invalid person birth or death date",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
+            raise error
         except Exception:
             logger.exception(
                 "Unexpected error occurred",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
+            raise error
 
         logger.debug(
             "'Update Person' command processing completed",

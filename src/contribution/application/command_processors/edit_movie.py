@@ -305,7 +305,7 @@ class EditMovieLoggingProcessor:
 
         try:
             result = await self._processor.process(command)
-        except NotEnoughPermissionsError as e:
+        except NotEnoughPermissionsError as error:
             logger.info(
                 "Expected error occurred: User has not enough permissions",
                 extra={
@@ -315,47 +315,47 @@ class EditMovieLoggingProcessor:
                     ),
                 },
             )
-            raise e
-        except UserDoesNotExistError as e:
+            raise error
+        except UserDoesNotExistError as error:
             logger.error(
                 "Unexpected error occurred: "
                 "User is authenticated, but user gateway returns None",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except MovieDoesNotExistError as e:
+            raise error
+        except MovieDoesNotExistError as error:
             logger.error(
                 "Unexpected error occurred: Movie doesn't exist",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except UserIsNotActiveError as e:
+            raise error
+        except UserIsNotActiveError as error:
             logger.info(
                 "Expected error occurred: User is not active",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except RolesDoNotExistError as e:
+            raise error
+        except RolesDoNotExistError as error:
             logger.info(
                 "Expected error occurred: "
                 "Roles ids entered by user do not belong to any roles",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_missing_roles": e.ids_of_missing_roles,
+                    "ids_of_missing_roles": error.ids_of_missing_roles,
                 },
             )
-            raise e
-        except WritersDoNotExistError as e:
+            raise error
+        except WritersDoNotExistError as error:
             logger.info(
                 "Expected error occurred: "
                 "Writers ids entered by user do not belong to any writers",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_missing_writers": e.ids_of_missing_writers,
+                    "ids_of_missing_writers": error.ids_of_missing_writers,
                 },
             )
-            raise e
-        except CrewMembersDoNotExistError as e:
+            raise error
+        except CrewMembersDoNotExistError as error:
             logger.info(
                 "Expected error occurred: "
                 "Crew members ids entered by user do not belong to any"
@@ -363,27 +363,27 @@ class EditMovieLoggingProcessor:
                 extra={
                     "operation_id": self._operation_id,
                     "ids_of_missing_crew_members": (
-                        e.ids_of_missing_crew_members
+                        error.ids_of_missing_crew_members
                     ),
                 },
             )
-            raise e
-        except PersonsDoNotExistError as e:
+            raise error
+        except PersonsDoNotExistError as error:
             logger.info(
                 "Expected error occurred: "
                 "Person ids entered by user do not belong to any persons",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_missing_persons": e.ids_of_missing_persons,
+                    "ids_of_missing_persons": error.ids_of_missing_persons,
                 },
             )
-            raise e
+            raise error
         except Exception:
             logger.exception(
                 "Unexpected error occurred",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
+            raise error
 
         logger.debug(
             "'Edit Movie' command processing completed",

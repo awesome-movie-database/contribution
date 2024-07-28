@@ -217,7 +217,7 @@ class AddMovieLoggingProcessor:
 
         try:
             result = await self._processor.process(command)
-        except NotEnoughPermissionsError as e:
+        except NotEnoughPermissionsError as error:
             logger.info(
                 "Expected error occurred: User has not enough permissions",
                 extra={
@@ -227,36 +227,36 @@ class AddMovieLoggingProcessor:
                     ),
                 },
             )
-            raise e
-        except UserDoesNotExistError as e:
+            raise error
+        except UserDoesNotExistError as error:
             logger.error(
                 "Unexpected error occurred: "
                 "User is authenticated, but user gateway returns None",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except UserIsNotActiveError as e:
+            raise error
+        except UserIsNotActiveError as error:
             logger.info(
                 "Expected error occurred: User is not active",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except PersonsDoNotExistError as e:
+            raise error
+        except PersonsDoNotExistError as error:
             logger.info(
                 "Expected error occurred: "
                 "Person ids entered by user do not belong to any persons",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_missing_persons": e.ids_of_missing_persons,
+                    "ids_of_missing_persons": error.ids_of_missing_persons,
                 },
             )
-            raise e
+            raise error
         except Exception:
             logger.exception(
                 "Unexpected error occurred",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
+            raise error
 
         logger.debug(
             "'Add Movie' command processing completed",

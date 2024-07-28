@@ -219,120 +219,120 @@ class AcceptMovieEditingLoggingProcessor:
 
         try:
             result = await self._processor.process(command)
-        except ContributionDoesNotExistError as e:
+        except ContributionDoesNotExistError as error:
             logger.error(
                 "Unexpected error occurred: Contribution doesn't exist",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except UserDoesNotExistError as e:
+            raise error
+        except UserDoesNotExistError as error:
             logger.error(
                 "Unexpected error occurred: Contribution has author id, "
                 "using which user gateway returns None",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except MovieDoesNotExistError as e:
+            raise error
+        except MovieDoesNotExistError as error:
             logger.error(
                 "Unexpected error occurred: Contribution has movie id,"
                 "using which movie gateway returns None",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except InvalidMovieEngTitleError as e:
+            raise error
+        except InvalidMovieEngTitleError as error:
             logger.error(
                 "Unexpected error occurred: Invalid movie eng title",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except InvalidMovieOriginalTitleError as e:
+            raise error
+        except InvalidMovieOriginalTitleError as error:
             logger.error(
                 "Unexpected error occurred: Invalid movie original title",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except InvalidMovieDurationError as e:
+            raise error
+        except InvalidMovieDurationError as error:
             logger.error(
                 "Unexpected error occurred: Invalid movie duration",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except RolesAlreadyExistError as e:
+            raise error
+        except RolesAlreadyExistError as error:
             logger.error(
                 "Unexpected error occurred: "
                 "Role ids already belong to some roles",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_existing_roles": e.ids_of_existing_roles,
+                    "ids_of_existing_roles": error.ids_of_existing_roles,
                 },
             )
-            raise e
-        except RolesDoNotExistError as e:
+            raise error
+        except RolesDoNotExistError as error:
             logger.error(
                 "Unexpected error occurred: "
                 "Role ids do not belong to any roles",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_missing_roles": e.ids_of_missing_roles,
+                    "ids_of_missing_roles": error.ids_of_missing_roles,
                 },
             )
-            raise e
-        except WritersAlreadyExistError as e:
+            raise error
+        except WritersAlreadyExistError as error:
             logger.error(
                 "Unexpected error occurred: "
                 "Writer ids already belong to some writers",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_existing_writers": e.ids_of_existing_writers,
+                    "ids_of_existing_writers": error.ids_of_existing_writers,
                 },
             )
-            raise e
-        except WritersDoNotExistError as e:
+            raise error
+        except WritersDoNotExistError as error:
             logger.error(
                 "Unexpected error occurred: "
                 "Writer ids do not belong to any writers",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_missing_writers": e.ids_of_missing_writers,
+                    "ids_of_missing_writers": error.ids_of_missing_writers,
                 },
             )
-            raise e
-        except CrewMembersAlreadyExistError as e:
+            raise error
+        except CrewMembersAlreadyExistError as error:
             logger.error(
                 "Unexpected error occurred: "
                 "Crew member ids already belong to some crew members",
                 extra={
                     "operation_id": self._operation_id,
                     "ids_of_existing_crew_members": (
-                        e.ids_of_existing_crew_members,
+                        error.ids_of_existing_crew_members,
                     ),
                 },
             )
-            raise e
-        except CrewMembersDoNotExistError as e:
+            raise error
+        except CrewMembersDoNotExistError as error:
             logger.error(
                 "Unexpected error occurred: "
                 "Crew member ids do not belong to any crew members",
                 extra={
                     "operation_id": self._operation_id,
                     "ids_of_missing_crew_members": (
-                        e.ids_of_missing_crew_members,
+                        error.ids_of_missing_crew_members,
                     ),
                 },
             )
-            raise e
-        except PersonsDoNotExistError as e:
+            raise error
+        except PersonsDoNotExistError as error:
             logger.error(
                 "Unexpected error occurred: "
                 "Person ids referenced in contribution roles, writers or crew"
                 "are do not belong to any persons",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_missing_persons": e.ids_of_missing_persons,
+                    "ids_of_missing_persons": error.ids_of_missing_persons,
                 },
             )
-            raise e
-        except AchievementDoesNotExistError as e:
+            raise error
+        except AchievementDoesNotExistError as error:
             logger.error(
                 "Unexpected error occurred: Achievement was created, "
                 "but achievement gateway returns None",
@@ -343,7 +343,7 @@ class AcceptMovieEditingLoggingProcessor:
                 "Unexpected error occurred",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
+            raise error
 
         logger.debug(
             "'Accept Movie Editing' command processing completed",

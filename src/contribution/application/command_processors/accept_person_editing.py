@@ -163,45 +163,45 @@ class AcceptPersonEditingLoggingProcessor:
 
         try:
             result = await self._processor.process(command)
-        except ContributionDoesNotExistError as e:
+        except ContributionDoesNotExistError as error:
             logger.error(
                 "Unexpected error occurred: Contribution doesn't exist",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except UserDoesNotExistError as e:
+            raise error
+        except UserDoesNotExistError as error:
             logger.error(
                 "Unexpected error occurred: Contribution has author id, "
                 "using which user gateway returns None",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except PersonDoesNotExistError as e:
+            raise error
+        except PersonDoesNotExistError as error:
             logger.error(
                 "Unexpected error occurred: Contribution has person id,"
                 "using which person gateway returns None",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except InvalidPersonFirstNameError as e:
+            raise error
+        except InvalidPersonFirstNameError as error:
             logger.error(
                 "Unexpected error occurred: Invalid person first name",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except InvalidPersonLastNameError as e:
+            raise error
+        except InvalidPersonLastNameError as error:
             logger.error(
                 "Unexpected error occurred: Invalid person last name",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except InvalidPersonBirthOrDeathDateError as e:
+            raise error
+        except InvalidPersonBirthOrDeathDateError as error:
             logger.error(
                 "Unexpected error occurred: Invalid person birth or death date",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except AchievementDoesNotExistError as e:
+            raise error
+        except AchievementDoesNotExistError as error:
             logger.error(
                 "Unexpected error occurred: Achievement was created, "
                 "but achievement gateway returns None",
@@ -212,7 +212,7 @@ class AcceptPersonEditingLoggingProcessor:
                 "Unexpected error occurred",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
+            raise error
 
         logger.debug(
             "'Accept Person Editing' command processing completed",

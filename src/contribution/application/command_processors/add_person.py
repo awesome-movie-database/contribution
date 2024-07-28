@@ -183,7 +183,7 @@ class AddPersonLoggingProcessor:
 
         try:
             result = await self._processor.process(command)
-        except NotEnoughPermissionsError as e:
+        except NotEnoughPermissionsError as error:
             logger.info(
                 "Expected error occurred: User has not enough permissions",
                 extra={
@@ -193,26 +193,26 @@ class AddPersonLoggingProcessor:
                     ),
                 },
             )
-            raise e
-        except UserDoesNotExistError as e:
+            raise error
+        except UserDoesNotExistError as error:
             logger.error(
                 "Unexpected error occurred: "
                 "User is authenticated, but user gateway returns None",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
-        except UserIsNotActiveError as e:
+            raise error
+        except UserIsNotActiveError as error:
             logger.debug(
                 "Expected error occurred: User is not active",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
+            raise error
         except Exception:
             logger.exception(
                 "Unexpected error occurred",
                 extra={"operation_id": self._operation_id},
             )
-            raise e
+            raise error
 
         logger.debug(
             msg="'Add Person' command processing completed",

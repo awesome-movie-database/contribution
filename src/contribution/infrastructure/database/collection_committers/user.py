@@ -53,8 +53,8 @@ class CommitUserCollectionChanges:
                     requests=changes,
                     session=self._session,
                 )
-            except OperationFailure as e:
-                await self._on_operation_failure_error(e)
+            except OperationFailure as error:
+                await self._on_operation_failure_error(error)
 
     def _user_to_document(self, user: User) -> dict[str, Any]:
         document = {
