@@ -2,7 +2,7 @@ from dishka import Provider, Scope
 from types_aiobotocore_s3 import S3Client
 
 from contribution.application import PhotoGateway
-from contribution.infrastructure.s3 import MinIOConfig, PhotoStorage
+from contribution.infrastructure.s3 import S3Config, PhotoStorage
 
 
 def photo_storage_provider_factory() -> Provider:
@@ -15,9 +15,9 @@ def photo_storage_provider_factory() -> Provider:
 
 def photo_storage_factory(
     aioboto3_s3_client: S3Client,
-    minio_config: MinIOConfig,
+    s3_config: S3Config,
 ) -> PhotoStorage:
     return PhotoStorage(
         client=aioboto3_s3_client,
-        bucket=minio_config.bucket,
+        bucket=s3_config.bucket,
     )
