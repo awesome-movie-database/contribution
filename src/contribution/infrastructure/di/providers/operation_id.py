@@ -29,3 +29,11 @@ def event_consumer_operation_id_provider_factory() -> Provider:
     provider.provide(event_consumer_operation_id_factory)
 
     return provider
+
+
+def tui_operation_id_provider_factory() -> Provider:
+    provider = Provider(Scope.REQUEST)
+
+    provider.provide(default_operation_id_factory)
+
+    return provider

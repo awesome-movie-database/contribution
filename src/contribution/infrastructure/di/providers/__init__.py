@@ -2,6 +2,7 @@ __all__ = (
     "cli_configs_provider_factory",
     "web_api_configs_provider_factory",
     "event_consumer_configs_provider_factory",
+    "tui_configs_provider_factory",
     "domain_validators_provider_factory",
     "domain_services_provider_factrory",
     "motor_provider_factory",
@@ -23,17 +24,20 @@ __all__ = (
     "cli_operation_id_provider_factory",
     "web_api_operation_id_provider_factory",
     "event_consumer_operation_id_provider_factory",
+    "tui_operation_id_provider_factory",
     "event_publishers_provider_factory",
     "application_services_provider_factory",
     "cli_command_processors_provider_factory",
     "web_api_command_processors_provider_factory",
     "event_consumer_command_processors_provider_factory",
+    "tui_command_processors_provider_factory",
 )
 
 from .configs import (
     cli_configs_provider_factory,
     web_api_configs_provider_factory,
     event_consumer_configs_provider_factory,
+    tui_configs_provider_factory,
 )
 from .domain_validators import domain_validators_provider_factory
 from .domain_services import domain_services_provider_factrory
@@ -57,6 +61,7 @@ from .operation_id import (
     cli_operation_id_provider_factory,
     web_api_operation_id_provider_factory,
     event_consumer_operation_id_provider_factory,
+    tui_operation_id_provider_factory,
 )
 from .event_publishers import event_publishers_provider_factory
 from .application_services import application_services_provider_factory
@@ -64,4 +69,5 @@ from .command_processors import (
     cli_command_processors_provider_factory,
     web_api_command_processors_provider_factory,
     event_consumer_command_processors_provider_factory,
+    tui_command_processors_provider_factory,
 )

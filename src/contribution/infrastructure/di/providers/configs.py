@@ -33,3 +33,11 @@ def event_consumer_configs_provider_factory() -> Provider:
     provider.provide(minio_config_from_env)
 
     return provider
+
+
+def tui_configs_provider_factory() -> Provider:
+    provider = Provider(Scope.APP)
+
+    provider.provide(mongodb_config_from_env)
+
+    return provider

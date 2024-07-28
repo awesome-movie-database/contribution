@@ -49,3 +49,11 @@ def event_consumer_command_processors_provider_factory() -> Provider:
     provider.provide(reject_person_editing_factory)
 
     return provider
+
+
+def tui_command_processors_provider_factory() -> Provider:
+    provider = Provider(Scope.REQUEST)
+
+    provider.provide(create_movie_factory)
+
+    return provider
