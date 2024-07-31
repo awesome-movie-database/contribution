@@ -19,6 +19,7 @@ def create_cli_app() -> App:
     app = App(
         name="Contribution",
         version="0.1.0",
+        help_format="rich",
     )
 
     app.command(run_web_api)

@@ -50,8 +50,12 @@ async def create_movie(
             converter=json_to_money,
             show_default=True,
             help=(
-                "Budget in json format. "
-                'Example: {"amount": "100", "currency": "USD"}'
+                "Budget in [bright_red]json[/bright_red] format.\n\n"
+                "Example:\n"
+                "[bright_red]{\n"
+                '    "amount": "100",\n'
+                '    "currency": "USD"\n'
+                "}[/bright_red]"
             ),
         ),
     ] = None,
@@ -62,8 +66,12 @@ async def create_movie(
             converter=json_to_money,
             show_default=True,
             help=(
-                "Revenue in json format. "
-                'Example: {"amount": "100", "currency": "USD"}'
+                "Revenue in [bright_red]json[/bright_red] format.\n\n"
+                "Example:\n"
+                "[bright_red]{\n"
+                '    "amount": "100",\n'
+                '    "currency": "USD"\n'
+                "}[/bright_red]"
             ),
         ),
     ] = None,
@@ -73,19 +81,17 @@ async def create_movie(
             "--roles",
             converter=jsons_to_movie_roles,
             help=(
-                """
-                List of roles in json format (Each role must be in json
-                format).
-
-                Example of a role:
-                {
-                    "id": "066746d0-a236-7f1d-8000-1711de4b4e03",
-                    "person_id": "066746c5-fda5-7985-8000-d16c225a8b17",
-                    "character": "Captain Jack Sparrow",
-                    "importance": 1,
-                    "is_spoiler": false
-                }
-                """
+                "List of roles in [bright_red]json[/bright_red] format "
+                "(Each role must be in [bright_red]json[/bright_red] "
+                "format).\n\n"
+                "Example of a role:\n"
+                "[bright_red]{\n"
+                '    "id": "066746d0-a236-7f1d-8000-1711de4b4e03",\n'
+                '    "person_id": "066746c5-fda5-7985-8000-d16c225a8b17",\n'
+                '    "character": "Captain Jack Sparrow",\n'
+                '    "importance": 1,\n'
+                '    "is_spoiler": false\n'
+                "}[/bright_red]"
             ),
         ),
     ] = None,
@@ -95,17 +101,15 @@ async def create_movie(
             "--writers",
             converter=jsons_to_movie_writers,
             help=(
-                """
-                List of writers in json format (Each writer must be in
-                json format).
-
-                Example of a writer:
-                {
-                    "id": "066746e6-b9b3-7b13-8000-120c5b23f268",
-                    "person_id": "066746e5-71e3-73e5-8000-d9bdd5ead582",
-                    "writing": "Origin"
-                }
-                """
+                "List of writers in [bright_red]json[/bright_red] format "
+                "(Each writer must be in [bright_red]json[/bright_red] "
+                "format).\n\n"
+                "Example of a writer:\n"
+                "[bright_red]{\n"
+                '    "id": "066746e6-b9b3-7b13-8000-120c5b23f268",\n'
+                '    "person_id": "066746e5-71e3-73e5-8000-d9bdd5ead582",\n'
+                '    "writing": "Origin"\n'
+                "}[/bright_red]"
             ),
         ),
     ] = None,
@@ -115,17 +119,15 @@ async def create_movie(
             "--crew",
             converter=jsons_to_movie_crew,
             help=(
-                """
-                List of crew members in json format (Each crew member must be
-                in json format).
-
-                Example of a crew member:
-                {
-                    "id": "066746ff-367e-721f-8000-655eca7fdf18",
-                    "person_id": "066746fe-49a6-7e8d-8000-d780471a81f9",
-                    "membership": "Director"
-                }
-                """
+                "List of crew members in [bright_red]json[/bright_red] format "
+                "(Each crew member must be in [bright_red]json[/bright_red] "
+                "format).\n\n"
+                "Example of a crew member:\n"
+                "[bright_red]{\n"
+                '   "id": "066746ff-367e-721f-8000-655eca7fdf18",\n'
+                '   "person_id": "066746fe-49a6-7e8d-8000-d780471a81f9",\n'
+                '   "membership": "Director"\n'
+                "}[/bright_red]"
             ),
         ),
     ] = None,
