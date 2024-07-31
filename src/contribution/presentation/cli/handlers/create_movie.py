@@ -189,4 +189,70 @@ async def create_movie(
         )
         await command_processor.process(command)
 
+    movie_table = _movie_table_factory(
+        id=id,
+        eng_title=eng_title,
+        original_title=original_title,
+        release_date=release_date,
+        countries=countries,
+        genres=genres,
+        mpaa=mpaa,
+        duration=duration,
+        budget=budget,
+        revenue=revenue,
+        roles=roles,
+        writers=writers,
+        crew=crew,
+    )
+
     rich.print("Movie has been added successfully")
+    rich.print(movie_table)
+
+
+def _movie_table_factory(
+    id: MovieId,
+    eng_title: str,
+    original_title: str,
+    release_date: date,
+    countries: Iterable[Country],
+    genres: Iterable[Genre],
+    mpaa: MPAA,
+    duration: int,
+    budget: Optional[Money],
+    revenue: Optional[Money],
+    roles: Optional[Iterable[MovieRole]],
+    writers: Optional[Iterable[MovieWriter]],
+    crew: Optional[Iterable[MovieCrewMember]],
+) -> rich.table.Table:
+    movie_table = rich.table.Table(
+        "id",
+        "eng_title",
+        "original_title",
+        "release_date",
+        "countries",
+        "genres",
+        "mpaa",
+        "duration",
+        "budget",
+        "revenue",
+        "roles",
+        "writers",
+        "crew",
+        title="Movie",
+    )
+    movie_table.add_row(
+        str(id),
+        eng_title,
+        original_title,
+        release_date.isoformat(),
+        str(countries),
+        str(genres),
+        mpaa,
+        str(duration),
+        str(budget) if budget else "None",
+        str(revenue) if revenue else "None",
+        str(roles) if roles else "None",
+        str(writers) if writers else "None",
+        str(crew) if crew else "None",
+    )
+    return movie_table
