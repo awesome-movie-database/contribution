@@ -24,6 +24,3 @@ select = [
 
 [format]
 quote-style = "double"
-
-[per-file-ignores]
-"src/contribution/presentation/cli/*" = ["T201"]

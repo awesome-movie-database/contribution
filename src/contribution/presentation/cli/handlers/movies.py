@@ -4,6 +4,7 @@ from datetime import date
 import rich
 from cyclopts import Parameter
 import rich.prompt
+import rich.table
 
 from contribution.domain import (
     MPAA,
@@ -158,7 +159,7 @@ async def create_movie(
     Asks confirmation before it.
     """
     continue_ = rich.prompt.Confirm.ask(
-        "You are going to create movie.\n"
+        "You are going to create a movie.\n"
         "This action does not notify other services about a new movie.\n"
         "Would you like to continue?",
     )
@@ -188,4 +189,4 @@ async def create_movie(
         )
         await command_processor.process(command)
 
-    print("Movie has been added successfully")
+    rich.print("Movie has been added successfully")
