@@ -1,7 +1,9 @@
 from typing import Annotated, Iterable, Optional
 from datetime import date
 
+import rich
 from cyclopts import Parameter
+import rich.prompt
 
 from contribution.domain import (
     MPAA,
@@ -152,8 +154,17 @@ async def create_movie(
     ] = None,
 ) -> None:
     """
-    Creates new movie. Does not notify other services about a new movie.
+    Creates a new movie. Does not notify other services about it.
+    Asks confirmation before it.
     """
+    continue_ = rich.prompt.Confirm.ask(
+        "You are going to create movie.\n"
+        "This action does not notify other services about a new movie.\n"
+        "Would you like to continue?",
+    )
+    if not continue_:
+        return
+
     ioc_container = cli_ioc_container_factory()
 
     command = CreateMovieCommand(
