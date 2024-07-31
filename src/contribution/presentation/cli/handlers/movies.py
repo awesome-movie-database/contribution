@@ -31,15 +31,34 @@ from contribution.presentation.cli.converters import (
 async def create_movie(
     id: Annotated[
         MovieId,
-        Parameter("--id", converter=str_to_uuid),
+        Parameter(
+            "--id",
+            converter=str_to_uuid,
+            help="Id in [bright_yellow]UUID[/bright_yellow] format.",
+        ),
     ],
     eng_title: Annotated[str, Parameter("--eng-title")],
     original_title: Annotated[str, Parameter("--original-title")],
     release_date: Annotated[
         date,
-        Parameter("--release-date", converter=str_to_date),
+        Parameter(
+            "--release-date",
+            converter=str_to_date,
+            help=(
+                "Release date in [bright_green]ISO 8601[/bright_green] format."
+            ),
+        ),
     ],
-    countries: Annotated[Iterable[Country], Parameter("--countries")],
+    countries: Annotated[
+        Iterable[Country],
+        Parameter(
+            "--countries",
+            help=(
+                "Countries in [bright_green]ISO 3166 alpha 2"
+                "[/bright_green] format."
+            ),
+        ),
+    ],
     genres: Annotated[Iterable[Genre], Parameter("--genres")],
     mpaa: Annotated[MPAA, Parameter("--mpaa")],
     duration: Annotated[int, Parameter("--duration")],
@@ -81,7 +100,7 @@ async def create_movie(
             "--roles",
             converter=jsons_to_movie_roles,
             help=(
-                "List of roles in [bright_red]json[/bright_red] format "
+                "Roles in [bright_red]json[/bright_red] format "
                 "(Each role must be in [bright_red]json[/bright_red] "
                 "format).\n\n"
                 "Example of a role:\n"
@@ -101,7 +120,7 @@ async def create_movie(
             "--writers",
             converter=jsons_to_movie_writers,
             help=(
-                "List of writers in [bright_red]json[/bright_red] format "
+                "Writers in [bright_red]json[/bright_red] format "
                 "(Each writer must be in [bright_red]json[/bright_red] "
                 "format).\n\n"
                 "Example of a writer:\n"
@@ -119,7 +138,7 @@ async def create_movie(
             "--crew",
             converter=jsons_to_movie_crew,
             help=(
-                "List of crew members in [bright_red]json[/bright_red] format "
+                "Crew members in [bright_red]json[/bright_red] format "
                 "(Each crew member must be in [bright_red]json[/bright_red] "
                 "format).\n\n"
                 "Example of a crew member:\n"
@@ -156,9 +175,6 @@ async def create_movie(
         command_processor = await request_ioc_contanier.get(
             CommandProcessor[CreateMovieCommand, None],
         )
-        try:
-            await command_processor.process(command)
-        except:
-            return
+        await command_processor.process(command)
 
     print("Movie has been added successfully")
