@@ -8,7 +8,6 @@ from contribution.domain import (
     MovieId,
     Country,
     Money,
-    PhotoUrl,
 )
 from contribution.application.common import (
     MovieRole,
@@ -32,4 +31,3 @@ class CreateMovieCommand:
     roles: Iterable[MovieRole]
     writers: Iterable[MovieWriter]
     crew: Iterable[MovieCrewMember]
-    photos: list[PhotoUrl]

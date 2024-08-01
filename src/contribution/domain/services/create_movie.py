@@ -9,7 +9,6 @@ from contribution.domain.value_objects import (
     MovieId,
     Country,
     Money,
-    PhotoUrl,
 )
 from contribution.domain.validators import (
     ValidateMovieEngTitle,
@@ -43,7 +42,6 @@ class CreateMovie:
         duration: int,
         budget: Optional[Money],
         revenue: Optional[Money],
-        photos: list[PhotoUrl],
     ) -> Movie:
         self._validate_eng_title(eng_title)
         self._validate_original_title(original_title)
@@ -60,5 +58,4 @@ class CreateMovie:
             duration=duration,
             budget=budget,
             revenue=revenue,
-            photos=photos,
         )

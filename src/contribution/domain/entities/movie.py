@@ -10,7 +10,6 @@ from contribution.domain.value_objects import (
     MovieId,
     Country,
     Money,
-    PhotoUrl,
 )
 
 
@@ -26,4 +25,3 @@ class Movie:
     duration: int
     budget: Optional[Money]
     revenue: Optional[Money]
-    photos: list[PhotoUrl]

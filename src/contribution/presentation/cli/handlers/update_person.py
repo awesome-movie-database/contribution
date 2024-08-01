@@ -80,7 +80,6 @@ async def update_person(
         sex=sex,
         birth_date=birth_date,
         death_date=death_date,
-        add_photos=[],
     )
     async with ioc_container() as ioc_container_request:
         command_processor = await ioc_container_request.get(

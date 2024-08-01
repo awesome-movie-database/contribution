@@ -110,7 +110,6 @@ class UpdateMovieProcessor:
             duration=command.duration,
             budget=command.budget,
             revenue=command.revenue,
-            photos_to_add=command.photos_to_add,
         )
         await self._movie_gateway.update(movie)
 
