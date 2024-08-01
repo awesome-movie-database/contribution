@@ -156,7 +156,7 @@ async def create_movie(
 ) -> None:
     """
     Creates a new movie. Does not notify other services about it.
-    Asks confirmation before it.
+    Asks confirmation before execting.
     """
     continue_ = rich.prompt.Confirm.ask(
         "You are going to create a movie.\n"

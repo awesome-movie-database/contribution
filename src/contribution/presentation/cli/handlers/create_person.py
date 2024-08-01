@@ -49,7 +49,7 @@ async def create_person(
 ) -> None:
     """
     Creates a new person. Does not notify other services about it.
-    Asks confirmation before it.
+    Asks confirmation before execting.
     """
     continue_ = rich.prompt.Confirm.ask(
         "You are going to create a person.\n"
