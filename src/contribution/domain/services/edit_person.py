@@ -46,7 +46,7 @@ class EditPerson:
         sex: Maybe[Sex],
         birth_date: Maybe[date],
         death_date: Maybe[Optional[date]],
-        add_photos: Iterable[PhotoUrl],
+        photos_to_add: Iterable[PhotoUrl],
         current_timestamp: datetime,
     ) -> EditPersonContribution:
         if not author.is_active:
@@ -97,7 +97,7 @@ class EditPerson:
             sex=sex,
             birth_date=birth_date,
             death_date=death_date,
-            add_photos=add_photos,
+            photos_to_add=photos_to_add,
             status=ContributionStatus.PENDING,
             created_at=current_timestamp,
             status_updated_at=None,

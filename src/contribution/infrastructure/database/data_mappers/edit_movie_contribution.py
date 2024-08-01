@@ -196,8 +196,8 @@ class EditMovieContributionMapper:
                 CrewMemberId(UUID(crew_member_id))
                 for crew_member_id in document["remove_crew"]
             ],
-            add_photos=[
-                PhotoUrl(photo_url) for photo_url in document["photos"]
+            photos_to_add=[
+                PhotoUrl(photo_url) for photo_url in document["photos_to_add"]
             ],
         )
 

@@ -176,7 +176,7 @@ class EditMovieProcessor:
             remove_writers=command.remove_writers,
             add_crew=command.add_crew,
             remove_crew=command.remove_crew,
-            add_photos=command.add_photos,
+            photos_to_add=command.photos_to_add,
             current_timestamp=self._current_timestamp,
         )
         await self._edit_movie_contribution_gateway.save(contribution)
@@ -268,7 +268,7 @@ class EditMovieCallbackProcessor:
             remove_writers=command.remove_writers,
             add_crew=command.add_crew,
             remove_crew=command.remove_crew,
-            add_photos=command.add_photos,
+            photos_to_add=command.photos_to_add,
             edited_at=self._current_timestamp,
         )
         await self._on_movie_edited(event)

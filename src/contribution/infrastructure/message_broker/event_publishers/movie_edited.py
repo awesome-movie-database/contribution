@@ -48,6 +48,7 @@ class PublishMovieEditedEvent:
             "remove_crew": [
                 crew_member_id.hex for crew_member_id in event.remove_crew
             ],
+            "photos_to_add": list(event.photos_to_add),
             "edited_at": event.edited_at.isoformat(),
         }
 

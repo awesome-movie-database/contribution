@@ -37,4 +37,4 @@ class EditMovieCommand:
     remove_writers: Collection[WriterId]
     add_crew: Iterable[ContributionCrewMember]
     remove_crew: Collection[CrewMemberId]
-    add_photos: Iterable[PhotoUrl]
+    photos_to_add: Iterable[PhotoUrl]

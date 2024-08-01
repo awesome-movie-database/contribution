@@ -41,7 +41,7 @@ class EditMovieRequest(BaseModel):
     remove_writers: list[WriterId]
     add_crew: list[ContributionCrewMember]
     remove_crew: list[CrewMemberId]
-    add_photos: list[PhotoUrl]
+    photos_to_add: list[PhotoUrl]
 
     def to_command(self) -> EditMovieCommand:
         request_as_dict = self.model_dump(exclude_unset=True)
@@ -100,5 +100,5 @@ class EditMovieRequest(BaseModel):
             remove_writers=self.remove_writers,
             add_crew=self.add_crew,
             remove_crew=self.remove_crew,
-            add_photos=self.add_photos,
+            photos_to_add=self.photos_to_add,
         )

@@ -66,7 +66,7 @@ class CommitEditPersonContributionCollectionChanges:
             "status": contribution.status,
             "author_id": contribution.author_id.hex,
             "person_id": contribution.person_id.hex,
-            "add_photos": list(contribution.add_photos),
+            "photos_to_add": list(contribution.photos_to_add),
         }
 
         if contribution.status_updated_at:
@@ -139,5 +139,7 @@ class CommitEditPersonContributionCollectionChanges:
                     pipeline["$set"]["death_date"] = None
             else:
                 pipeline["$unset"]["death_date"] = ""
+        if clean.photos_to_add != dirty.photos_to_add:
+            pipeline["$set"]["photos_to_add"] = list(dirty.photos_to_add)
 
         return pipeline

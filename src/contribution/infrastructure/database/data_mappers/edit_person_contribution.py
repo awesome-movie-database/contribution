@@ -120,8 +120,8 @@ class EditPersonContributionMapper:
             sex=maybe_sex,
             birth_date=maybe_birth_date,
             death_date=maybe_death_date,
-            add_photos=[
-                PhotoUrl(photo_url) for photo_url in document["photos"]
+            photos_to_add=[
+                PhotoUrl(photo_url) for photo_url in document["photos_to_add"]
             ],
         )
 

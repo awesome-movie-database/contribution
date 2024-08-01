@@ -67,7 +67,7 @@ class EditMovie:
         remove_writers: Iterable[WriterId],
         add_crew: Iterable[ContributionCrewMember],
         remove_crew: Iterable[CrewMemberId],
-        add_photos: Iterable[PhotoUrl],
+        photos_to_add: Iterable[PhotoUrl],
         current_timestamp: datetime,
     ) -> EditMovieContribution:
         if not author.is_active:
@@ -112,7 +112,7 @@ class EditMovie:
             remove_writers=remove_writers,
             add_crew=add_crew,
             remove_crew=remove_crew,
-            add_photos=add_photos,
+            photos_to_add=photos_to_add,
             status=ContributionStatus.PENDING,
             created_at=current_timestamp,
             status_updated_at=None,

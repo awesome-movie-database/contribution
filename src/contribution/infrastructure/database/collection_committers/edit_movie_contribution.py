@@ -71,7 +71,7 @@ class CommitEditMovieContributionCollectionChanges:
             "status": contribution.status,
             "author_id": contribution.author_id.hex,
             "movie_id": contribution.movie_id.hex,
-            "add_photos": list(contribution.add_photos),
+            "photos_to_add": list(contribution.photos_to_add),
         }
 
         if contribution.status_updated_at:
@@ -245,8 +245,8 @@ class CommitEditMovieContributionCollectionChanges:
             pipeline["$set"]["remove_crew"] = [
                 writer_id.hex for writer_id in dirty.remove_writers
             ]
-        if clean.add_photos != dirty.add_photos:
-            pipeline["$set"]["add_photos"] = list(dirty.add_photos)
+        if clean.photos_to_add != dirty.photos_to_add:
+            pipeline["$set"]["photos_to_add"] = list(dirty.photos_to_add)
 
         return pipeline
 

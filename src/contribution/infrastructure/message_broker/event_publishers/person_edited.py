@@ -41,7 +41,7 @@ class PublishPersonEditedEvent:
             "contribution_id": event.contribution_id.hex,
             "author_id": event.author_id.hex,
             "person_id": event.person_id.hex,
-            "add_photos": list(event.add_photos),
+            "photos_to_add": list(event.photos_to_add),
             "edited_at": event.edited_at.isoformat(),
         }
 

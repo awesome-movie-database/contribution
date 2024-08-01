@@ -44,4 +44,4 @@ class EditMovieContribution(Contribution):
     remove_writers: Iterable[WriterId]
     add_crew: Iterable[ContributionCrewMember]
     remove_crew: Iterable[CrewMemberId]
-    add_photos: Iterable[PhotoUrl]
+    photos_to_add: Iterable[PhotoUrl]

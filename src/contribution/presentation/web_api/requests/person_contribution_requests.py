@@ -22,7 +22,7 @@ class EditPersonRequest(BaseModel):
     sex: Sex = None
     birth_date: date = None
     death_date: Optional[date] = None
-    add_photos: list[PhotoUrl]
+    photos_to_add: list[PhotoUrl]
 
     def to_command(self) -> EditPersonCommand:
         request_as_dict = self.model_dump(exclude_unset=True)
@@ -55,5 +55,5 @@ class EditPersonRequest(BaseModel):
             sex=sex,
             birth_date=birth_date,
             death_date=death_date,
-            add_photos=self.add_photos,
+            photos_to_add=self.photos_to_add,
         )

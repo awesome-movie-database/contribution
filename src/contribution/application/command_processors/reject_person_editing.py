@@ -111,7 +111,7 @@ class RejectPersonEditingProcessor:
         await self._user_gateway.update(author)
         await self._edit_person_contribution_gateway.update(contribution)
 
-        await self._photo_gateway.delete_by_urls(contribution.add_photos)
+        await self._photo_gateway.delete_by_urls(contribution.photos_to_add)
 
         return achievement.id if achievement else None
 
