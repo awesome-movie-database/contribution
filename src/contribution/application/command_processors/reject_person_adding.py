@@ -18,7 +18,6 @@ from contribution.application.common import (
     AddPersonContributionGateway,
     UserGateway,
     AchievementGateway,
-    PhotoGateway,
     UnitOfWork,
     OnEventOccurred,
     AchievementEarnedEvent,
@@ -36,7 +35,6 @@ def reject_person_adding_factory(
     user_gateway: UserGateway,
     achievement_gateway: AchievementGateway,
     unit_of_work: UnitOfWork,
-    photo_gateway: PhotoGateway,
     on_achievement_earned: OnEventOccurred[AchievementEarnedEvent],
 ) -> CommandProcessor[RejectPersonAddingCommand, Optional[AchievementId]]:
     reject_person_adding_processor = RejectPersonAddingProcessor(
@@ -44,7 +42,6 @@ def reject_person_adding_factory(
         add_person_contribution_gateway=add_person_contribution_gateway,
         user_gateway=user_gateway,
         achievement_gateway=achievement_gateway,
-        photo_gateway=photo_gateway,
     )
     callback_processor = AchievementEearnedCallbackProcessor(
         processor=reject_person_adding_processor,
@@ -71,13 +68,11 @@ class RejectPersonAddingProcessor:
         add_person_contribution_gateway: AddPersonContributionGateway,
         user_gateway: UserGateway,
         achievement_gateway: AchievementGateway,
-        photo_gateway: PhotoGateway,
     ):
         self._reject_contribution = reject_contribution
         self._add_person_contribution_gateway = add_person_contribution_gateway
         self._user_gateway = user_gateway
         self._achievement_gateway = achievement_gateway
-        self._photo_gateway = photo_gateway
 
     async def process(
         self,
@@ -108,8 +103,6 @@ class RejectPersonAddingProcessor:
 
         await self._user_gateway.update(author)
         await self._add_person_contribution_gateway.update(contribution)
-
-        await self._photo_gateway.delete_by_urls(contribution.photos)
 
         return achievement.id if achievement else None
 
