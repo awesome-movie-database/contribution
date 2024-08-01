@@ -103,6 +103,7 @@ def _person_table_factory(
         "sex",
         "birth_date",
         "death_date",
+        title="Person",
     )
     person_table.add_row(
         str(id),

@@ -3,6 +3,7 @@ from dishka import Provider, Scope
 from contribution.application import (
     create_movie_factory,
     create_person_factory,
+    update_person_factory,
     add_movie_factory,
     edit_movie_factory,
     add_person_factory,
@@ -23,6 +24,7 @@ def cli_command_processors_provider_factory() -> Provider:
 
     provider.provide(create_movie_factory)
     provider.provide(create_person_factory)
+    provider.provide(update_person_factory)
 
     return provider
 
@@ -58,5 +60,6 @@ def tui_command_processors_provider_factory() -> Provider:
 
     provider.provide(create_movie_factory)
     provider.provide(create_person_factory)
+    provider.provide(update_person_factory)
 
     return provider

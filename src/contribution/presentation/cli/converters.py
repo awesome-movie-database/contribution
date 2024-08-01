@@ -1,11 +1,11 @@
 import json
-from typing import Any
+from typing import Any, Optional
 from datetime import date
 from uuid import UUID
 
 from adaptix import Retort
 
-from contribution.domain import Money
+from contribution.domain import Sex, Money, Maybe
 from contribution.application import (
     MovieRole,
     MovieWriter,
@@ -23,6 +23,32 @@ def str_to_uuid(_, uuid_as_str: str) -> UUID:
 
 def str_to_date(_, date_as_str: str) -> date:
     return date.fromisoformat(date_as_str)
+
+
+def str_to_maybe_str(_, str_: str) -> Maybe[str]:
+    return Maybe[str].with_value(str_)
+
+
+def str_to_maybe_date(_, date_as_str: str) -> Maybe[date]:
+    date_ = date.fromisoformat(date_as_str)
+    return Maybe[date].with_value(date_)
+
+
+def str_to_maybe_optional_date(
+    _,
+    date_as_str: Optional[str],
+) -> Maybe[Optional[date]]:
+    if date_as_str:
+        date_ = date.fromisoformat(date_as_str)
+    else:
+        date_ = None
+
+    return Maybe[Optional[date]].with_value(date_)
+
+
+def str_to_maybe_sex(_, sex_as_str: str) -> Maybe[Sex]:
+    sex = Sex(sex_as_str)
+    return Maybe[Sex].with_value(sex)
 
 
 def json_to_money(_, json_: str) -> Money:

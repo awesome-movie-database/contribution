@@ -118,4 +118,4 @@ class Maybe[T]:
         if not self.is_set:
             message = "Value is unset"
             raise ValueError(message)
-        return cast(T, self.value)
+        return cast(T, self._value)
