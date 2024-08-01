@@ -2,9 +2,9 @@ from typing import Annotated, Iterable, Optional
 from datetime import date
 
 import rich
-from cyclopts import Parameter
 import rich.prompt
 import rich.table
+from cyclopts import Parameter
 
 from contribution.domain import (
     MPAA,
@@ -183,8 +183,8 @@ async def create_movie(
         writers=writers or [],
         crew=crew or [],
     )
-    async with ioc_container() as request_ioc_contanier:
-        command_processor = await request_ioc_contanier.get(
+    async with ioc_container() as ioc_container_request:
+        command_processor = await ioc_container_request.get(
             CommandProcessor[CreateMovieCommand, None],
         )
         await command_processor.process(command)

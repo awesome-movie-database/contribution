@@ -6,7 +6,7 @@ from gunicorn.app.wsgiapp import run as run_gunicorn
 from faststream.cli.main import cli as run_faststream
 
 from contribution.infrastructure import setup_logging
-from contribution.presentation.cli import create_movie
+from contribution.presentation.cli import create_movie, create_person
 
 
 def main() -> None:
@@ -24,7 +24,9 @@ def create_cli_app() -> App:
 
     app.command(run_web_api)
     app.command(run_event_consumer)
+
     app.command(create_movie)
+    app.command(create_person)
 
     return app
 
