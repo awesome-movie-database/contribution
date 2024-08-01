@@ -92,6 +92,7 @@ class CreateMovieProcessor:
             duration=command.duration,
             budget=command.budget,
             revenue=command.revenue,
+            photos=command.photos,
         )
         await self._movie_gateway.save(new_movie)
 

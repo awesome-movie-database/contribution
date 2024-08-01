@@ -8,6 +8,7 @@ from contribution.domain.constants import (
 from contribution.domain.value_objects import (
     Country,
     Money,
+    PhotoUrl,
 )
 from contribution.domain.validators import (
     ValidateMovieEngTitle,
@@ -42,6 +43,7 @@ class UpdateMovie:
         duration: Maybe[int],
         budget: Maybe[Optional[Money]],
         revenue: Maybe[Optional[Money]],
+        photos_to_add: Iterable[PhotoUrl],
     ) -> None:
         if eng_title.is_set:
             self._validate_eng_title(eng_title.value)
@@ -64,3 +66,5 @@ class UpdateMovie:
         if duration.is_set:
             self._validate_duration(duration.value)
             movie.duration = duration.value
+
+        movie.photos.extend(photos_to_add)

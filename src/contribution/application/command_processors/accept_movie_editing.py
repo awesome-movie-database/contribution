@@ -172,6 +172,7 @@ class AcceptMovieEditingProcessor:
             duration=contribution.duration,
             budget=contribution.budget,
             revenue=contribution.revenue,
+            photos_to_add=contribution.photos_to_add,
         )
         await self._movie_gateway.update(movie)
 

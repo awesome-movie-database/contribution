@@ -57,6 +57,7 @@ class CommitMovieCollectionChanges:
             "genres": list(movie.genres),
             "mpaa": movie.mpaa,
             "duration": movie.duration,
+            "photos": movie.photos,
         }
 
         if movie.budget:
@@ -114,5 +115,7 @@ class CommitMovieCollectionChanges:
                 }
             else:
                 pipeline["$set"]["revenue"] = None
+        if clean.photos != dirty.photos:
+            pipeline["$set"]["photos"] = dirty.photos
 
         return pipeline

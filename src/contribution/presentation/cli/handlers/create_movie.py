@@ -182,6 +182,7 @@ async def create_movie(
         roles=roles or [],
         writers=writers or [],
         crew=crew or [],
+        photos=[],
     )
     async with ioc_container() as ioc_container_request:
         command_processor = await ioc_container_request.get(

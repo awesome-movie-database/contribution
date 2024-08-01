@@ -10,6 +10,7 @@ from contribution.domain import (
     MPAA,
     MovieId,
     Money,
+    PhotoUrl,
     Movie,
 )
 from contribution.infrastructure.database.collections import (
@@ -113,4 +114,5 @@ class MovieMapper:
             duration=document["duration"],
             budget=budget,
             revenue=revenue,
+            photos=[PhotoUrl(photo_url) for photo_url in document["photos"]],
         )

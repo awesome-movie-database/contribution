@@ -173,6 +173,8 @@ class CommitAddMovieContributionCollectionChanges:
             pipeline["$set"]["crew"] = self._contribution_crew_to_dict_list(
                 contribution_crew=dirty.crew,
             )
+        if clean.photos != dirty.photos:
+            pipeline["$set"]["photos"] = list(dirty.photos)
 
         return pipeline
 

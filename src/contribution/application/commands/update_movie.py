@@ -11,6 +11,7 @@ from contribution.domain import (
     CrewMemberId,
     Country,
     Money,
+    PhotoUrl,
     Maybe,
 )
 from contribution.application.common import (
@@ -38,3 +39,4 @@ class UpdateMovieCommand:
     remove_writers: Collection[WriterId]
     add_crew: Iterable[MovieCrewMember]
     remove_crew: Collection[CrewMemberId]
+    photos_to_add: Iterable[PhotoUrl]

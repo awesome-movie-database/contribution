@@ -152,6 +152,7 @@ class AcceptMovieAddingProcessor:
             duration=contribution.duration,
             budget=contribution.budget,
             revenue=contribution.revenue,
+            photos=list(contribution.photos),
         )
         await self._movie_gateway.save(new_movie)
 
