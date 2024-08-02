@@ -6,7 +6,7 @@ class MongoDBLockFactory:
     See [this article](https://www.mongodb.com/blog/post/how-to-select-\
 -for-update-inside-mongodb-transactions) for details.
 
-    Basic usage::
+    Example of usage::
 
         class FooMapper:
             def __init__(

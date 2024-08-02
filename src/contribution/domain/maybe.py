@@ -18,7 +18,7 @@ class Maybe[T]:
     Class for representing value that can be
     not set.
 
-    Basic usage::
+    Example of usage::
 
         class Foo:
             def __init__(self, bar: Optional[int]):
@@ -59,7 +59,7 @@ class Maybe[T]:
         to value factory if one was provided and wraps
         returned value in Maybe.
 
-        Basic usage::
+        Example of usage::
 
             @dataclass
             class Location:
