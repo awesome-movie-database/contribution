@@ -177,20 +177,20 @@ class AcceptMovieEditingProcessor:
 
         await self._create_and_save_roles(
             movie=movie,
-            movie_roles=command.add_roles,
+            movie_roles=command.roles_to_add,
         )
         await self._create_and_save_writers(
             movie=movie,
-            movie_writers=command.add_writers,
+            movie_writers=command.writers_to_add,
         )
         await self._create_and_save_crew(
             movie=movie,
-            movie_crew=command.add_crew,
+            movie_crew=command.crew_to_add,
         )
 
-        await self._delete_roles(list(contribution.remove_roles))
-        await self._delete_writers(list(contribution.remove_writers))
-        await self._delete_crew(list(contribution.remove_crew))
+        await self._delete_roles(list(contribution.roles_to_remove))
+        await self._delete_writers(list(contribution.writers_to_remove))
+        await self._delete_crew(list(contribution.crew_to_remove))
 
         return achievement.id if achievement else None
 

@@ -144,18 +144,18 @@ class EditMovieProcessor:
         if not movie:
             raise MovieDoesNotExistError()
 
-        await self._ensure_roles_exist(command.remove_roles)
-        await self._ensure_writers_exist(command.remove_writers)
-        await self._ensure_crew_exist(command.remove_crew)
+        await self._ensure_roles_exist(command.roles_to_remove)
+        await self._ensure_writers_exist(command.writers_to_remove)
+        await self._ensure_crew_exist(command.crew_to_remove)
 
         person_ids = [
-            *(role.person_id for role in command.add_roles),
-            *(writer.person_id for writer in command.add_writers),
-            *(crew_member.person_id for crew_member in command.add_crew),
+            *(role.person_id for role in command.roles_to_add),
+            *(writer.person_id for writer in command.writers_to_add),
+            *(crew_member.person_id for crew_member in command.crew_to_add),
         ]
         await self._ensure_persons_exist(person_ids)
 
-        self._validate_roles(command.add_roles)
+        self._validate_roles(command.roles_to_add)
 
         contribution = self._edit_movie(
             id=EditMovieContributionId(uuid7()),
@@ -170,12 +170,12 @@ class EditMovieProcessor:
             duration=command.duration,
             budget=command.budget,
             revenue=command.revenue,
-            add_roles=command.add_roles,
-            remove_roles=command.remove_roles,
-            add_writers=command.add_writers,
-            remove_writers=command.remove_writers,
-            add_crew=command.add_crew,
-            remove_crew=command.remove_crew,
+            roles_to_add=command.roles_to_add,
+            roles_to_remove=command.roles_to_remove,
+            writers_to_add=command.writers_to_add,
+            writers_to_remove=command.writers_to_remove,
+            crew_to_add=command.crew_to_add,
+            crew_to_remove=command.crew_to_remove,
             photos_to_add=command.photos_to_add,
             current_timestamp=self._current_timestamp,
         )
@@ -262,12 +262,12 @@ class EditMovieCallbackProcessor:
             duration=command.duration,
             budget=command.budget,
             revenue=command.revenue,
-            add_roles=command.add_roles,
-            remove_roles=command.remove_roles,
-            add_writers=command.add_writers,
-            remove_writers=command.remove_writers,
-            add_crew=command.add_crew,
-            remove_crew=command.remove_crew,
+            roles_to_add=command.roles_to_add,
+            roles_to_remove=command.roles_to_remove,
+            writers_to_add=command.writers_to_add,
+            writers_to_remove=command.writers_to_remove,
+            crew_to_add=command.crew_to_add,
+            crew_to_remove=command.crew_to_remove,
             photos_to_add=command.photos_to_add,
             edited_at=self._current_timestamp,
         )

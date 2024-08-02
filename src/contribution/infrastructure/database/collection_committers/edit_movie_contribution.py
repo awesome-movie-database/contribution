@@ -115,23 +115,24 @@ class CommitEditMovieContributionCollectionChanges:
             else:
                 document["revenue"] = None
 
-        document["add_roles"] = self._contribution_roles_to_dict_list(
-            contribution_roles=contribution.add_roles,
+        document["roles_to_add"] = self._contribution_roles_to_dict_list(
+            contribution_roles=contribution.roles_to_add,
         )
-        document["remove_roles"] = [
-            role_id.hex for role_id in contribution.remove_roles
+        document["roles_to_more"] = [
+            role_id.hex for role_id in contribution.roles_to_remove
         ]
-        document["add_writers"] = self._contribution_writers_to_dict_list(
-            contribution_writers=contribution.add_writers,
+        document["writers_to_add"] = self._contribution_writers_to_dict_list(
+            contribution_writers=contribution.writers_to_add,
         )
-        document["remove_writers"] = [
-            writer_id.hex for writer_id in contribution.remove_writers
+        document["writers_to_remove"] = [
+            writer_id.hex for writer_id in contribution.writers_to_remove
         ]
-        document["add_crew"] = self._contribution_crew_to_dict_list(
-            contribution_crew=contribution.add_crew,
+        document["crew_to_add"] = self._contribution_crew_to_dict_list(
+            contribution_crew=contribution.crew_to_add,
         )
-        document["remove_crew"] = [
-            crew_member_id.hex for crew_member_id in contribution.remove_crew
+        document["crew_to_remove"] = [
+            crew_member_id.hex
+            for crew_member_id in contribution.crew_to_remove
         ]
 
         return document
@@ -215,35 +216,35 @@ class CommitEditMovieContributionCollectionChanges:
                     pipeline["$set"]["revenue"] = None
             else:
                 pipeline["$unset"]["revenue"] = ""
-        if clean.add_roles != dirty.add_roles:
+        if clean.roles_to_add != dirty.roles_to_add:
             pipeline["$set"][
-                "add_roles"
+                "roles_to_add"
             ] = self._contribution_roles_to_dict_list(
-                contribution_roles=dirty.add_roles,
+                contribution_roles=dirty.roles_to_add,
             )
-        if clean.remove_roles != dirty.remove_roles:
-            pipeline["$set"]["remove_roles"] = [
-                role_id.hex for role_id in dirty.remove_roles
+        if clean.roles_to_remove != dirty.roles_to_remove:
+            pipeline["$set"]["roles_to_remove"] = [
+                role_id.hex for role_id in dirty.roles_to_remove
             ]
-        if clean.add_writers != dirty.add_writers:
+        if clean.writers_to_add != dirty.writers_to_add:
             pipeline["$set"][
-                "add_writers"
+                "writers_to_add"
             ] = self._contribution_writers_to_dict_list(
-                contribution_writers=dirty.add_writers,
+                contribution_writers=dirty.writers_to_add,
             )
-        if clean.remove_writers != dirty.remove_writers:
-            pipeline["$set"]["remove_writers"] = [
-                writer_id.hex for writer_id in dirty.remove_writers
+        if clean.writers_to_remove != dirty.writers_to_remove:
+            pipeline["$set"]["writers_to_remove"] = [
+                writer_id.hex for writer_id in dirty.writers_to_remove
             ]
-        if clean.add_crew != dirty.add_crew:
+        if clean.crew_to_add != dirty.crew_to_add:
             pipeline["$set"][
-                "add_crew"
+                "crew_to_add"
             ] = self._contribution_crew_to_dict_list(
-                contribution_crew=dirty.add_crew,
+                contribution_crew=dirty.crew_to_add,
             )
-        if clean.remove_crew != dirty.remove_crew:
-            pipeline["$set"]["remove_crew"] = [
-                writer_id.hex for writer_id in dirty.remove_writers
+        if clean.crew_to_remove != dirty.crew_to_remove:
+            pipeline["$set"]["crew_to_remove"] = [
+                writer_id.hex for writer_id in dirty.writers_to_remove
             ]
         if clean.photos_to_add != dirty.photos_to_add:
             pipeline["$set"]["photos_to_add"] = list(dirty.photos_to_add)

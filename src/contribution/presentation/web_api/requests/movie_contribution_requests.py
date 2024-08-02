@@ -35,12 +35,12 @@ class EditMovieRequest(BaseModel):
     duration: int = None
     budget: Optional[Money] = None
     revenue: Optional[Money] = None
-    add_roles: list[ContributionRole]
-    remove_roles: list[RoleId]
-    add_writers: list[ContributionWriter]
-    remove_writers: list[WriterId]
-    add_crew: list[ContributionCrewMember]
-    remove_crew: list[CrewMemberId]
+    roles_to_add: list[ContributionRole]
+    roles_to_remove: list[RoleId]
+    writers_to_add: list[ContributionWriter]
+    writers_to_remove: list[WriterId]
+    crew_to_add: list[ContributionCrewMember]
+    crew_to_remove: list[CrewMemberId]
     photos_to_add: list[PhotoUrl]
 
     def to_command(self) -> EditMovieCommand:
@@ -94,11 +94,11 @@ class EditMovieRequest(BaseModel):
             duration=duration,
             budget=budget,
             revenue=revenue,
-            add_roles=self.add_roles,
-            remove_roles=self.remove_roles,
-            add_writers=self.add_writers,
-            remove_writers=self.remove_writers,
-            add_crew=self.add_crew,
-            remove_crew=self.remove_crew,
+            roles_to_add=self.roles_to_add,
+            roles_to_remove=self.roles_to_remove,
+            writers_to_add=self.writers_to_add,
+            writers_to_remove=self.writers_to_remove,
+            crew_to_add=self.crew_to_add,
+            crew_to_remove=self.crew_to_remove,
             photos_to_add=self.photos_to_add,
         )

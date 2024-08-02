@@ -14,6 +14,6 @@ from contribution.application.common import (
 class AcceptMovieEditingCommand:
     contribution_id: EditMovieContributionId
     accepted_at: datetime
-    add_roles: Iterable[MovieRole]
-    add_writers: Iterable[MovieWriter]
-    add_crew: Iterable[MovieCrewMember]
+    roles_to_add: Iterable[MovieRole]
+    writers_to_add: Iterable[MovieWriter]
+    crew_to_add: Iterable[MovieCrewMember]

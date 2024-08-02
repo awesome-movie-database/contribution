@@ -41,19 +41,21 @@ class PublishMovieEditedEvent:
             "contribution_id": event.contribution_id.hex,
             "author_id": event.author_id.hex,
             "movie_id": event.movie_id.hex,
-            "remove_roles": [role_id.hex for role_id in event.remove_roles],
-            "remove_writers": [
-                writer_id.hex for writer_id in event.remove_writers
+            "roles_to_remove": [
+                role_id.hex for role_id in event.roles_to_remove
             ],
-            "remove_crew": [
-                crew_member_id.hex for crew_member_id in event.remove_crew
+            "writers_to_remove": [
+                writer_id.hex for writer_id in event.writers_to_remove
+            ],
+            "crew_to_remove": [
+                crew_member_id.hex for crew_member_id in event.crew_to_remove
             ],
             "photos_to_add": list(event.photos_to_add),
             "edited_at": event.edited_at.isoformat(),
         }
 
         roles_to_add_as_dicts = []
-        for role_to_add in event.add_roles:
+        for role_to_add in event.roles_to_add:
             role_as_dict = {
                 "person_id": role_to_add.person_id.hex,
                 "character": role_to_add.character,
@@ -61,25 +63,25 @@ class PublishMovieEditedEvent:
                 "is_spoiler": role_to_add.is_spoiler,
             }
             roles_to_add_as_dicts.append(role_as_dict)
-        event_as_dict["add_roles"] = roles_to_add_as_dicts
+        event_as_dict["roles_to_add"] = roles_to_add_as_dicts
 
         writers_to_add_as_dicts = []
-        for writer_to_add in event.add_writers:
+        for writer_to_add in event.writers_to_add:
             writer_as_dict = {
                 "person_id": writer_to_add.person_id.hex,
                 "writing": writer_to_add.writing,
             }
             writers_to_add_as_dicts.append(writer_as_dict)
-        event_as_dict["add_writers"] = writers_to_add_as_dicts
+        event_as_dict["writers_to_add"] = writers_to_add_as_dicts
 
         crew_to_add_as_dicts = []
-        for crew_member_to_add in event.add_crew:
+        for crew_member_to_add in event.crew_to_add:
             crew_member_as_dict = {
                 "person_id": crew_member_to_add.person_id.hex,
                 "membership": crew_member_to_add.membership,
             }
             crew_to_add_as_dicts.append(crew_member_as_dict)
-        event_as_dict["add_crew"] = crew_to_add_as_dicts
+        event_as_dict["crew_to_add"] = crew_to_add_as_dicts
 
         if event.eng_title.is_set:
             event_as_dict["eng_title"] = event.eng_title.value

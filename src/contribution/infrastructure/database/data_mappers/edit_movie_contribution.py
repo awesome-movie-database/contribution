@@ -140,31 +140,31 @@ class EditMovieContributionMapper:
             value_factory=self._revenue_factory,
         )
 
-        add_roles = []
-        for role_as_dict in document["add_roles"]:
+        roles_to_add = []
+        for role_as_dict in document["roles_to_add"]:
             role = ContributionRole(
                 person_id=PersonId(UUID(role_as_dict["person_id"])),
                 character=document["character"],
                 importance=document["importance"],
                 is_spoiler=document["is_spoiler"],
             )
-            add_roles.append(role)
+            roles_to_add.append(role)
 
-        add_writers = []
+        writers_to_add = []
         for writer_as_dict in document["writers"]:
             writer = ContributionWriter(
                 person_id=PersonId(UUID(writer_as_dict["person_id"])),
                 writing=Writing(writer_as_dict["writing"]),
             )
-            add_writers.append(writer)
+            writers_to_add.append(writer)
 
-        add_crew = []
+        crew_to_add = []
         for crew_member_as_dict in document["crew"]:
             crew_member = ContributionCrewMember(
                 person_id=PersonId(UUID(crew_member_as_dict["person_id"])),
                 membership=CrewMembership(crew_member_as_dict["membership"]),
             )
-            add_crew.append(crew_member)
+            crew_to_add.append(crew_member)
 
         return EditMovieContribution(
             status=ContributionStatus(document["status"]),
@@ -182,19 +182,20 @@ class EditMovieContributionMapper:
             duration=maybe_duration,
             budget=maybe_budget,
             revenue=maybe_revenue,
-            add_roles=add_roles,
-            remove_roles=[
-                RoleId(UUID(role_id)) for role_id in document["remove_roles"]
+            roles_to_add=roles_to_add,
+            roles_to_remove=[
+                RoleId(UUID(role_id))
+                for role_id in document["roles_to_remove"]
             ],
-            add_writers=add_writers,
-            remove_writers=[
+            writers_to_add=writers_to_add,
+            writers_to_remove=[
                 WriterId(UUID(writer_id))
-                for writer_id in document["remove_writers"]
+                for writer_id in document["writers_to_remove"]
             ],
-            add_crew=add_crew,
-            remove_crew=[
+            crew_to_add=crew_to_add,
+            crew_to_remove=[
                 CrewMemberId(UUID(crew_member_id))
-                for crew_member_id in document["remove_crew"]
+                for crew_member_id in document["crew_to_remove"]
             ],
             photos_to_add=[
                 PhotoUrl(photo_url) for photo_url in document["photos_to_add"]
