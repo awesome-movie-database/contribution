@@ -1,7 +1,10 @@
 from dishka import Provider, Scope
 
 from contribution.application import (
+    create_user_factory,
+    update_user_factory,
     create_movie_factory,
+    update_movie_factory,
     create_person_factory,
     update_person_factory,
     add_movie_factory,
@@ -43,6 +46,12 @@ def web_api_command_processors_provider_factory() -> Provider:
 def event_consumer_command_processors_provider_factory() -> Provider:
     provider = Provider(Scope.REQUEST)
 
+    provider.provide(create_user_factory)
+    provider.provide(update_user_factory)
+    provider.provide(create_movie_factory)
+    provider.provide(update_movie_factory)
+    provider.provide(create_person_factory)
+    provider.provide(update_person_factory)
     provider.provide(accept_movie_adding_factory)
     provider.provide(accept_movie_editing_factory)
     provider.provide(accept_person_adding_factory)
