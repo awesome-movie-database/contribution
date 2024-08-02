@@ -207,7 +207,7 @@ class AddPersonLoggingProcessor:
                 extra={"operation_id": self._operation_id},
             )
             raise error
-        except Exception:
+        except Exception as error:
             logger.exception(
                 "Unexpected error occurred",
                 extra={"operation_id": self._operation_id},

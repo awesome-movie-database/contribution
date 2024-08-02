@@ -194,7 +194,7 @@ class CreateMovieLoggingProcessor:
                 },
             )
             raise error
-        except Exception:
+        except Exception as error:
             logger.exception(
                 "Unexpected error occurred",
                 extra={"operation_id": self._operation_id},
