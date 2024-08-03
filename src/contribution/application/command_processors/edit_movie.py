@@ -365,46 +365,13 @@ class EditMovieLoggingProcessor:
                 extra={"operation_id": self._operation_id},
             )
             raise error
-        except RolesDoNotExistError as error:
-            logger.info(
-                "Expected error occurred: "
-                "Roles ids entered by user do not belong to any roles",
-                extra={
-                    "operation_id": self._operation_id,
-                    "ids_of_missing_roles": error.ids_of_missing_roles,
-                },
-            )
-            raise error
-        except WritersDoNotExistError as error:
-            logger.info(
-                "Expected error occurred: "
-                "Writers ids entered by user do not belong to any writers",
-                extra={
-                    "operation_id": self._operation_id,
-                    "ids_of_missing_writers": error.ids_of_missing_writers,
-                },
-            )
-            raise error
-        except CrewMembersDoNotExistError as error:
-            logger.info(
-                "Expected error occurred: "
-                "Crew members ids entered by user do not belong to any"
-                "crew members",
-                extra={
-                    "operation_id": self._operation_id,
-                    "ids_of_missing_crew_members": (
-                        error.ids_of_missing_crew_members
-                    ),
-                },
-            )
-            raise error
         except PersonsDoNotExistError as error:
             logger.info(
                 "Expected error occurred: "
                 "Person ids entered by user do not belong to any persons",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_missing_persons": error.ids_of_missing_persons,
+                    "non_existing_person_ids": error.person_ids,
                 },
             )
             raise error

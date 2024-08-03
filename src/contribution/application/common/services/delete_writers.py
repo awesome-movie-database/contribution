@@ -20,10 +20,11 @@ class DeleteWriters:
         writer_ids: Collection[WriterId],
     ) -> None:
         writers = await self._writer_gateway.list_by_ids(writer_ids)
-        some_of_writers_are_missing = len(writer_ids) != len(writers)
 
+        some_of_writers_are_missing = len(writer_ids) != len(writers)
         if some_of_writers_are_missing:
-            ids_of_missing_writers = set(writer_ids).difference(
-                [writer.id for writer in writers],
+            ids_of_writers_from_gateway = [writer.id for writer in writers]
+            non_existing_writer_ids = set(writer_ids).difference(
+                ids_of_writers_from_gateway,
             )
-            raise WritersDoNotExistError(list(ids_of_missing_writers))
+            raise WritersDoNotExistError(non_existing_writer_ids)

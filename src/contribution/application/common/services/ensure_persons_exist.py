@@ -14,8 +14,8 @@ class EnsurePersonsExist:
         some_persons_are_missing = len(persons) != len(person_ids)
 
         if some_persons_are_missing:
-            ids_of_persons_from_gateway = [person for person in persons]
-            ids_of_missing_persons = set(person_ids).difference(
+            ids_of_persons_from_gateway = [person.id for person in persons]
+            non_existing_person_ids = set(person_ids).difference(
                 ids_of_persons_from_gateway,
             )
-            raise PersonsDoNotExistError(list(ids_of_missing_persons))
+            raise PersonsDoNotExistError(non_existing_person_ids)

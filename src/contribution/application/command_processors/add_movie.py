@@ -277,7 +277,7 @@ class AddMovieLoggingProcessor:
                 "Person ids entered by user do not belong to any persons",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_missing_persons": error.ids_of_missing_persons,
+                    "non_existing_person_ids": error.person_ids,
                 },
             )
             raise error

@@ -238,7 +238,7 @@ class AcceptMovieAddingLoggingProcessor:
                 "Role ids already belong to some roles",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_existing_roles": error.ids_of_existing_roles,
+                    "existing_role_ids": error.role_ids,
                 },
             )
             raise error
@@ -248,7 +248,7 @@ class AcceptMovieAddingLoggingProcessor:
                 "Writer ids already belong to some writers",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_existing_writers": error.ids_of_existing_writers,
+                    "existing_writer_ids": error.writer_ids,
                 },
             )
             raise error
@@ -258,9 +258,7 @@ class AcceptMovieAddingLoggingProcessor:
                 "Crew member ids already belong to some crew members",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_existing_crew_members": (
-                        error.ids_of_existing_crew_members,
-                    ),
+                    "existing_crew_member_ids": error.crew_member_ids,
                 },
             )
             raise error
@@ -271,7 +269,7 @@ class AcceptMovieAddingLoggingProcessor:
                 "are do not belong to any persons",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_missing_persons": error.ids_of_missing_persons,
+                    "non_existing_persons": error.person_ids,
                 },
             )
             raise error

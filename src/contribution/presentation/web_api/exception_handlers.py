@@ -229,7 +229,7 @@ def _on_persons_do_not_exist_error(
             code=310,
             message=(
                 "Some of persons do not exist. "
-                f"Ids of non existing persons: {error.ids_of_missing_persons}"
+                f"Ids of non existing persons: {error.person_ids}"
             ),
         ),
         status_code=400,
@@ -255,7 +255,7 @@ def _on_roles_do_not_exist_error(
             code=410,
             message=(
                 "Some of roles do not exist. "
-                f"Ids of non existing roles: {error.ids_of_missing_roles}"
+                f"Ids of non existing roles: {error.role_ids}"
             ),
         ),
         status_code=400,
@@ -271,7 +271,7 @@ def _on_writers_do_not_exist_error(
             code=510,
             message=(
                 "Some of writers do not exist. "
-                f"Ids of non existing writers: {error.ids_of_missing_writers}"
+                f"Ids of non existing writers: {error.writer_ids}"
             ),
         ),
         status_code=400,
@@ -287,7 +287,7 @@ def _on_crew_members_do_not_exist_error(
             code=610,
             message=(
                 "Some of crew members do not exist. Ids of non "
-                f"existing crew members: {error.ids_of_missing_crew_members}"
+                f"existing crew members: {error.crew_member_ids}"
             ),
         ),
         status_code=400,

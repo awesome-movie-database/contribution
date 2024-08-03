@@ -29,12 +29,15 @@ class DeleteCrew:
         crew_members = await self._crew_member_gateway.list_by_ids(
             crew_member_ids,
         )
+
         some_of_crew_members_are_missing = len(crew_member_ids) != len(
             crew_members,
         )
-
         if some_of_crew_members_are_missing:
-            ids_of_missing_crew_members = set(crew_member_ids).difference(
-                [crew_member.id for crew_member in crew_members],
+            ids_of_crew_members_from_gateway = [
+                crew_member.id for crew_member in crew_members
+            ]
+            non_existing_crew_member_ids = set(crew_member_ids).difference(
+                ids_of_crew_members_from_gateway,
             )
-            raise CrewMembersDoNotExistError(list(ids_of_missing_crew_members))
+            raise CrewMembersDoNotExistError(non_existing_crew_member_ids)

@@ -13,8 +13,5 @@ class PersonDoesNotExistError(ApplicationError):
 
 
 class PersonsDoNotExistError(ApplicationError):
-    def __init__(
-        self,
-        ids_of_missing_persons: Collection[PersonId],
-    ):
-        self.ids_of_missing_persons = ids_of_missing_persons
+    def __init__(self, person_ids: Collection[PersonId]):
+        self.person_ids = person_ids

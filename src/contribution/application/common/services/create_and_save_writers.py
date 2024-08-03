@@ -65,12 +65,11 @@ class CreateAndSaveWriters:
         persons = await self._person_gateway.list_by_ids(person_ids)
 
         some_persons_are_missing = len(person_ids) != len(persons)
-
         if some_persons_are_missing:
-            ids_of_persons_from_gateway = [person for person in persons]
-            ids_of_missing_persons = set(person_ids).difference(
+            ids_of_persons_from_gateway = [person.id for person in persons]
+            missing_person_ids = set(person_ids).difference(
                 ids_of_persons_from_gateway,
             )
-            raise PersonsDoNotExistError(ids_of_missing_persons)
+            raise PersonsDoNotExistError(missing_person_ids)
 
         return persons

@@ -263,7 +263,7 @@ class AcceptMovieEditingLoggingProcessor:
                 "Role ids already belong to some roles",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_existing_roles": error.ids_of_existing_roles,
+                    "existing_role_ids": error.role_ids,
                 },
             )
             raise error
@@ -273,7 +273,7 @@ class AcceptMovieEditingLoggingProcessor:
                 "Role ids do not belong to any roles",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_missing_roles": error.ids_of_missing_roles,
+                    "non_existing_role_ids": error.role_ids,
                 },
             )
             raise error
@@ -283,7 +283,7 @@ class AcceptMovieEditingLoggingProcessor:
                 "Writer ids already belong to some writers",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_existing_writers": error.ids_of_existing_writers,
+                    "existing_writer_ids": error.writer_ids,
                 },
             )
             raise error
@@ -293,7 +293,7 @@ class AcceptMovieEditingLoggingProcessor:
                 "Writer ids do not belong to any writers",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_missing_writers": error.ids_of_missing_writers,
+                    "non_existing_writer_ids": error.writer_ids,
                 },
             )
             raise error
@@ -303,9 +303,7 @@ class AcceptMovieEditingLoggingProcessor:
                 "Crew member ids already belong to some crew members",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_existing_crew_members": (
-                        error.ids_of_existing_crew_members,
-                    ),
+                    "existing_crew_member_ids": error.crew_member_ids,
                 },
             )
             raise error
@@ -315,9 +313,7 @@ class AcceptMovieEditingLoggingProcessor:
                 "Crew member ids do not belong to any crew members",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_missing_crew_members": (
-                        error.ids_of_missing_crew_members,
-                    ),
+                    "non_existing_crew_member_ids": error.crew_member_ids,
                 },
             )
             raise error
@@ -328,7 +324,7 @@ class AcceptMovieEditingLoggingProcessor:
                 "are do not belong to any persons",
                 extra={
                     "operation_id": self._operation_id,
-                    "ids_of_missing_persons": error.ids_of_missing_persons,
+                    "non_existing_person_ids": error.person_ids,
                 },
             )
             raise error
