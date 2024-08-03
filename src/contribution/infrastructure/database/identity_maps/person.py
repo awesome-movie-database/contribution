@@ -42,6 +42,7 @@ class PersonMap:
         if not person_from_map:
             unit = PersonMapUnit(person=person, is_acquired=True)
             self._units.append(unit)
+            return
 
         person_is_acquired = self.is_acquired(person)
         if person_is_acquired:

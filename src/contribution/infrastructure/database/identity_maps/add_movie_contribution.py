@@ -55,6 +55,7 @@ class AddMovieContributionMap:
                 is_acquired=True,
             )
             self._units.append(unit)
+            return
 
         contribution_is_acquired = self.is_acquired(contribution)
         if contribution_is_acquired:

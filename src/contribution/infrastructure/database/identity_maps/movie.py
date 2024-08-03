@@ -42,6 +42,7 @@ class MovieMap:
         if not movie_from_map:
             unit = MovieMapUnit(movie=movie, is_acquired=True)
             self._units.append(unit)
+            return
 
         movie_is_acquired = self.is_acquired(movie)
         if movie_is_acquired:
