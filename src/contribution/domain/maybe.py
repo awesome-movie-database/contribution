@@ -119,3 +119,12 @@ class Maybe[T]:
             message = "Value is unset"
             raise ValueError(message)
         return cast(T, self._value)
+
+    def __str__(self) -> str:
+        if self.is_set:
+            return repr(self._value)
+        return "<UNSET>"
+
+    def __repr__(self) -> str:
+        value = str(self)
+        return f"Maybe(value={value})"

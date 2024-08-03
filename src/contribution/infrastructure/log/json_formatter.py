@@ -86,10 +86,8 @@ class JsonFormatter(logging.Formatter):
             return value.isoformat()
         elif isinstance(value, UUID):
             return value.hex
-        elif isinstance(value, Decimal):
+        elif isinstance(value, (Decimal, Maybe)):
             return str(value)
-        elif isinstance(value, Maybe):
-            return self._make_value_serializable(value.value)
         elif dataclasses.is_dataclass(value):
             dataclass_as_dict = dataclasses.asdict(value)
             return self._make_dict_serializable(dataclass_as_dict)
