@@ -13,15 +13,17 @@ from contribution.domain import (
     RoleId,
     WriterId,
     CrewMemberId,
-    ContributionRole,
-    ContributionWriter,
-    ContributionCrewMember,
     Country,
     Money,
     PhotoUrl,
     Maybe,
 )
-from contribution.application import EditMovieCommand
+from contribution.application import (
+    MovieRole,
+    MovieWriter,
+    MovieCrewMember,
+    EditMovieCommand,
+)
 
 
 class EditMovieRequest(BaseModel):
@@ -35,11 +37,11 @@ class EditMovieRequest(BaseModel):
     duration: int = None
     budget: Optional[Money] = None
     revenue: Optional[Money] = None
-    roles_to_add: list[ContributionRole]
+    roles_to_add: list[MovieRole]
     roles_to_remove: list[RoleId]
-    writers_to_add: list[ContributionWriter]
+    writers_to_add: list[MovieWriter]
     writers_to_remove: list[WriterId]
-    crew_to_add: list[ContributionCrewMember]
+    crew_to_add: list[MovieCrewMember]
     crew_to_remove: list[CrewMemberId]
     photos_to_add: list[PhotoUrl]
 

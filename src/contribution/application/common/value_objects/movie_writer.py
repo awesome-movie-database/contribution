@@ -1,14 +1,9 @@
 from dataclasses import dataclass
 
-from contribution.domain import (
-    Writing,
-    WriterId,
-    PersonId,
-)
+from contribution.domain import Writing, PersonId
 
 
 @dataclass(frozen=True, slots=True)
 class MovieWriter:
-    id: WriterId
     person_id: PersonId
     writing: Writing

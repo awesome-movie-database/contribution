@@ -9,15 +9,15 @@ from cyclopts import Parameter
 from contribution.domain import (
     MPAA,
     Genre,
+    MovieId,
+    ContributionRole,
+    ContributionWriter,
+    ContributionCrewMember,
     Country,
     Money,
-    MovieId,
 )
 from contribution.application import (
     CommandProcessor,
-    MovieRole,
-    MovieWriter,
-    MovieCrewMember,
     CreateMovieCommand,
 )
 from contribution.infrastructure import cli_ioc_container_factory
@@ -98,7 +98,7 @@ async def create_movie(
         ),
     ] = None,
     roles: Annotated[
-        Optional[Iterable[MovieRole]],
+        Optional[Iterable[ContributionRole]],
         Parameter(
             "--roles",
             converter=jsons_to_movie_roles,
@@ -118,7 +118,7 @@ async def create_movie(
         ),
     ] = None,
     writers: Annotated[
-        Optional[Iterable[MovieWriter]],
+        Optional[Iterable[ContributionWriter]],
         Parameter(
             "--writers",
             converter=jsons_to_movie_writers,
@@ -136,7 +136,7 @@ async def create_movie(
         ),
     ] = None,
     crew: Annotated[
-        Optional[Iterable[MovieCrewMember]],
+        Optional[Iterable[ContributionCrewMember]],
         Parameter(
             "--crew",
             converter=jsons_to_movie_crew,
@@ -220,9 +220,9 @@ def _movie_table_factory(
     duration: int,
     budget: Optional[Money],
     revenue: Optional[Money],
-    roles: Optional[Iterable[MovieRole]],
-    writers: Optional[Iterable[MovieWriter]],
-    crew: Optional[Iterable[MovieCrewMember]],
+    roles: Optional[Iterable[ContributionRole]],
+    writers: Optional[Iterable[ContributionWriter]],
+    crew: Optional[Iterable[ContributionCrewMember]],
 ) -> rich.table.Table:
     movie_table = rich.table.Table(
         "id",

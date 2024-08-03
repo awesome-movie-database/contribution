@@ -57,6 +57,7 @@ class PublishMovieEditedEvent:
         roles_to_add_as_dicts = []
         for role_to_add in event.roles_to_add:
             role_as_dict = {
+                "id": role_to_add.id,
                 "person_id": role_to_add.person_id.hex,
                 "character": role_to_add.character,
                 "importance": role_to_add.importance,
@@ -68,6 +69,7 @@ class PublishMovieEditedEvent:
         writers_to_add_as_dicts = []
         for writer_to_add in event.writers_to_add:
             writer_as_dict = {
+                "id": writer_to_add.id,
                 "person_id": writer_to_add.person_id.hex,
                 "writing": writer_to_add.writing,
             }
@@ -77,6 +79,7 @@ class PublishMovieEditedEvent:
         crew_to_add_as_dicts = []
         for crew_member_to_add in event.crew_to_add:
             crew_member_as_dict = {
+                "id": crew_member_to_add.id,
                 "person_id": crew_member_to_add.person_id.hex,
                 "membership": crew_member_to_add.membership,
             }

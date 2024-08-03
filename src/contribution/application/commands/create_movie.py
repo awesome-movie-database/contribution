@@ -6,13 +6,11 @@ from contribution.domain import (
     Genre,
     MPAA,
     MovieId,
+    ContributionRole,
+    ContributionWriter,
+    ContributionCrewMember,
     Country,
     Money,
-)
-from contribution.application.common import (
-    MovieRole,
-    MovieWriter,
-    MovieCrewMember,
 )
 
 
@@ -28,6 +26,6 @@ class CreateMovieCommand:
     duration: int
     budget: Optional[Money]
     revenue: Optional[Money]
-    roles: Iterable[MovieRole]
-    writers: Iterable[MovieWriter]
-    crew: Iterable[MovieCrewMember]
+    roles: Iterable[ContributionRole]
+    writers: Iterable[ContributionWriter]
+    crew: Iterable[ContributionCrewMember]

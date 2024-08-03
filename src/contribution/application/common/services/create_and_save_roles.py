@@ -2,11 +2,11 @@ from typing import Iterable
 
 from contribution.domain import (
     RoleId,
+    ContributionRole,
     Movie,
     Person,
     CreateRole,
 )
-from contribution.application.common.value_objects import MovieRole
 from contribution.application.common.exceptions import (
     RolesAlreadyExistError,
     PersonsDoNotExistError,
@@ -32,22 +32,22 @@ class CreateAndSaveRoles:
         self,
         *,
         movie: Movie,
-        movie_roles: Iterable[MovieRole],
+        contribution_roles: Iterable[ContributionRole],
     ) -> None:
-        role_ids = [role.id for role in movie_roles]
+        role_ids = [role.id for role in contribution_roles]
         await self._ensure_roles_do_not_exist(role_ids)
 
-        persons = await self._list_persons_of_movie_roles(movie_roles)
+        persons = await self._list_persons_of_movie_roles(contribution_roles)
 
         roles = []
-        for movie_role, person in zip(movie_roles, persons):
+        for contribution_role, person in zip(contribution_roles, persons):
             role = self._create_role(
-                id=movie_role.id,
+                id=contribution_role.id,
                 movie=movie,
                 person=person,
-                character=movie_role.character,
-                importance=movie_role.importance,
-                is_spoiler=movie_role.is_spoiler,
+                character=contribution_role.character,
+                importance=contribution_role.importance,
+                is_spoiler=contribution_role.is_spoiler,
             )
             roles.append(role)
 
@@ -63,9 +63,9 @@ class CreateAndSaveRoles:
 
     async def _list_persons_of_movie_roles(
         self,
-        movie_roles: Iterable[MovieRole],
+        contribution_roles: Iterable[ContributionRole],
     ) -> list[Person]:
-        person_ids = [role.person_id for role in movie_roles]
+        person_ids = [role.person_id for role in contribution_roles]
         persons = await self._person_gateway.list_by_ids(person_ids)
 
         some_persons_are_missing = len(person_ids) != len(persons)

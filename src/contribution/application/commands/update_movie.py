@@ -9,14 +9,12 @@ from contribution.domain import (
     RoleId,
     WriterId,
     CrewMemberId,
+    ContributionRole,
+    ContributionWriter,
+    ContributionCrewMember,
     Country,
     Money,
     Maybe,
-)
-from contribution.application.common import (
-    MovieRole,
-    MovieWriter,
-    MovieCrewMember,
 )
 
 
@@ -32,9 +30,9 @@ class UpdateMovieCommand:
     duration: Maybe[int]
     budget: Maybe[Optional[Money]]
     revenue: Maybe[Optional[Money]]
-    add_roles: Iterable[MovieRole]
+    add_roles: Iterable[ContributionRole]
     remove_roles: Collection[RoleId]
-    add_writers: Iterable[MovieWriter]
+    add_writers: Iterable[ContributionWriter]
     remove_writers: Collection[WriterId]
-    add_crew: Iterable[MovieCrewMember]
+    add_crew: Iterable[ContributionCrewMember]
     remove_crew: Collection[CrewMemberId]

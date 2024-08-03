@@ -5,12 +5,14 @@ from datetime import date
 from contribution.domain import (
     Genre,
     MPAA,
-    ContributionRole,
-    ContributionWriter,
-    ContributionCrewMember,
     Country,
     Money,
     PhotoUrl,
+)
+from contribution.application.common import (
+    MovieRole,
+    MovieWriter,
+    MovieCrewMember,
 )
 
 
@@ -25,7 +27,7 @@ class AddMovieCommand:
     duration: int
     budget: Optional[Money]
     revenue: Optional[Money]
-    roles: Iterable[ContributionRole]
-    writers: Iterable[ContributionWriter]
-    crew: Iterable[ContributionCrewMember]
+    roles: Iterable[MovieRole]
+    writers: Iterable[MovieWriter]
+    crew: Iterable[MovieCrewMember]
     photos: Iterable[PhotoUrl]

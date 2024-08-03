@@ -2,11 +2,11 @@ from typing import Iterable
 
 from contribution.domain import (
     CrewMemberId,
+    ContributionCrewMember,
     Movie,
     Person,
     CreateCrewMember,
 )
-from contribution.application.common.value_objects import MovieCrewMember
 from contribution.application.common.exceptions import (
     CrewMembersAlreadyExistError,
     PersonsDoNotExistError,
@@ -32,20 +32,23 @@ class CreateAndSaveCrew:
         self,
         *,
         movie: Movie,
-        movie_crew: Iterable[MovieCrewMember],
+        contribution_crew: Iterable[ContributionCrewMember],
     ) -> None:
-        crew_member_ids = [crew_member.id for crew_member in movie_crew]
+        crew_member_ids = [crew_member.id for crew_member in contribution_crew]
         await self._ensure_crew_members_do_not_exist(crew_member_ids)
 
-        persons = await self._list_persons_of_movie_crew(movie_crew)
+        persons = await self._list_persons_of_movie_crew(contribution_crew)
 
         crew = []
-        for movie_crew_member, person in zip(movie_crew, persons):
+        for contribution_crew_member, person in zip(
+            contribution_crew,
+            persons,
+        ):
             crew_member = self._create_crew_member(
-                id=movie_crew_member.id,
+                id=contribution_crew_member.id,
                 movie=movie,
                 person=person,
-                membership=movie_crew_member.membership,
+                membership=contribution_crew_member.membership,
             )
             crew.append(crew_member)
 
@@ -65,9 +68,11 @@ class CreateAndSaveCrew:
 
     async def _list_persons_of_movie_crew(
         self,
-        movie_crew: Iterable[MovieCrewMember],
+        contribution_crew: Iterable[ContributionCrewMember],
     ) -> list[Person]:
-        person_ids = [crew_member.person_id for crew_member in movie_crew]
+        person_ids = [
+            crew_member.person_id for crew_member in contribution_crew
+        ]
         persons = await self._person_gateway.list_by_ids(person_ids)
 
         some_persons_are_missing = len(person_ids) != len(persons)

@@ -258,6 +258,7 @@ class CommitEditMovieContributionCollectionChanges:
         contribution_roles_as_dict_list = []
         for contribution_role in contribution_roles:
             contribution_role_as_dict = {
+                "id": contribution_role.id.hex,
                 "person_id": contribution_role.person_id.hex,
                 "character": contribution_role.character,
                 "importance": contribution_role.importance,
@@ -275,6 +276,7 @@ class CommitEditMovieContributionCollectionChanges:
         contribution_writers_as_dict_list = []
         for contribution_writer in contribution_writers:
             contribution_writer_as_dict = {
+                "id": contribution_writer.id.hex,
                 "person_id": contribution_writer.person_id.hex,
                 "writing": contribution_writer.writing.value,
             }
@@ -290,6 +292,7 @@ class CommitEditMovieContributionCollectionChanges:
         contribution_crew_as_dict_list = []
         for contribution_crew_member in contribution_crew:
             contribution_crew_member_as_dict = {
+                "id": contribution_crew_member.id.hex,
                 "person_id": contribution_crew_member.person_id.hex,
                 "membership": contribution_crew_member.membership.value,
             }
