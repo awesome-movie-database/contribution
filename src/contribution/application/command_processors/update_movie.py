@@ -115,20 +115,20 @@ class UpdateMovieProcessor:
 
         await self._create_and_save_roles(
             movie=movie,
-            movie_roles=command.add_roles,
+            movie_roles=command.roles_to_add,
         )
         await self._create_and_save_writers(
             movie=movie,
-            movie_writers=command.add_writers,
+            movie_writers=command.writers_to_add,
         )
         await self._create_and_save_crew(
             movie=movie,
-            movie_crew=command.add_crew,
+            movie_crew=command.crew_to_add,
         )
 
-        await self._delete_roles(command.remove_roles)
-        await self._delete_writers(command.remove_writers)
-        await self._delete_crew(command.remove_crew)
+        await self._delete_roles(command.roles_to_remove)
+        await self._delete_writers(command.writers_to_remove)
+        await self._delete_crew(command.crew_to_remove)
 
 
 class UpdateMovieLoggingProcessor:
