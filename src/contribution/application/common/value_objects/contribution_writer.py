@@ -4,6 +4,6 @@ from contribution.domain import Writing, PersonId
 
 
 @dataclass(frozen=True, slots=True)
-class MovieWriter:
+class ContributionWriter:
     person_id: PersonId
     writing: Writing

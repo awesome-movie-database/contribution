@@ -5,11 +5,13 @@ from uuid import UUID
 
 from adaptix import Retort
 
-from contribution.domain import Sex, Money, Maybe
-from contribution.application import (
+from contribution.domain import (
+    Sex,
+    Money,
     MovieRole,
     MovieWriter,
     MovieCrewMember,
+    Maybe,
 )
 from contribution.presentation.cli.exceptions import ValueIsNotDictError
 

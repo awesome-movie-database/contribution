@@ -177,15 +177,15 @@ class AcceptMovieEditingProcessor:
 
         await self._create_and_save_roles(
             movie=movie,
-            contribution_roles=contribution.roles_to_add,
+            movie_roles=contribution.roles_to_add,
         )
         await self._create_and_save_writers(
             movie=movie,
-            contribution_writers=contribution.writers_to_add,
+            movie_writers=contribution.writers_to_add,
         )
         await self._create_and_save_crew(
             movie=movie,
-            contribution_crew=contribution.crew_to_add,
+            movie_crew=contribution.crew_to_add,
         )
 
         await self._delete_roles(list(contribution.roles_to_remove))

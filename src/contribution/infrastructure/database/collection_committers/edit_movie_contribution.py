@@ -6,9 +6,9 @@ from pymongo import InsertOne, UpdateOne, DeleteOne
 from motor.motor_asyncio import AsyncIOMotorClientSession
 
 from contribution.domain import (
-    ContributionRole,
-    ContributionWriter,
-    ContributionCrewMember,
+    MovieRole,
+    MovieWriter,
+    MovieCrewMember,
     EditMovieContribution,
 )
 from contribution.infrastructure.database.collections import (
@@ -115,20 +115,20 @@ class CommitEditMovieContributionCollectionChanges:
             else:
                 document["revenue"] = None
 
-        document["roles_to_add"] = self._contribution_roles_to_dict_list(
-            contribution_roles=contribution.roles_to_add,
+        document["roles_to_add"] = self._movie_roles_to_dicts(
+            movie_roles=contribution.roles_to_add,
         )
         document["roles_to_more"] = [
             role_id.hex for role_id in contribution.roles_to_remove
         ]
-        document["writers_to_add"] = self._contribution_writers_to_dict_list(
-            contribution_writers=contribution.writers_to_add,
+        document["writers_to_add"] = self._movie_writers_to_dicts(
+            movie_writers=contribution.writers_to_add,
         )
         document["writers_to_remove"] = [
             writer_id.hex for writer_id in contribution.writers_to_remove
         ]
-        document["crew_to_add"] = self._contribution_crew_to_dict_list(
-            contribution_crew=contribution.crew_to_add,
+        document["crew_to_add"] = self._movie_crew_to_dicts(
+            movie_crew=contribution.crew_to_add,
         )
         document["crew_to_remove"] = [
             crew_member_id.hex
@@ -217,30 +217,24 @@ class CommitEditMovieContributionCollectionChanges:
             else:
                 pipeline["$unset"]["revenue"] = ""
         if clean.roles_to_add != dirty.roles_to_add:
-            pipeline["$set"][
-                "roles_to_add"
-            ] = self._contribution_roles_to_dict_list(
-                contribution_roles=dirty.roles_to_add,
+            pipeline["$set"]["roles_to_add"] = self._movie_roles_to_dicts(
+                dirty.roles_to_add,
             )
         if clean.roles_to_remove != dirty.roles_to_remove:
             pipeline["$set"]["roles_to_remove"] = [
                 role_id.hex for role_id in dirty.roles_to_remove
             ]
         if clean.writers_to_add != dirty.writers_to_add:
-            pipeline["$set"][
-                "writers_to_add"
-            ] = self._contribution_writers_to_dict_list(
-                contribution_writers=dirty.writers_to_add,
+            pipeline["$set"]["writers_to_add"] = self._movie_writers_to_dicts(
+                dirty.writers_to_add,
             )
         if clean.writers_to_remove != dirty.writers_to_remove:
             pipeline["$set"]["writers_to_remove"] = [
                 writer_id.hex for writer_id in dirty.writers_to_remove
             ]
         if clean.crew_to_add != dirty.crew_to_add:
-            pipeline["$set"][
-                "crew_to_add"
-            ] = self._contribution_crew_to_dict_list(
-                contribution_crew=dirty.crew_to_add,
+            pipeline["$set"]["crew_to_add"] = self._movie_crew_to_dicts(
+                dirty.crew_to_add,
             )
         if clean.crew_to_remove != dirty.crew_to_remove:
             pipeline["$set"]["crew_to_remove"] = [
@@ -251,52 +245,49 @@ class CommitEditMovieContributionCollectionChanges:
 
         return pipeline
 
-    def _contribution_roles_to_dict_list(
+    def _movie_roles_to_dicts(
         self,
-        contribution_roles: Iterable[ContributionRole],
+        movie_roles: Iterable[MovieRole],
     ) -> list[dict[str, Any]]:
-        contribution_roles_as_dict_list = []
-        for contribution_role in contribution_roles:
-            contribution_role_as_dict = {
-                "id": contribution_role.id.hex,
-                "person_id": contribution_role.person_id.hex,
-                "character": contribution_role.character,
-                "importance": contribution_role.importance,
-                "is_spoiler": contribution_role.is_spoiler,
+        movie_roles_as_dicts = []
+        for movie_role in movie_roles:
+            movie_role_as_dict = {
+                "id": movie_role.id.hex,
+                "person_id": movie_role.person_id.hex,
+                "character": movie_role.character,
+                "importance": movie_role.importance,
+                "is_spoiler": movie_role.is_spoiler,
             }
-            contribution_roles_as_dict_list.append(
-                contribution_role_as_dict,
-            )
-        return contribution_roles_as_dict_list
+            movie_roles_as_dicts.append(movie_role_as_dict)
 
-    def _contribution_writers_to_dict_list(
-        self,
-        contribution_writers: Iterable[ContributionWriter],
-    ) -> list[dict[str, Any]]:
-        contribution_writers_as_dict_list = []
-        for contribution_writer in contribution_writers:
-            contribution_writer_as_dict = {
-                "id": contribution_writer.id.hex,
-                "person_id": contribution_writer.person_id.hex,
-                "writing": contribution_writer.writing.value,
-            }
-            contribution_writers_as_dict_list.append(
-                contribution_writer_as_dict,
-            )
-        return contribution_writers_as_dict_list
+        return movie_roles_as_dicts
 
-    def _contribution_crew_to_dict_list(
+    def _movie_writers_to_dicts(
         self,
-        contribution_crew: Iterable[ContributionCrewMember],
+        movie_writers: Iterable[MovieWriter],
     ) -> list[dict[str, Any]]:
-        contribution_crew_as_dict_list = []
-        for contribution_crew_member in contribution_crew:
-            contribution_crew_member_as_dict = {
-                "id": contribution_crew_member.id.hex,
-                "person_id": contribution_crew_member.person_id.hex,
-                "membership": contribution_crew_member.membership.value,
+        movie_writers_as_dicts = []
+        for movie_writer in movie_writers:
+            movie_writer_as_dict = {
+                "id": movie_writer.id.hex,
+                "person_id": movie_writer.person_id.hex,
+                "writing": movie_writer.writing,
             }
-            contribution_crew_as_dict_list.append(
-                contribution_crew_member_as_dict,
-            )
-        return contribution_crew_as_dict_list
+            movie_writers_as_dicts.append(movie_writer_as_dict)
+
+        return movie_writers_as_dicts
+
+    def _movie_crew_to_dicts(
+        self,
+        movie_crew: Iterable[MovieCrewMember],
+    ) -> list[dict[str, Any]]:
+        movie_crew_as_dicts = []
+        for movie_crew_member in movie_crew:
+            movie_crew_member_as_dict = {
+                "id": movie_crew_member.id.hex,
+                "person_id": movie_crew_member.person_id.hex,
+                "membership": movie_crew_member.membership,
+            }
+            movie_crew_as_dicts.append(movie_crew_member_as_dict)
+
+        return movie_crew_as_dicts

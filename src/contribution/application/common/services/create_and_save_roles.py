@@ -1,8 +1,7 @@
 from typing import Iterable
 
 from contribution.domain import (
-    RoleId,
-    ContributionRole,
+    MovieRole,
     Movie,
     Person,
     CreateRole,
@@ -32,22 +31,20 @@ class CreateAndSaveRoles:
         self,
         *,
         movie: Movie,
-        contribution_roles: Iterable[ContributionRole],
+        movie_roles: Iterable[MovieRole],
     ) -> None:
-        role_ids = [role.id for role in contribution_roles]
-        await self._ensure_roles_do_not_exist(role_ids)
-
-        persons = await self._list_persons_of_movie_roles(contribution_roles)
+        await self._ensure_roles_do_not_exist(movie_roles)
+        persons = await self._list_movie_role_persons(movie_roles)
 
         roles = []
-        for contribution_role, person in zip(contribution_roles, persons):
+        for movie_role, person in zip(movie_roles, persons):
             role = self._create_role(
-                id=contribution_role.id,
+                id=movie_role.id,
                 movie=movie,
                 person=person,
-                character=contribution_role.character,
-                importance=contribution_role.importance,
-                is_spoiler=contribution_role.is_spoiler,
+                character=movie_role.character,
+                importance=movie_role.importance,
+                is_spoiler=movie_role.is_spoiler,
             )
             roles.append(role)
 
@@ -55,17 +52,18 @@ class CreateAndSaveRoles:
 
     async def _ensure_roles_do_not_exist(
         self,
-        role_ids: Iterable[RoleId],
+        movie_roles: Iterable[MovieRole],
     ) -> None:
+        role_ids = [role.id for role in movie_roles]
         roles = await self._role_gateway.list_by_ids(role_ids)
         if roles:
             raise RolesAlreadyExistError([role.id for role in roles])
 
-    async def _list_persons_of_movie_roles(
+    async def _list_movie_role_persons(
         self,
-        contribution_roles: Iterable[ContributionRole],
+        movie_roles: Iterable[MovieRole],
     ) -> list[Person]:
-        person_ids = [role.person_id for role in contribution_roles]
+        person_ids = [role.person_id for role in movie_roles]
         persons = await self._person_gateway.list_by_ids(person_ids)
 
         some_persons_are_missing = len(person_ids) != len(persons)

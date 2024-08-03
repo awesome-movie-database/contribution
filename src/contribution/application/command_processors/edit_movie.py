@@ -16,9 +16,9 @@ from contribution.application.common import (
     OperationId,
     AccessConcern,
     EnsurePersonsExist,
-    CreateContributionRoles,
-    CreateContributionWriters,
-    CreateContributionCrew,
+    CreateMovieRoles,
+    CreateMovieWriters,
+    CreateMovieCrew,
     CommandProcessor,
     AuthorizationProcessor,
     TransactionProcessor,
@@ -53,9 +53,9 @@ def edit_movie_factory(
     edit_movie: EditMovie,
     access_concern: AccessConcern,
     ensure_persons_exist: EnsurePersonsExist,
-    create_contribution_roles: CreateContributionRoles,
-    create_contribution_writers: CreateContributionWriters,
-    create_contribution_crew: CreateContributionCrew,
+    create_movie_roles: CreateMovieRoles,
+    create_movie_writers: CreateMovieWriters,
+    create_movie_crew: CreateMovieCrew,
     edit_movie_contribution_gateway: EditMovieContributionGateway,
     user_gateway: UserGateway,
     movie_gateway: MovieGateway,
@@ -69,22 +69,16 @@ def edit_movie_factory(
 ) -> CommandProcessor[EditMovieCommand, EditMovieContributionId]:
     current_timestamp = datetime.now(timezone.utc)
 
-    create_contribution_roles = make_func_cacheable(
-        func=create_contribution_roles,
-    )
-    create_contribution_writers = make_func_cacheable(
-        func=create_contribution_writers,
-    )
-    create_contribution_crew = make_func_cacheable(
-        func=create_contribution_crew,
-    )
+    create_movie_roles = make_func_cacheable(create_movie_roles)
+    create_movie_writers = make_func_cacheable(create_movie_writers)
+    create_movie_crew = make_func_cacheable(create_movie_crew)
 
     edit_movie_processor = EditMovieProcessor(
         edit_movie=edit_movie,
         ensure_persons_exist=ensure_persons_exist,
-        create_contribution_roles=create_contribution_roles,
-        create_contribution_writers=create_contribution_writers,
-        create_contribution_crew=create_contribution_crew,
+        create_movie_roles=create_movie_roles,
+        create_movie_writers=create_movie_writers,
+        create_movie_crew=create_movie_crew,
         edit_movie_contribution_gateway=edit_movie_contribution_gateway,
         user_gateway=user_gateway,
         movie_gateway=movie_gateway,
@@ -102,9 +96,9 @@ def edit_movie_factory(
     )
     callback_processor = EditMovieCallbackProcessor(
         processor=authz_processor,
-        create_contribution_roles=create_contribution_roles,
-        create_contribution_writers=create_contribution_writers,
-        create_contribution_crew=create_contribution_crew,
+        create_movie_roles=create_movie_roles,
+        create_movie_writers=create_movie_writers,
+        create_movie_crew=create_movie_crew,
         identity_provider=identity_provider,
         on_movie_edited=on_movie_edited,
         current_timestamp=current_timestamp,
@@ -128,9 +122,9 @@ class EditMovieProcessor:
         *,
         edit_movie: EditMovie,
         ensure_persons_exist: EnsurePersonsExist,
-        create_contribution_roles: CreateContributionRoles,
-        create_contribution_writers: CreateContributionWriters,
-        create_contribution_crew: CreateContributionCrew,
+        create_movie_roles: CreateMovieRoles,
+        create_movie_writers: CreateMovieWriters,
+        create_movie_crew: CreateMovieCrew,
         edit_movie_contribution_gateway: EditMovieContributionGateway,
         user_gateway: UserGateway,
         movie_gateway: MovieGateway,
@@ -142,9 +136,9 @@ class EditMovieProcessor:
     ):
         self._edit_movie = edit_movie
         self._ensure_persons_exist = ensure_persons_exist
-        self._create_contribution_roles = create_contribution_roles
-        self._create_contribution_writers = create_contribution_writers
-        self._create_contribution_crew = create_contribution_crew
+        self._create_movie_roles = create_movie_roles
+        self._create_movie_writers = create_movie_writers
+        self._create_movie_crew = create_movie_crew
         self._edit_movie_contribution_gateway = edit_movie_contribution_gateway
         self._user_gateway = user_gateway
         self._movie_gateway = movie_gateway
@@ -179,15 +173,9 @@ class EditMovieProcessor:
         ]
         await self._ensure_persons_exist(person_ids)
 
-        contribution_roles = self._create_contribution_roles(
-            movie_roles=command.roles_to_add,
-        )
-        contribution_writers = self._create_contribution_writers(
-            movie_writers=command.writers_to_add,
-        )
-        contribution_crew = self._create_contribution_crew(
-            movie_crew=command.crew_to_add,
-        )
+        movie_roles = self._create_movie_roles(command.roles_to_add)
+        movie_writers = self._create_movie_writers(command.writers_to_add)
+        movie_crew = self._create_movie_crew(command.crew_to_add)
 
         contribution = self._edit_movie(
             id=EditMovieContributionId(uuid7()),
@@ -202,11 +190,11 @@ class EditMovieProcessor:
             duration=command.duration,
             budget=command.budget,
             revenue=command.revenue,
-            roles_to_add=contribution_roles,
+            roles_to_add=movie_roles,
             roles_to_remove=command.roles_to_remove,
-            writers_to_add=contribution_writers,
+            writers_to_add=movie_writers,
             writers_to_remove=command.writers_to_remove,
-            crew_to_add=contribution_crew,
+            crew_to_add=movie_crew,
             crew_to_remove=command.crew_to_remove,
             photos_to_add=command.photos_to_add,
             current_timestamp=self._current_timestamp,
@@ -265,17 +253,17 @@ class EditMovieCallbackProcessor:
         self,
         *,
         processor: AuthorizationProcessor,
-        create_contribution_roles: CreateContributionRoles,
-        create_contribution_writers: CreateContributionWriters,
-        create_contribution_crew: CreateContributionCrew,
+        create_movie_roles: CreateMovieRoles,
+        create_movie_writers: CreateMovieWriters,
+        create_movie_crew: CreateMovieCrew,
         identity_provider: IdentityProvider,
         on_movie_edited: OnEventOccurred[MovieEditedEvent],
         current_timestamp: datetime,
     ):
         self._processor = processor
-        self._create_contribution_roles = create_contribution_roles
-        self._create_contribution_writers = create_contribution_writers
-        self._create_contribution_crew = create_contribution_crew
+        self._create_movie_roles = create_movie_roles
+        self._create_movie_writers = create_movie_writers
+        self._create_movie_crew = create_movie_crew
         self._identity_provider = identity_provider
         self._on_movie_edited = on_movie_edited
         self._current_timestamp = current_timestamp
@@ -287,15 +275,9 @@ class EditMovieCallbackProcessor:
         result = await self._processor.process(command)
         current_user_id = await self._identity_provider.user_id()
 
-        contribution_roles = self._create_contribution_roles(
-            movie_roles=command.roles_to_add,
-        )
-        contribution_writers = self._create_contribution_writers(
-            movie_writers=command.writers_to_add,
-        )
-        contribution_crew = self._create_contribution_crew(
-            movie_crew=command.crew_to_add,
-        )
+        movie_roles = self._create_movie_roles(command.roles_to_add)
+        movie_writers = self._create_movie_writers(command.writers_to_add)
+        movie_crew = self._create_movie_crew(command.crew_to_add)
 
         event = MovieEditedEvent(
             contribution_id=result,
@@ -310,11 +292,11 @@ class EditMovieCallbackProcessor:
             duration=command.duration,
             budget=command.budget,
             revenue=command.revenue,
-            roles_to_add=contribution_roles,
+            roles_to_add=movie_roles,
             roles_to_remove=command.roles_to_remove,
-            writers_to_add=contribution_writers,
+            writers_to_add=movie_writers,
             writers_to_remove=command.writers_to_remove,
-            crew_to_add=contribution_crew,
+            crew_to_add=movie_crew,
             crew_to_remove=command.crew_to_remove,
             photos_to_add=command.photos_to_add,
             edited_at=self._current_timestamp,

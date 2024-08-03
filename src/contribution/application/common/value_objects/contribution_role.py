@@ -1,12 +1,10 @@
 from dataclasses import dataclass
 
-from .role_id import RoleId
-from .person_id import PersonId
+from contribution.domain import PersonId
 
 
 @dataclass(frozen=True, slots=True)
 class ContributionRole:
-    id: RoleId
     person_id: PersonId
     character: str
     importance: int

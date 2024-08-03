@@ -18,9 +18,9 @@ from contribution.domain import (
     RoleId,
     WriterId,
     CrewMemberId,
-    ContributionRole,
-    ContributionWriter,
-    ContributionCrewMember,
+    MovieRole,
+    MovieWriter,
+    MovieCrewMember,
     Country,
     Currency,
     PhotoUrl,
@@ -142,7 +142,7 @@ class EditMovieContributionMapper:
 
         roles_to_add = []
         for role_as_dict in document["roles_to_add"]:
-            role = ContributionRole(
+            role = MovieRole(
                 id=RoleId(UUID(role_as_dict["id"])),
                 person_id=PersonId(UUID(role_as_dict["person_id"])),
                 character=document["character"],
@@ -153,7 +153,7 @@ class EditMovieContributionMapper:
 
         writers_to_add = []
         for writer_as_dict in document["writers"]:
-            writer = ContributionWriter(
+            writer = MovieWriter(
                 id=WriterId(UUID(writer_as_dict["id"])),
                 person_id=PersonId(UUID(writer_as_dict["person_id"])),
                 writing=Writing(writer_as_dict["writing"]),
@@ -162,7 +162,7 @@ class EditMovieContributionMapper:
 
         crew_to_add = []
         for crew_member_as_dict in document["crew"]:
-            crew_member = ContributionCrewMember(
+            crew_member = MovieCrewMember(
                 id=CrewMemberId(UUID(crew_member_as_dict["id"])),
                 person_id=PersonId(UUID(crew_member_as_dict["person_id"])),
                 membership=CrewMembership(crew_member_as_dict["membership"]),

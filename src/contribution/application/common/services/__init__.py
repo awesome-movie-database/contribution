@@ -7,9 +7,9 @@ __all__ = (
     "DeleteWriters",
     "CreateAndSaveCrew",
     "DeleteCrew",
-    "CreateContributionRoles",
-    "CreateContributionWriters",
-    "CreateContributionCrew",
+    "CreateMovieRoles",
+    "CreateMovieWriters",
+    "CreateMovieCrew",
 )
 
 from .access_concern import AccessConcern
@@ -20,6 +20,6 @@ from .create_and_save_writers import CreateAndSaveWriters
 from .delete_writers import DeleteWriters
 from .create_and_save_crew import CreateAndSaveCrew
 from .delete_crew import DeleteCrew
-from .create_contribution_roles import CreateContributionRoles
-from .create_contribution_writers import CreateContributionWriters
-from .create_contribution_crew import CreateContributionCrew
+from .create_movie_roles import CreateMovieRoles
+from .create_movie_writers import CreateMovieWriters
+from .create_movie_crew import CreateMovieCrew

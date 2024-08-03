@@ -10,9 +10,9 @@ from contribution.domain import (
     PhotoUrl,
 )
 from contribution.application.common import (
-    MovieRole,
-    MovieWriter,
-    MovieCrewMember,
+    ContributionRole,
+    ContributionWriter,
+    ContributionCrewMember,
 )
 
 
@@ -27,7 +27,7 @@ class AddMovieCommand:
     duration: int
     budget: Optional[Money]
     revenue: Optional[Money]
-    roles: Iterable[MovieRole]
-    writers: Iterable[MovieWriter]
-    crew: Iterable[MovieCrewMember]
+    roles: Iterable[ContributionRole]
+    writers: Iterable[ContributionWriter]
+    crew: Iterable[ContributionCrewMember]
     photos: Iterable[PhotoUrl]

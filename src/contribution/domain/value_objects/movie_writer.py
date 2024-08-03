@@ -6,7 +6,7 @@ from .person_id import PersonId
 
 
 @dataclass(frozen=True, slots=True)
-class ContributionWriter:
+class MovieWriter:
     id: WriterId
     person_id: PersonId
     writing: Writing

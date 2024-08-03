@@ -9,9 +9,9 @@ from contribution.domain import (
     UserId,
     Country,
     Money,
-    ContributionRole,
-    ContributionWriter,
-    ContributionCrewMember,
+    MovieRole,
+    MovieWriter,
+    MovieCrewMember,
     PhotoUrl,
 )
 
@@ -29,8 +29,8 @@ class MovieAddedEvent:
     duration: int
     budget: Optional[Money]
     revenue: Optional[Money]
-    roles: Iterable[ContributionRole]
-    writers: Iterable[ContributionWriter]
-    crew: Iterable[ContributionCrewMember]
+    roles: Iterable[MovieRole]
+    writers: Iterable[MovieWriter]
+    crew: Iterable[MovieCrewMember]
     photos: Iterable[PhotoUrl]
     added_at: datetime

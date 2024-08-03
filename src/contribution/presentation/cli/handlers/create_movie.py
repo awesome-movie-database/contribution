@@ -10,9 +10,9 @@ from contribution.domain import (
     MPAA,
     Genre,
     MovieId,
-    ContributionRole,
-    ContributionWriter,
-    ContributionCrewMember,
+    MovieRole,
+    MovieWriter,
+    MovieCrewMember,
     Country,
     Money,
 )
@@ -98,7 +98,7 @@ async def create_movie(
         ),
     ] = None,
     roles: Annotated[
-        Optional[Iterable[ContributionRole]],
+        Optional[Iterable[MovieRole]],
         Parameter(
             "--roles",
             converter=jsons_to_movie_roles,
@@ -118,7 +118,7 @@ async def create_movie(
         ),
     ] = None,
     writers: Annotated[
-        Optional[Iterable[ContributionWriter]],
+        Optional[Iterable[MovieWriter]],
         Parameter(
             "--writers",
             converter=jsons_to_movie_writers,
@@ -136,7 +136,7 @@ async def create_movie(
         ),
     ] = None,
     crew: Annotated[
-        Optional[Iterable[ContributionCrewMember]],
+        Optional[Iterable[MovieCrewMember]],
         Parameter(
             "--crew",
             converter=jsons_to_movie_crew,
@@ -220,9 +220,9 @@ def _movie_table_factory(
     duration: int,
     budget: Optional[Money],
     revenue: Optional[Money],
-    roles: Optional[Iterable[ContributionRole]],
-    writers: Optional[Iterable[ContributionWriter]],
-    crew: Optional[Iterable[ContributionCrewMember]],
+    roles: Optional[Iterable[MovieRole]],
+    writers: Optional[Iterable[MovieWriter]],
+    crew: Optional[Iterable[MovieCrewMember]],
 ) -> rich.table.Table:
     movie_table = rich.table.Table(
         "id",

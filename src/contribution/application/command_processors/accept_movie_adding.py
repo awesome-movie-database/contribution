@@ -157,15 +157,15 @@ class AcceptMovieAddingProcessor:
 
         await self._create_and_save_roles(
             movie=new_movie,
-            contribution_roles=contribution.roles,
+            movie_roles=contribution.roles,
         )
         await self._create_and_save_writers(
             movie=new_movie,
-            contribution_writers=contribution.writers,
+            movie_writers=contribution.writers,
         )
         await self._create_and_save_crew(
             movie=new_movie,
-            contribution_crew=contribution.crew,
+            movie_crew=contribution.crew,
         )
 
         return achievement.id if achievement else None

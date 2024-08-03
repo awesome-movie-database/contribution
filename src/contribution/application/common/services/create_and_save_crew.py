@@ -1,8 +1,7 @@
 from typing import Iterable
 
 from contribution.domain import (
-    CrewMemberId,
-    ContributionCrewMember,
+    MovieCrewMember,
     Movie,
     Person,
     CreateCrewMember,
@@ -32,23 +31,18 @@ class CreateAndSaveCrew:
         self,
         *,
         movie: Movie,
-        contribution_crew: Iterable[ContributionCrewMember],
+        movie_crew: Iterable[MovieCrewMember],
     ) -> None:
-        crew_member_ids = [crew_member.id for crew_member in contribution_crew]
-        await self._ensure_crew_members_do_not_exist(crew_member_ids)
-
-        persons = await self._list_persons_of_movie_crew(contribution_crew)
+        await self._ensure_crew_members_do_not_exist(movie_crew)
+        persons = await self._list_movie_crew_member_persons(movie_crew)
 
         crew = []
-        for contribution_crew_member, person in zip(
-            contribution_crew,
-            persons,
-        ):
+        for movie_crew_member, person in zip(movie_crew, persons):
             crew_member = self._create_crew_member(
-                id=contribution_crew_member.id,
+                id=movie_crew_member.id,
                 movie=movie,
                 person=person,
-                membership=contribution_crew_member.membership,
+                membership=movie_crew_member.membership,
             )
             crew.append(crew_member)
 
@@ -56,23 +50,20 @@ class CreateAndSaveCrew:
 
     async def _ensure_crew_members_do_not_exist(
         self,
-        crew_member_ids: Iterable[CrewMemberId],
+        movie_crew: Iterable[MovieCrewMember],
     ) -> None:
-        crew_members = await self._crew_member_gateway.list_by_ids(
-            crew_member_ids,
-        )
-        if crew_members:
+        crew_member_ids = [crew_member.id for crew_member in movie_crew]
+        crew = await self._crew_member_gateway.list_by_ids(crew_member_ids)
+        if crew:
             raise CrewMembersAlreadyExistError(
-                [crew_member.id for crew_member in crew_members],
+                [crew_member.id for crew_member in crew],
             )
 
-    async def _list_persons_of_movie_crew(
+    async def _list_movie_crew_member_persons(
         self,
-        contribution_crew: Iterable[ContributionCrewMember],
+        movie_crew: Iterable[MovieCrewMember],
     ) -> list[Person]:
-        person_ids = [
-            crew_member.person_id for crew_member in contribution_crew
-        ]
+        person_ids = [crew_member.person_id for crew_member in movie_crew]
         persons = await self._person_gateway.list_by_ids(person_ids)
 
         some_persons_are_missing = len(person_ids) != len(persons)

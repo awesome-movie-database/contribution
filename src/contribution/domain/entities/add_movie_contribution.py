@@ -9,9 +9,9 @@ from contribution.domain.constants import (
 from contribution.domain.value_objects import (
     AddMovieContributionId,
     UserId,
-    ContributionRole,
-    ContributionWriter,
-    ContributionCrewMember,
+    MovieRole,
+    MovieWriter,
+    MovieCrewMember,
     Country,
     Money,
     PhotoUrl,
@@ -32,7 +32,7 @@ class AddMovieContribution(Contribution):
     duration: int
     budget: Optional[Money]
     revenue: Optional[Money]
-    roles: Iterable[ContributionRole]
-    writers: Iterable[ContributionWriter]
-    crew: Iterable[ContributionCrewMember]
+    roles: Iterable[MovieRole]
+    writers: Iterable[MovieWriter]
+    crew: Iterable[MovieCrewMember]
     photos: Iterable[PhotoUrl]

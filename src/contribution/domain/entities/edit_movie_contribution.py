@@ -13,9 +13,9 @@ from contribution.domain.value_objects import (
     RoleId,
     WriterId,
     CrewMemberId,
-    ContributionRole,
-    ContributionWriter,
-    ContributionCrewMember,
+    MovieRole,
+    MovieWriter,
+    MovieCrewMember,
     Country,
     Money,
     PhotoUrl,
@@ -38,10 +38,10 @@ class EditMovieContribution(Contribution):
     duration: Maybe[int]
     budget: Maybe[Optional[Money]]
     revenue: Maybe[Optional[Money]]
-    roles_to_add: Iterable[ContributionRole]
+    roles_to_add: Iterable[MovieRole]
     roles_to_remove: Iterable[RoleId]
-    writers_to_add: Iterable[ContributionWriter]
+    writers_to_add: Iterable[MovieWriter]
     writers_to_remove: Iterable[WriterId]
-    crew_to_add: Iterable[ContributionCrewMember]
+    crew_to_add: Iterable[MovieCrewMember]
     crew_to_remove: Iterable[CrewMemberId]
     photos_to_add: Iterable[PhotoUrl]

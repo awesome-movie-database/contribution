@@ -9,9 +9,9 @@ from contribution.application import (
     DeleteWriters,
     CreateAndSaveCrew,
     DeleteCrew,
-    CreateContributionRoles,
-    CreateContributionWriters,
-    CreateContributionCrew,
+    CreateMovieRoles,
+    CreateMovieWriters,
+    CreateMovieCrew,
 )
 
 
@@ -26,8 +26,8 @@ def application_services_provider_factory() -> Provider:
     provider.provide(DeleteWriters)
     provider.provide(CreateAndSaveCrew)
     provider.provide(DeleteCrew)
-    provider.provide(CreateContributionRoles, scope=Scope.APP)
-    provider.provide(CreateContributionWriters, scope=Scope.APP)
-    provider.provide(CreateContributionCrew, scope=Scope.APP)
+    provider.provide(CreateMovieRoles, scope=Scope.APP)
+    provider.provide(CreateMovieWriters, scope=Scope.APP)
+    provider.provide(CreateMovieCrew, scope=Scope.APP)
 
     return provider

@@ -115,15 +115,15 @@ class UpdateMovieProcessor:
 
         await self._create_and_save_roles(
             movie=movie,
-            contribution_roles=command.add_roles,
+            movie_roles=command.add_roles,
         )
         await self._create_and_save_writers(
             movie=movie,
-            contribution_writers=command.add_writers,
+            movie_writers=command.add_writers,
         )
         await self._create_and_save_crew(
             movie=movie,
-            contribution_crew=command.add_crew,
+            movie_crew=command.add_crew,
         )
 
         await self._delete_roles(command.remove_roles)

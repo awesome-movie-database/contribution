@@ -97,15 +97,15 @@ class CreateMovieProcessor:
 
         await self._create_and_save_roles(
             movie=new_movie,
-            contribution_roles=command.roles,
+            movie_roles=command.roles,
         )
         await self._create_and_save_writers(
             movie=new_movie,
-            contribution_writers=command.writers,
+            movie_writers=command.writers,
         )
         await self._create_and_save_crew(
             movie=new_movie,
-            contribution_crew=command.crew,
+            movie_crew=command.crew,
         )
 
 
