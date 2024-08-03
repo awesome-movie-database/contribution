@@ -112,7 +112,7 @@ def _updated_person_fields_table_factory(
         "id",
         title="Updated person fields",
     )
-    updated_person_field_values = []
+    updated_person_field_values = [str(id)]
 
     if first_name.is_set:
         updated_person_fields_table.add_column("first_name")
@@ -129,15 +129,12 @@ def _updated_person_fields_table_factory(
     if death_date.is_set:
         updated_person_fields_table.add_column("death_date")
 
-        birth_date_ = birth_date.value
-        if birth_date_:
-            updated_person_field_values.append(birth_date_.isoformat())
+        death_date_ = death_date.value
+        if death_date_:
+            updated_person_field_values.append(death_date_.isoformat())
         else:
             updated_person_field_values.append("None")
 
-    updated_person_fields_table.add_row(
-        str(id),
-        *updated_person_field_values,
-    )
+    updated_person_fields_table.add_row(*updated_person_field_values)
 
     return updated_person_fields_table

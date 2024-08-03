@@ -27,8 +27,19 @@ def str_to_date(_, date_as_str: str) -> date:
     return date.fromisoformat(date_as_str)
 
 
+def bool_to_maybe_bool(_, bool_: bool) -> Maybe[bool]:
+    return Maybe[bool].with_value(bool_)
+
+
 def str_to_maybe_str(_, str_: str) -> Maybe[str]:
     return Maybe[str].with_value(str_)
+
+
+def str_to_maybe_optional_str(
+    _,
+    str_: Optional[str],
+) -> Maybe[Optional[str]]:
+    return Maybe[Optional[str]].with_value(str_)
 
 
 def str_to_maybe_date(_, date_as_str: str) -> Maybe[date]:
