@@ -96,7 +96,7 @@ async def update_person(
         death_date=death_date,
     )
 
-    rich.print("Person has been successfully updated")
+    rich.print("Person has been updated successfully")
     rich.print(updated_person_fields_table)
 
 

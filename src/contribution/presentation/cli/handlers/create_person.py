@@ -84,7 +84,7 @@ async def create_person(
         death_date=death_date,
     )
 
-    rich.print("Person has been added successfully")
+    rich.print("Person has been created successfully")
     rich.print(person_table)
 
 

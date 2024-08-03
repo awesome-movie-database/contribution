@@ -7,6 +7,7 @@ from faststream.cli.main import cli as run_faststream
 
 from contribution.infrastructure import setup_logging
 from contribution.presentation.cli import (
+    create_user,
     create_movie,
     create_person,
     update_person,
@@ -29,6 +30,7 @@ def create_cli_app() -> App:
     app.command(run_web_api)
     app.command(run_event_consumer)
 
+    app.command(create_user)
     app.command(create_movie)
     app.command(create_person)
     app.command(update_person)

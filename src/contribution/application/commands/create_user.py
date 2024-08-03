@@ -6,7 +6,7 @@ from contribution.domain import UserId
 
 @dataclass(frozen=True, slots=True)
 class CreateUserCommand:
-    user_id: UserId
+    id: UserId
     name: str
     email: Optional[str]
     telegram: Optional[str]

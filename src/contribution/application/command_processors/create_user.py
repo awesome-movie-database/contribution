@@ -57,7 +57,7 @@ class CreateUserProcessor:
 
     async def process(self, command: CreateUserCommand) -> None:
         user_with_same_id = await self._user_gateway.by_id(
-            id=command.user_id,
+            id=command.id,
         )
         if user_with_same_id:
             raise UserIdIsAlreadyTakenError()
@@ -82,7 +82,7 @@ class CreateUserProcessor:
                 raise UserTelegramIsAlreadyTakenError()
 
         new_user = self._create_user(
-            id=command.user_id,
+            id=command.id,
             name=command.name,
             email=command.email,
             telegram=command.telegram,

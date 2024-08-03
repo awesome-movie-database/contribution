@@ -205,7 +205,7 @@ async def create_movie(
         crew=crew,
     )
 
-    rich.print("Movie has been added successfully")
+    rich.print("Movie has been created successfully")
     rich.print(movie_table)
 
 
