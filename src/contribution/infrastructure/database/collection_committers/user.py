@@ -35,12 +35,12 @@ class CommitUserCollectionChanges:
         inserts = [InsertOne(self._user_to_document(user)) for user in new]
         updates = [
             UpdateOne(
-                {"id": clean_user.id},
+                {"id": clean_user.id.hex},
                 self._pipeline_to_update_user(clean_user, dirty_user),
             )
             for clean_user, dirty_user in zip(clean, dirty)
         ]
-        deletes = [DeleteOne({"id": user.id}) for user in deleted]
+        deletes = [DeleteOne({"id": user.id.hex}) for user in deleted]
 
         changes: list[InsertOne, UpdateOne, DeleteOne] = [
             *inserts,

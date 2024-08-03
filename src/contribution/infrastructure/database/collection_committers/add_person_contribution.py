@@ -34,7 +34,7 @@ class CommitAddPersonContributionCollectionChanges:
         ]
         updates = [
             UpdateOne(
-                {"id": clean_contribution.id},
+                {"id": clean_contribution.id.hex},
                 self._pipeline_to_update_contribution(
                     clean_contribution,
                     dirty_contribution,
@@ -43,7 +43,7 @@ class CommitAddPersonContributionCollectionChanges:
             for clean_contribution, dirty_contribution in zip(clean, dirty)
         ]
         deletes = [
-            DeleteOne({"id": contribution.id}) for contribution in deleted
+            DeleteOne({"id": contribution.id.hex}) for contribution in deleted
         ]
 
         changes: list[InsertOne, UpdateOne, DeleteOne] = [

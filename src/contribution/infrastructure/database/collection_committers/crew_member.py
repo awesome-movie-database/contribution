@@ -32,7 +32,7 @@ class CommitCrewMemberCollectionChanges:
         ]
         updates = [
             UpdateOne(
-                {"id": clean_crew_member.id},
+                {"id": clean_crew_member.id.hex},
                 self._pipeline_to_update_crew_member(
                     clean_crew_member,
                     dirty_crew_member,
@@ -41,7 +41,7 @@ class CommitCrewMemberCollectionChanges:
             for clean_crew_member, dirty_crew_member in zip(clean, dirty)
         ]
         deletes = [
-            DeleteOne({"id": crew_member.id}) for crew_member in deleted
+            DeleteOne({"id": crew_member.id.hex}) for crew_member in deleted
         ]
 
         changes: list[InsertOne, UpdateOne, DeleteOne] = [

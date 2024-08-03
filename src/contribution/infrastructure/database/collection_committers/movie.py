@@ -29,12 +29,12 @@ class CommitMovieCollectionChanges:
         inserts = [InsertOne(self._movie_to_document(movie)) for movie in new]
         updates = [
             UpdateOne(
-                {"id": clean_movie.id},
+                {"id": clean_movie.id.hex},
                 self._pipeline_to_update_movie(clean_movie, dirty_movie),
             )
             for clean_movie, dirty_movie in zip(clean, dirty)
         ]
-        deletes = [DeleteOne({"id": movie.id}) for movie in deleted]
+        deletes = [DeleteOne({"id": movie.id.hex}) for movie in deleted]
 
         changes: list[InsertOne, UpdateOne, DeleteOne] = [
             *inserts,

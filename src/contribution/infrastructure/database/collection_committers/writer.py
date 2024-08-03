@@ -31,12 +31,12 @@ class CommitWriterCollectionChanges:
         ]
         updates = [
             UpdateOne(
-                {"id": clean_writer.id},
+                {"id": clean_writer.id.hex},
                 self._pipeline_to_update_writer(clean_writer, dirty_writer),
             )
             for clean_writer, dirty_writer in zip(clean, dirty)
         ]
-        deletes = [DeleteOne({"id": writer.id}) for writer in deleted]
+        deletes = [DeleteOne({"id": writer.id.hex}) for writer in deleted]
 
         changes: list[InsertOne, UpdateOne, DeleteOne] = [
             *inserts,

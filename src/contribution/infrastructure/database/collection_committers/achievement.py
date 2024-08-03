@@ -32,7 +32,7 @@ class CommitAchievementCollectionChanges:
         ]
         updates = [
             UpdateOne(
-                {"id": clean_achievement.id},
+                {"id": clean_achievement.id.hex},
                 self._pipeline_to_update_achievement(
                     clean_achievement,
                     dirty_achievement,
@@ -41,7 +41,7 @@ class CommitAchievementCollectionChanges:
             for clean_achievement, dirty_achievement in zip(clean, dirty)
         ]
         deletes = [
-            DeleteOne({"id": achievement.id}) for achievement in deleted
+            DeleteOne({"id": achievement.id.hex}) for achievement in deleted
         ]
 
         changes: list[InsertOne, UpdateOne, DeleteOne] = [

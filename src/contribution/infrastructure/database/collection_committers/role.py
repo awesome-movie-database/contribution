@@ -29,12 +29,12 @@ class CommitRoleCollectionChanges:
         inserts = [InsertOne(self._role_to_document(role)) for role in new]
         updates = [
             UpdateOne(
-                {"id": clean_role.id},
+                {"id": clean_role.id.hex},
                 self._pipeline_to_update_role(clean_role, dirty_role),
             )
             for clean_role, dirty_role in zip(clean, dirty)
         ]
-        deletes = [DeleteOne({"id": role.id}) for role in deleted]
+        deletes = [DeleteOne({"id": role.id.hex}) for role in deleted]
 
         changes: list[InsertOne, UpdateOne, DeleteOne] = [
             *inserts,

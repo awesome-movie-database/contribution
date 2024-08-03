@@ -33,12 +33,12 @@ class CommitPersonCollectionChanges:
         ]
         updates = [
             UpdateOne(
-                {"id": clean_person.id},
+                {"id": clean_person.id.hex},
                 self._pipeline_to_update_person(clean_person, dirty_person),
             )
             for clean_person, dirty_person in zip(clean, dirty)
         ]
-        deletes = [DeleteOne({"id": person.id}) for person in deleted]
+        deletes = [DeleteOne({"id": person.id.hex}) for person in deleted]
 
         changes: list[InsertOne, UpdateOne, DeleteOne] = [
             *inserts,
