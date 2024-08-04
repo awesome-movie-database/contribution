@@ -122,7 +122,7 @@ class Maybe[T]:
 
     def __str__(self) -> str:
         if self.is_set:
-            return repr(self._value)
+            return str(self._value)
         return "<UNSET>"
 
     def __repr__(self) -> str:
