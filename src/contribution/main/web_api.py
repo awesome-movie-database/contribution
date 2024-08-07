@@ -29,6 +29,10 @@ DESCRIPTION = """
     * 430 - Invalid role importance.
     * 510 - Writers do not exist.
     * 610 - Crew members do not exist.
+
+## Headers:
+    * [Required] X-Current-User-Id
+    * [Optional] X-Operation-Id
 """
 
 
