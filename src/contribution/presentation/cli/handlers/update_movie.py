@@ -278,6 +278,7 @@ async def update_movie(
 
 
 def _update_movie_fields_table_factory(
+    *,
     id: MovieId,
     eng_title: Maybe[str],
     original_title: Maybe[str],

@@ -85,6 +85,7 @@ async def update_user(
 
 
 def _updated_user_fields_table_factory(
+    *,
     id: UserId,
     name: Maybe[str],
     email: Maybe[Optional[str]],

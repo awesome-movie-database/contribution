@@ -68,6 +68,7 @@ async def create_user(
 
 
 def _user_table_factory(
+    *,
     id: UserId,
     name: str,
     email: Optional[str],

@@ -101,6 +101,7 @@ async def update_person(
 
 
 def _updated_person_fields_table_factory(
+    *,
     id: PersonId,
     first_name: Maybe[str],
     last_name: Maybe[str],

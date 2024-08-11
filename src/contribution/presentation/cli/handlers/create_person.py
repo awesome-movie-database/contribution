@@ -89,6 +89,7 @@ async def create_person(
 
 
 def _person_table_factory(
+    *,
     id: PersonId,
     first_name: str,
     last_name: str,

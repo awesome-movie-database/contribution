@@ -210,6 +210,7 @@ async def create_movie(
 
 
 def _movie_table_factory(
+    *,
     id: MovieId,
     eng_title: str,
     original_title: str,
