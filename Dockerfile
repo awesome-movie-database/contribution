@@ -17,15 +17,17 @@ RUN pip install build &&
 FROM base AS web-api
 
 COPY --from=builder ./app/dist ./
+COPY ./scripts/web-api-entrypoint.sh ./web-api-entrypoint.sh
 
 RUN $(printf "pip install %s[web_api]" contribution*.whl)
 
-ENTRYPOINT ["contribution", "run-web-api"]
+ENTRYPOINT ["./web-api-entrypoint.sh"]
 CMD ["--workers", "1"]
 
 FROM base AS builder
 
 COPY --from=builder ./app/dist ./
+COPY ./scripts/event-consumer-entrypoint.sh ./scripts/event-consumer-entrypoint.sh
 
 RUN $(printf "pip install %s[event_consumer]" contribution*.whl)
 
