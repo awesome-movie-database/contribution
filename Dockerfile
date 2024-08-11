@@ -27,9 +27,9 @@ CMD ["--workers", "1"]
 FROM base AS builder
 
 COPY --from=builder ./app/dist ./
-COPY ./scripts/event-consumer-entrypoint.sh ./scripts/event-consumer-entrypoint.sh
+COPY ./scripts/event-consumer-entrypoint.sh ./event-consumer-entrypoint.sh
 
 RUN $(printf "pip install %s[event_consumer]" contribution*.whl)
 
-ENTRYPOINT ["contribution", "run-event-consumer"]
+ENTRYPOINT ["./event-consumer-entrypoint.sh"]
 CMD ["--workers", "1"]
