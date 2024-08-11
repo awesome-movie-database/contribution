@@ -71,7 +71,6 @@ from contribution.infrastructure import (
     MongoDBUnitOfWork,
     PermissionsCache,
     PermissionsStorage,
-    PhotoStorage,
     RedisConfig,
     redis_factory,
     env_var_by_key,
@@ -86,11 +85,6 @@ def redis_client() -> Redis:
     redis_ = redis_factory(redis_config)
 
     return redis_
-
-
-@pytest.fixture(scope="session")
-def photo_gateway() -> PhotoStorage:
-    return AsyncMock()
 
 
 @pytest.fixture(scope="session")

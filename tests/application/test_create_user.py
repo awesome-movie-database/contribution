@@ -23,7 +23,7 @@ async def test_create_user(
     unit_of_work: UnitOfWork,
 ):
     command = CreateUserCommand(
-        user_id=UserId(uuid7()),
+        id=UserId(uuid7()),
         name="JohnDoe",
         email="johndoe@gmail.com",
         telegram=None,
