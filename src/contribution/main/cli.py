@@ -10,6 +10,7 @@ from contribution.presentation.cli import (
     create_user,
     update_user,
     create_movie,
+    update_movie,
     create_person,
     update_person,
 )
@@ -34,6 +35,7 @@ def create_cli_app() -> App:
     app.command(create_user)
     app.command(update_user)
     app.command(create_movie)
+    app.command(update_movie)
     app.command(create_person)
     app.command(update_person)
 

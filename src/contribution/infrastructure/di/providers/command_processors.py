@@ -29,6 +29,7 @@ def cli_command_processors_provider_factory() -> Provider:
     provider.provide(create_user_factory)
     provider.provide(update_user_factory)
     provider.provide(create_movie_factory)
+    provider.provide(update_movie_factory)
     provider.provide(create_person_factory)
     provider.provide(update_person_factory)
 
@@ -73,6 +74,7 @@ def tui_command_processors_provider_factory() -> Provider:
     provider.provide(create_user_factory)
     provider.provide(update_user_factory)
     provider.provide(create_movie_factory)
+    provider.provide(update_movie_factory)
     provider.provide(create_person_factory)
     provider.provide(update_person_factory)
 
