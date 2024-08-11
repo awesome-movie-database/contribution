@@ -41,3 +41,6 @@ class PermissionsStorage:
             user_id=user_id,
             permissions=permissions,
         )
+
+    async def for_contribution(self) -> int:
+        return 2
