@@ -200,3 +200,12 @@ class MongoDBUnitOfWork:
                 deleted=self._deleted.get(entity_type, {}).values(),
             )
         await self._session.commit_transaction()
+
+    def __repr__(self) -> str:
+        return (
+            "UnitOfWork("
+            f"new={self._new},"
+            f"clean={self._clean},"
+            f"dirty={self._dirty},"
+            f"deleted={self._deleted})"
+        )

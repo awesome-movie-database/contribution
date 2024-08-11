@@ -7,7 +7,10 @@ from motor.motor_asyncio import (
 )
 from redis.asyncio import Redis
 
-from contribution.application import OnEventOccurred
+from contribution.application import (
+    EnsurePersonsExist,
+    OnEventOccurred,
+)
 from contribution.infrastructure import (
     UserCollection,
     MovieCollection,
@@ -440,3 +443,8 @@ def permissions_storage(
     )
 
     return permissions_storage
+
+
+@pytest.fixture
+def ensure_persons_exist(person_gateway: PersonMapper) -> EnsurePersonsExist:
+    return EnsurePersonsExist(person_gateway=person_gateway)
