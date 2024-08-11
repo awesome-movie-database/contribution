@@ -1,4 +1,4 @@
-from typing import Annotated, Collection, Iterable, Optional
+from typing import Annotated, Optional
 from datetime import date
 
 import rich
@@ -282,18 +282,18 @@ def _update_movie_fields_table_factory(
     eng_title: Maybe[str],
     original_title: Maybe[str],
     release_date: Maybe[date],
-    countries: Maybe[Iterable[Country]],
-    genres: Maybe[Iterable[Genre]],
+    countries: Maybe[list[Country]],
+    genres: Maybe[list[Genre]],
     mpaa: Maybe[MPAA],
     duration: Maybe[int],
     budget: Maybe[Optional[Money]],
     revenue: Maybe[Optional[Money]],
-    roles_to_add: Optional[Iterable[MovieRole]],
-    roles_to_remove: Optional[Collection[RoleId]],
-    writers_to_add: Optional[Iterable[MovieWriter]],
-    writers_to_remove: Optional[Collection[WriterId]],
-    crew_to_add: Optional[Iterable[MovieCrewMember]],
-    crew_to_remove: Optional[Collection[CrewMemberId]],
+    roles_to_add: Optional[list[MovieRole]],
+    roles_to_remove: Optional[list[RoleId]],
+    writers_to_add: Optional[list[MovieWriter]],
+    writers_to_remove: Optional[list[WriterId]],
+    crew_to_add: Optional[list[MovieCrewMember]],
+    crew_to_remove: Optional[list[CrewMemberId]],
 ) -> rich.table.Table:
     updated_movie_fields_table = rich.table.Table(
         "id",

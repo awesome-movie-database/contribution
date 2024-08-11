@@ -1,4 +1,4 @@
-from typing import Annotated, Iterable, Optional
+from typing import Annotated, Optional
 from datetime import date
 
 import rich
@@ -53,7 +53,7 @@ async def create_movie(
         ),
     ],
     countries: Annotated[
-        Iterable[Country],
+        list[Country],
         Parameter(
             "--countries",
             help=(
@@ -62,7 +62,7 @@ async def create_movie(
             ),
         ),
     ],
-    genres: Annotated[Iterable[Genre], Parameter("--genres")],
+    genres: Annotated[list[Genre], Parameter("--genres")],
     mpaa: Annotated[MPAA, Parameter("--mpaa")],
     duration: Annotated[int, Parameter("--duration")],
     budget: Annotated[
@@ -98,7 +98,7 @@ async def create_movie(
         ),
     ] = None,
     roles: Annotated[
-        Optional[Iterable[MovieRole]],
+        Optional[list[MovieRole]],
         Parameter(
             "--roles",
             converter=jsons_to_movie_roles,
@@ -118,7 +118,7 @@ async def create_movie(
         ),
     ] = None,
     writers: Annotated[
-        Optional[Iterable[MovieWriter]],
+        Optional[list[MovieWriter]],
         Parameter(
             "--writers",
             converter=jsons_to_movie_writers,
@@ -136,7 +136,7 @@ async def create_movie(
         ),
     ] = None,
     crew: Annotated[
-        Optional[Iterable[MovieCrewMember]],
+        Optional[list[MovieCrewMember]],
         Parameter(
             "--crew",
             converter=jsons_to_movie_crew,
@@ -214,15 +214,15 @@ def _movie_table_factory(
     eng_title: str,
     original_title: str,
     release_date: date,
-    countries: Iterable[Country],
-    genres: Iterable[Genre],
+    countries: list[Country],
+    genres: list[Genre],
     mpaa: MPAA,
     duration: int,
     budget: Optional[Money],
     revenue: Optional[Money],
-    roles: Optional[Iterable[MovieRole]],
-    writers: Optional[Iterable[MovieWriter]],
-    crew: Optional[Iterable[MovieCrewMember]],
+    roles: Optional[list[MovieRole]],
+    writers: Optional[list[MovieWriter]],
+    crew: Optional[list[MovieCrewMember]],
 ) -> rich.table.Table:
     movie_table = rich.table.Table(
         "id",
