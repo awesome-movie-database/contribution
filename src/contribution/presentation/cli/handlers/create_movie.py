@@ -158,12 +158,12 @@ async def create_movie(
     Creates a new movie. Does not notify other services about it.
     Asks confirmation before execting.
     """
-    continue_ = rich.prompt.Confirm.ask(
+    executing_is_confirmed = rich.prompt.Confirm.ask(
         "You are going to create a movie.\n"
         "This action does not notify other services about a new movie.\n"
         "Would you like to continue?",
     )
-    if not continue_:
+    if not executing_is_confirmed:
         return
 
     ioc_container = cli_ioc_container_factory()
