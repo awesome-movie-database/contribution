@@ -11,7 +11,7 @@ FROM base AS builder
 COPY ./src ./src
 COPY ./pyproject.toml ./pyproject.toml
 
-RUN pip install build &&
+RUN pip install build && \
     python3 -m build --wheel
 
 FROM base AS web-api
@@ -24,7 +24,7 @@ RUN $(printf "pip install %s[web_api]" contribution*.whl)
 ENTRYPOINT ["./web-api-entrypoint.sh"]
 CMD ["--workers", "1"]
 
-FROM base AS builder
+FROM base AS event-consumer
 
 COPY --from=builder ./app/dist ./
 COPY ./scripts/event-consumer-entrypoint.sh ./event-consumer-entrypoint.sh
