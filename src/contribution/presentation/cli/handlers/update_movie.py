@@ -24,7 +24,7 @@ from contribution.application import (
     CommandProcessor,
     UpdateMovieCommand,
 )
-from contribution.infrastructure import cli_ioc_container_factory
+from contribution.infrastructure.di.cli import cli_ioc_container_factory
 from contribution.presentation.cli.converters import (
     str_to_uuid,
     strs_to_uuids,

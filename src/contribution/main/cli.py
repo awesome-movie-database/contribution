@@ -2,8 +2,6 @@ import sys
 from typing import Annotated
 
 from cyclopts import App, Parameter
-from gunicorn.app.wsgiapp import run as run_gunicorn
-from faststream.cli.main import cli as run_faststream
 
 from contribution.infrastructure import setup_logging
 from contribution.presentation.cli import (
@@ -53,6 +51,8 @@ def run_web_api(
     ] = "1",
 ) -> None:
     """Runs the server with web api at specified address."""
+    from gunicorn.app.wsgiapp import run as run_gunicorn
+
     sys.argv = [
         "gunicorn",
         "--bind",
@@ -73,6 +73,8 @@ def run_event_consumer(
     ] = "1",
 ) -> None:
     """Runs event consumer."""
+    from faststream.cli.main import cli as run_faststream
+
     sys.argv = [
         "faststream",
         "run",

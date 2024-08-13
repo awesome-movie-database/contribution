@@ -20,7 +20,9 @@ services:
       - REDIS_URL=${REDIS_URL:-contribution.redis}
       - RABBITMQ_URL=${RABBITMQ_URL:-contribution.rabbitmq}
     volumes:
-      - ./contribution/web-api.log:/var/log/contribution/web-api.log:rw
+      - type: bind
+        source: ./contribution/web-api.log
+        target: /var/log/contribution/web-api.log
 
   grafana:
     profiles: ["grafana-stack"]

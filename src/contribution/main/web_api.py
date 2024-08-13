@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from dishka.integrations.fastapi import setup_dishka
 
-from contribution.infrastructure import (
-    setup_logging,
+from contribution.infrastructure import setup_logging
+from contribution.infrastructure.di.web_api import (
     web_api_ioc_container_factory,
 )
 from contribution.presentation.web_api import (

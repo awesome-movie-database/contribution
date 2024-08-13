@@ -1,8 +1,8 @@
 from faststream import FastStream
 from dishka.integrations.faststream import setup_dishka
 
-from contribution.infrastructure import (
-    rabbitmq_config_from_env,
+from contribution.infrastructure import rabbitmq_config_from_env
+from contribution.infrastructure.di.event_consumer import (
     event_consumer_ioc_container_factory,
 )
 from contribution.presentation.event_consumer import create_broker
