@@ -2,6 +2,7 @@ version: "3.9"
 
 networks:
   contribution.grafana_stack: {}
+  contribution.redis: {}
 
 services:
   web-api:
@@ -15,14 +16,35 @@ services:
       context: ./
       dockerfile: ./Dockerfile
       target: web-api
+    networks:
+      - contribution.redis
     environment:
-      - MONGODB_URL=${MONGODB_URL:-contribution.mongodb}
+      - MONGODB_URL=${MONGODB_URL}
       - REDIS_URL=${REDIS_URL:-contribution.redis}
-      - RABBITMQ_URL=${RABBITMQ_URL:-contribution.rabbitmq}
-    volumes:
-      - type: bind
-        source: ./contribution/web-api.log
-        target: /var/log/contribution/web-api.log
+      - RABBITMQ_URL=${RABBITMQ_URL}
+    logging:
+      driver: "json-file"
+      options:
+        tag: "{{.Name}}"
+        max-size: "10m"
+        max-file: "3"
+
+  redis:
+    profiles: ["web_api"]
+    image: redis:7.4
+    container_name: contribution.redis
+    hostname: contribution.redis
+    expose: ["6379"]
+    restart: unless-stopped
+
+    networks:
+      - contribution.redis
+    logging:
+      driver: "json-file"
+      options:
+        tag: "{{.Name}}"
+        max-size: "10m"
+        max-file: "3"
 
   grafana:
     profiles: ["grafana-stack"]
@@ -41,6 +63,12 @@ services:
       - GF_USERS_ALLOW_SIGN_UP=false
     volumes:
       - ./config/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/loki.yaml:rw
+    logging:
+      driver: "json-file"
+      options:
+        tag: "{{.Name}}"
+        max-size: "10m"
+        max-file: "3"
 
   loki:
     profiles: ["grafana-stack"]
@@ -55,6 +83,12 @@ services:
       - contribution.grafana_stack
     volumes:
       - ./config/loki.yaml:/etc/loki/config.yaml:ro
+    logging:
+      driver: "json-file"
+      options:
+        tag: "{{.Name}}"
+        max-size: "10m"
+        max-file: "3"
 
   promtail:
     profiles: ["grafana-stack"]
@@ -69,5 +103,11 @@ services:
     networks:
       - contribution.grafana_stack
     volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - ./config/promtail.yaml:/etc/promtail/promtail-config.yaml:ro
-      - ./contribution:/var/log/contribution:ro
+    logging:
+      driver: "json-file"
+      options:
+        tag: "{{.Name}}"
+        max-size: "10m"
+        max-file: "3"

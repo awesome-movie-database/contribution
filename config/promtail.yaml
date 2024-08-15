@@ -14,4 +14,23 @@ scrape_configs:
           - localhost
         labels:
           job: contribution
-          __path__: /var/log/contribution/*.log
+          __path__: /var/lib/docker/containers/*/*.log
+
+    pipeline_stages:
+      - json:
+          expressions:
+            output: log
+            stream: stream
+            attrs: attrs
+      - json:
+          source: attrs
+          expressions:
+            tag: tag
+      - drop:
+          source: stream
+          expression: 'stderr'
+      - match:
+          selector: '{tag=~""} != "contribution.web_api"'
+          action: drop
+      - output:
+          source: log
