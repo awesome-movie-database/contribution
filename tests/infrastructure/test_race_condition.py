@@ -46,24 +46,26 @@ async def unit_of_work_factory(
     motor_session: AsyncIOMotorClientSession,
 ) -> MongoDBUnitOfWork:
     user_collection = await user_collection_factory(motor_database)
-    movie_collection = movie_collection_factory(motor_database)
-    person_collection = person_collection_factory(motor_database)
-    role_collection = role_collection_factory(motor_database)
-    writer_collection = writer_collection_factory(motor_database)
-    crew_member_collection = crew_member_collection_factory(motor_database)
+    movie_collection = await movie_collection_factory(motor_database)
+    person_collection = await person_collection_factory(motor_database)
+    role_collection = await role_collection_factory(motor_database)
+    writer_collection = await writer_collection_factory(motor_database)
+    crew_member_collection = await crew_member_collection_factory(
+        motor_database,
+    )
     add_movie_contribution_collection = (
-        add_movie_contribution_collection_factory(motor_database)
+        await add_movie_contribution_collection_factory(motor_database)
     )
     edit_movie_contribution_collection = (
-        edit_movie_contribution_collection_factory(motor_database)
+        await edit_movie_contribution_collection_factory(motor_database)
     )
     add_person_contribution_collection = (
-        add_person_contribution_collection_factory(motor_database)
+        await add_person_contribution_collection_factory(motor_database)
     )
     edit_person_contribution_collection = (
-        edit_person_contribution_collection_factory(motor_database)
+        await edit_person_contribution_collection_factory(motor_database)
     )
-    achievement_collection = achievement_collection_factory(
+    achievement_collection = await achievement_collection_factory(
         motor_database,
     )
 

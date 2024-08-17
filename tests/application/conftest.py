@@ -103,73 +103,73 @@ async def user_collection(
 
 
 @pytest.fixture
-def movie_collection(
+async def movie_collection(
     motor_database: AsyncIOMotorDatabase,
 ) -> MovieCollection:
-    return movie_collection_factory(motor_database)
+    return await movie_collection_factory(motor_database)
 
 
 @pytest.fixture
-def person_collection(
+async def person_collection(
     motor_database: AsyncIOMotorDatabase,
 ) -> PersonCollection:
-    return person_collection_factory(motor_database)
+    return await person_collection_factory(motor_database)
 
 
 @pytest.fixture
-def role_collection(
+async def role_collection(
     motor_database: AsyncIOMotorDatabase,
 ) -> RoleCollection:
-    return role_collection_factory(motor_database)
+    return await role_collection_factory(motor_database)
 
 
 @pytest.fixture
-def writer_collection(
+async def writer_collection(
     motor_database: AsyncIOMotorDatabase,
 ) -> WriterCollection:
-    return writer_collection_factory(motor_database)
+    return await writer_collection_factory(motor_database)
 
 
 @pytest.fixture
-def crew_member_collection(
+async def crew_member_collection(
     motor_database: AsyncIOMotorDatabase,
 ) -> CrewMemberCollection:
-    return crew_member_collection_factory(motor_database)
+    return await crew_member_collection_factory(motor_database)
 
 
 @pytest.fixture
-def add_movie_contribution_collection(
+async def add_movie_contribution_collection(
     motor_database: AsyncIOMotorDatabase,
 ) -> AddMovieContributionCollection:
-    return add_movie_contribution_collection_factory(motor_database)
+    return await add_movie_contribution_collection_factory(motor_database)
 
 
 @pytest.fixture
-def edit_movie_contribution_collection(
+async def edit_movie_contribution_collection(
     motor_database: AsyncIOMotorDatabase,
 ) -> EditMovieContributionCollection:
-    return edit_movie_contribution_collection_factory(motor_database)
+    return await edit_movie_contribution_collection_factory(motor_database)
 
 
 @pytest.fixture
-def add_person_contribution_collection(
+async def add_person_contribution_collection(
     motor_database: AsyncIOMotorDatabase,
 ) -> AddPersonContributionCollection:
-    return add_person_contribution_collection_factory(motor_database)
+    return await add_person_contribution_collection_factory(motor_database)
 
 
 @pytest.fixture
-def edit_person_contribution_collection(
+async def edit_person_contribution_collection(
     motor_database: AsyncIOMotorDatabase,
 ) -> EditPersonContributionCollection:
-    return edit_person_contribution_collection_factory(motor_database)
+    return await edit_person_contribution_collection_factory(motor_database)
 
 
 @pytest.fixture
-def achievement_collection(
+async def achievement_collection(
     motor_database: AsyncIOMotorDatabase,
 ) -> AchievementCollection:
-    return achievement_collection_factory(motor_database)
+    return await achievement_collection_factory(motor_database)
 
 
 @pytest.fixture
