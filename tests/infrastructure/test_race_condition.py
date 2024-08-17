@@ -41,6 +41,42 @@ from contribution.infrastructure import (
 )
 
 
+@pytest.mark.skip("This test is an artifact created during development")
+@pytest.mark.usefixtures("clear_database")
+async def test_saving_two_users_with_same_id_to_database_at_same_time_should_raise_error(
+    motor_client: AsyncIOMotorClient,
+):
+    common_user_id = UserId(uuid7())
+
+    john_doe = User(
+        id=common_user_id,
+        name="JohnDoe",
+        email=None,
+        telegram=None,
+        is_active=True,
+        rating=0,
+        accepted_contributions_count=0,
+        rejected_contributions_count=0,
+    )
+    ivan_ivanov = User(
+        id=common_user_id,
+        name="IvanIvanov",
+        email=None,
+        telegram=None,
+        is_active=True,
+        rating=0,
+        accepted_contributions_count=0,
+        rejected_contributions_count=0,
+    )
+
+    with pytest.raises(UserIdIsAlreadyTakenError):
+        await save_users_to_database_at_same_time(
+            john_doe,
+            ivan_ivanov,
+            motor_client=motor_client,
+        )
+
+
 async def unit_of_work_factory(
     motor_database: AsyncIOMotorDatabase,
     motor_session: AsyncIOMotorClientSession,
@@ -203,39 +239,3 @@ async def save_users_to_database_at_same_time(
     finally:
         for opened_transaction in opened_transactions:
             await opened_transaction.__aexit__(None, None, None)
-
-
-@pytest.mark.skip("This test is an artifact created during development")
-@pytest.mark.usefixtures("clear_database")
-async def test_saving_two_users_with_same_id_to_database_at_same_time_should_raise_error(
-    motor_client: AsyncIOMotorClient,
-):
-    common_user_id = UserId(uuid7())
-
-    john_doe = User(
-        id=common_user_id,
-        name="JohnDoe",
-        email=None,
-        telegram=None,
-        is_active=True,
-        rating=0,
-        accepted_contributions_count=0,
-        rejected_contributions_count=0,
-    )
-    ivan_ivanov = User(
-        id=common_user_id,
-        name="IvanIvanov",
-        email=None,
-        telegram=None,
-        is_active=True,
-        rating=0,
-        accepted_contributions_count=0,
-        rejected_contributions_count=0,
-    )
-
-    with pytest.raises(UserIdIsAlreadyTakenError):
-        await save_users_to_database_at_same_time(
-            john_doe,
-            ivan_ivanov,
-            motor_client=motor_client,
-        )
