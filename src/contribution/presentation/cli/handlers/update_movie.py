@@ -58,6 +58,14 @@ async def update_movie(
         Maybe[str],
         Parameter("--original-title", converter=str_to_maybe_str),
     ] = Maybe[str].without_value(),
+    summary: Annotated[
+        Maybe[str],
+        Parameter("--summary", converter=str_to_maybe_str),
+    ] = Maybe[str].without_value(),
+    description: Annotated[
+        Maybe[str],
+        Parameter("--description", converter=str_to_maybe_str),
+    ] = Maybe[str].without_value(),
     release_date: Annotated[
         Maybe[date],
         Parameter(
@@ -234,6 +242,8 @@ async def update_movie(
         movie_id=id,
         eng_title=eng_title,
         original_title=original_title,
+        summary=summary,
+        description=description,
         release_date=release_date,
         countries=countries,
         genres=genres,
@@ -258,6 +268,8 @@ async def update_movie(
         id=id,
         eng_title=eng_title,
         original_title=original_title,
+        summary=summary,
+        description=description,
         release_date=release_date,
         countries=countries,
         genres=genres,
@@ -282,6 +294,8 @@ def _update_movie_fields_table_factory(
     id: MovieId,
     eng_title: Maybe[str],
     original_title: Maybe[str],
+    summary: Maybe[str],
+    description: Maybe[str],
     release_date: Maybe[date],
     countries: Maybe[list[Country]],
     genres: Maybe[list[Genre]],
@@ -308,6 +322,12 @@ def _update_movie_fields_table_factory(
     if original_title.is_set:
         updated_movie_fields_table.add_column("original_title")
         update_movie_field_values.append(original_title.value)
+    if summary.is_set:
+        updated_movie_fields_table.add_column("summary")
+        update_movie_field_values.append(summary.value)
+    if description.is_set:
+        updated_movie_fields_table.add_column("description")
+        update_movie_field_values.append(description.value)
     if release_date.is_set:
         updated_movie_fields_table.add_column("release_date")
         update_movie_field_values.append(release_date.value.isoformat())

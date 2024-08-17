@@ -7,6 +7,8 @@ from contribution.domain import (
     UserIsNotActiveError,
     InvalidMovieEngTitleError,
     InvalidMovieOriginalTitleError,
+    InvalidMovieSummaryError,
+    InvalidMovieDescriptionError,
     InvalidMovieDurationError,
     InvalidRoleCharacterError,
     InvalidRoleImportanceError,
@@ -38,6 +40,14 @@ def setup_exception_handlers(app: FastAPI) -> None:
     app.add_exception_handler(
         InvalidMovieOriginalTitleError,
         _on_invalid_movie_original_title_error,
+    )
+    app.add_exception_handler(
+        InvalidMovieSummaryError,
+        _on_invalid_movie_summary_error,
+    )
+    app.add_exception_handler(
+        InvalidMovieDescriptionError,
+        _on_invalid_movie_description_error,
     )
     app.add_exception_handler(
         InvalidMovieDurationError,
@@ -134,10 +144,36 @@ def _on_invalid_movie_original_title_error(*_) -> JSONResponse:
     )
 
 
-def _on_invalid_movie_duration_error(*_) -> JSONResponse:
+def _on_invalid_movie_summary_error(*_) -> JSONResponse:
     return JSONResponse(
         content=_error_json_as_dict_factory(
             code=240,
+            message=(
+                "Invalid length of summary. Lenght of summary "
+                "must be more than 5 characters and less than 128 characters."
+            ),
+        ),
+        status_code=400,
+    )
+
+
+def _on_invalid_movie_description_error(*_) -> JSONResponse:
+    return JSONResponse(
+        content=_error_json_as_dict_factory(
+            code=250,
+            message=(
+                "Invalid length of description. Lenght of description "
+                "must be more than 32 characters and less than 512 characters."
+            ),
+        ),
+        status_code=400,
+    )
+
+
+def _on_invalid_movie_duration_error(*_) -> JSONResponse:
+    return JSONResponse(
+        content=_error_json_as_dict_factory(
+            code=260,
             message="Invalid duration. Duration must be more than 1 minute.",
         ),
         status_code=400,

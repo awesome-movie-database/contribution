@@ -21,6 +21,8 @@ from contribution.domain.value_objects import (
 from contribution.domain.validators import (
     ValidateMovieEngTitle,
     ValidateMovieOriginalTitle,
+    ValidateMovieSummary,
+    ValidateMovieDescription,
     ValidateMovieDuration,
 )
 from contribution.domain.exceptions import (
@@ -40,10 +42,14 @@ class EditMovie:
         self,
         validate_eng_title: ValidateMovieEngTitle,
         validate_original_title: ValidateMovieOriginalTitle,
+        validate_summary: ValidateMovieSummary,
+        validate_description: ValidateMovieDescription,
         valudate_duration: ValidateMovieDuration,
     ):
         self._validate_eng_title = validate_eng_title
         self._validate_original_title = validate_original_title
+        self._validate_summary = validate_summary
+        self._validate_description = validate_description
         self._validate_duration = valudate_duration
 
     def __call__(
@@ -54,6 +60,8 @@ class EditMovie:
         movie: Movie,
         eng_title: Maybe[str],
         original_title: Maybe[str],
+        summary: Maybe[str],
+        description: Maybe[str],
         release_date: Maybe[date],
         countries: Maybe[Iterable[Country]],
         genres: Maybe[Iterable[Genre]],
@@ -77,6 +85,10 @@ class EditMovie:
             self._validate_eng_title(eng_title.value)
         if original_title.is_set:
             self._validate_original_title(original_title.value)
+        if summary.is_set:
+            self._validate_summary(summary.value)
+        if description.is_set:
+            self._validate_description(description.value)
         if duration.is_set:
             self._validate_duration(duration.value)
 
@@ -84,6 +96,8 @@ class EditMovie:
             movie=movie,
             eng_title=eng_title,
             original_title=original_title,
+            summary=summary,
+            description=description,
             release_date=release_date,
             countries=countries,
             genres=genres,
@@ -99,6 +113,8 @@ class EditMovie:
             movie_id=movie.id,
             eng_title=eng_title,
             original_title=original_title,
+            summary=summary,
+            description=description,
             release_date=release_date,
             countries=countries,
             genres=genres,
@@ -124,6 +140,8 @@ class EditMovie:
         movie: Movie,
         eng_title: Maybe[str],
         original_title: Maybe[str],
+        summary: Maybe[str],
+        description: Maybe[str],
         release_date: Maybe[date],
         countries: Maybe[Iterable[Country]],
         genres: Maybe[Iterable[Genre]],
@@ -141,6 +159,10 @@ class EditMovie:
             and original_title.value == movie.original_title
         ):
             fields_with_duplicates.append("original_title")
+        if summary.is_set and summary.value == movie.summary:
+            fields_with_duplicates.append("summary")
+        if description.is_set and description.value == movie.description:
+            fields_with_duplicates.append("description")
         if release_date.is_set and release_date.value == movie.release_date:
             fields_with_duplicates.append("release_date")
         if countries.is_set and countries.value == movie.countries:

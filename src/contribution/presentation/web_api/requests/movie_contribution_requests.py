@@ -30,6 +30,8 @@ class EditMovieRequest(BaseModel):
     movie_id: MovieId
     eng_title: str = None
     original_title: str = None
+    summary: str = None
+    description: str = None
     release_date: date = None
     countries: list[Country] = None
     genres: list[Genre] = None
@@ -55,6 +57,14 @@ class EditMovieRequest(BaseModel):
         original_title = Maybe[str].from_mapping_by_key(
             mapping=request_as_dict,
             key="original_title",
+        )
+        summary = Maybe[str].from_mapping_by_key(
+            mapping=request_as_dict,
+            key="summary",
+        )
+        description = Maybe[str].from_mapping_by_key(
+            mapping=request_as_dict,
+            key="description",
         )
         release_date = Maybe[date].from_mapping_by_key(
             mapping=request_as_dict,
@@ -89,6 +99,8 @@ class EditMovieRequest(BaseModel):
             movie_id=self.movie_id,
             eng_title=eng_title,
             original_title=original_title,
+            summary=summary,
+            description=description,
             release_date=release_date,
             countries=countries,
             genres=genres,

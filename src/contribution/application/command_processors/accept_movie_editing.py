@@ -165,6 +165,8 @@ class AcceptMovieEditingProcessor:
             movie,
             eng_title=contribution.eng_title,
             original_title=contribution.original_title,
+            summary=contribution.summary,
+            description=contribution.description,
             release_date=contribution.release_date,
             countries=contribution.countries,
             genres=contribution.genres,

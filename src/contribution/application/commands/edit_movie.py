@@ -26,6 +26,8 @@ class EditMovieCommand:
     movie_id: MovieId
     eng_title: Maybe[str]
     original_title: Maybe[str]
+    summary: Maybe[str]
+    description: Maybe[str]
     release_date: Maybe[date]
     countries: Maybe[Iterable[Country]]
     genres: Maybe[Iterable[Genre]]

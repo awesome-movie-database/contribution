@@ -52,6 +52,8 @@ class CommitMovieCollectionChanges:
             "id": movie.id.hex,
             "eng_title": movie.eng_title,
             "original_title": movie.original_title,
+            "summary": movie.summary,
+            "description": movie.description,
             "release_date": movie.release_date.isoformat(),
             "countries": list(movie.countries),
             "genres": list(movie.genres),
@@ -88,6 +90,10 @@ class CommitMovieCollectionChanges:
             pipeline["$set"]["eng_title"] = dirty.eng_title
         if clean.original_title != dirty.original_title:
             pipeline["$set"]["original_title"] = dirty.original_title
+        if clean.summary != dirty.summary:
+            pipeline["$set"]["summary"] = dirty.summary
+        if clean.description != dirty.description:
+            pipeline["$set"]["description"] = dirty.description
         if clean.release_date != dirty.release_date:
             pipeline["$set"]["release_date"] = dirty.release_date.isoformat()
         if clean.countries != dirty.countries:

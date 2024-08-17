@@ -3,6 +3,8 @@ import logging
 from contribution.domain import (
     InvalidMovieEngTitleError,
     InvalidMovieOriginalTitleError,
+    InvalidMovieSummaryError,
+    InvalidMovieDescriptionError,
     InvalidMovieDurationError,
     UpdateMovie,
 )
@@ -103,6 +105,8 @@ class UpdateMovieProcessor:
             movie,
             eng_title=command.eng_title,
             original_title=command.original_title,
+            summary=command.summary,
+            description=command.description,
             release_date=command.release_date,
             countries=command.countries,
             genres=command.genres,
@@ -167,6 +171,18 @@ class UpdateMovieLoggingProcessor:
         except InvalidMovieOriginalTitleError as error:
             logger.error(
                 "Unexpected error occurred: Invalid movie original title",
+                extra={"operation_id": self._operation_id},
+            )
+            raise error
+        except InvalidMovieSummaryError as error:
+            logger.error(
+                "Unexpected error occurred: Invalid movie summary",
+                extra={"operation_id": self._operation_id},
+            )
+            raise error
+        except InvalidMovieDescriptionError as error:
+            logger.error(
+                "Unexpected error occurred: Invalid movie description",
                 extra={"operation_id": self._operation_id},
             )
             raise error

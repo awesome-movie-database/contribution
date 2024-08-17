@@ -106,6 +106,14 @@ class EditMovieContributionMapper:
             mapping=document,
             key="original_title",
         )
+        maybe_summary = Maybe[str].from_mapping_by_key(
+            mapping=document,
+            key="summary",
+        )
+        maybe_description = Maybe[str].from_mapping_by_key(
+            mapping=document,
+            key="duration",
+        )
         maybe_release_date = Maybe[date].from_mapping_by_key(
             mapping=document,
             key="release_date",
@@ -178,6 +186,8 @@ class EditMovieContributionMapper:
             movie_id=MovieId(UUID(document["movie_id"])),
             eng_title=maybe_eng_title,
             original_title=maybe_original_title,
+            summary=maybe_summary,
+            description=maybe_description,
             release_date=maybe_release_date,
             countries=maybe_countries,
             genres=maybe_genres,

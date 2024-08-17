@@ -85,6 +85,8 @@ class PublishMovieAddedEvent:
             "author_id": event.author_id.hex,
             "eng_title": event.eng_title,
             "original_title": event.original_title,
+            "summary": event.summary,
+            "description": event.description,
             "release_date": event.release_date.isoformat(),
             "countries": list(event.countries),
             "genres": list(event.genres),

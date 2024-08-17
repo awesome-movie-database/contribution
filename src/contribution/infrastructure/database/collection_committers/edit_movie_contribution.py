@@ -84,6 +84,10 @@ class CommitEditMovieContributionCollectionChanges:
             document["eng_title"] = contribution.eng_title.value
         if contribution.original_title.is_set:
             document["original_title"] = contribution.original_title.value
+        if contribution.summary.is_set:
+            document["summary"] = contribution.summary.value
+        if contribution.description.is_set:
+            document["description"] = contribution.description.value
         if contribution.release_date.is_set:
             document[
                 "release_date"
@@ -163,6 +167,16 @@ class CommitEditMovieContributionCollectionChanges:
                 pipeline["$set"]["original_title"] = dirty.original_title.value
             else:
                 pipeline["$unset"]["original_title"] = ""
+        if clean.summary != dirty.summary:
+            if dirty.summary.is_set:
+                pipeline["$set"]["summary"] = dirty.summary.value
+            else:
+                pipeline["$unset"]["summary"] = ""
+        if clean.description != dirty.description:
+            if dirty.description.is_set:
+                pipeline["$set"]["description"] = dirty.description.value
+            else:
+                pipeline["$unset"]["decription"] = ""
         if clean.release_date != dirty.release_date:
             if dirty.release_date.is_set:
                 pipeline["$set"][

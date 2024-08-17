@@ -18,6 +18,8 @@ class Movie:
     id: MovieId
     eng_title: str
     original_title: str
+    summary: str
+    description: str
     release_date: date
     countries: Iterable[Country]
     genres: Iterable[Genre]

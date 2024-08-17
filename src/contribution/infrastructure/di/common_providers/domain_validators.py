@@ -3,6 +3,8 @@ from dishka import Provider, Scope
 from contribution.domain import (
     ValidateMovieEngTitle,
     ValidateMovieOriginalTitle,
+    ValidateMovieSummary,
+    ValidateMovieDescription,
     ValidateMovieDuration,
     ValidateUserName,
     ValidateEmail,
@@ -19,6 +21,8 @@ def domain_validators_provider_factory() -> Provider:
 
     provider.provide(ValidateMovieEngTitle)
     provider.provide(ValidateMovieOriginalTitle)
+    provider.provide(ValidateMovieSummary)
+    provider.provide(ValidateMovieDescription)
     provider.provide(ValidateMovieDuration)
     provider.provide(ValidateUserName)
     provider.provide(ValidateEmail)

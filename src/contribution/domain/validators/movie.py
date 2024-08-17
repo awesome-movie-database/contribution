@@ -1,6 +1,8 @@
 from contribution.domain.exceptions import (
     InvalidMovieEngTitleError,
     InvalidMovieOriginalTitleError,
+    InvalidMovieSummaryError,
+    InvalidMovieDescriptionError,
     InvalidMovieDurationError,
 )
 
@@ -10,6 +12,12 @@ MOVIE_ENG_TITLE_MAX_LENGTH = 128
 
 MOVIE_ORIGINAL_TITLE_MIN_LENGTH = 1
 MOVIE_ORIGINAL_TITLE_MAX_LENGTH = 128
+
+MOVIE_SUMMARY_MIN_LENGTH = 5
+MOVIE_SUMMARY_MAX_LENGTH = 128
+
+MOVIE_DESCRIPTION_MIN_LENGTH = 32
+MOVIE_DESCRIPTION_MAX_LENGTH = 512
 
 MIN_MOVIE_DURATION = 1
 
@@ -34,6 +42,28 @@ class ValidateMovieOriginalTitle:
             or original_title_length > MOVIE_ORIGINAL_TITLE_MAX_LENGTH
         ):
             raise InvalidMovieOriginalTitleError()
+
+
+class ValidateMovieSummary:
+    def __call__(self, summary: str) -> None:
+        summary_length = len(summary)
+
+        if (
+            summary_length < MOVIE_SUMMARY_MIN_LENGTH
+            or summary_length > MOVIE_SUMMARY_MAX_LENGTH
+        ):
+            raise InvalidMovieSummaryError()
+
+
+class ValidateMovieDescription:
+    def __call__(self, description: str) -> None:
+        description_length = len(description)
+
+        if (
+            description_length < MOVIE_DESCRIPTION_MIN_LENGTH
+            or description_length > MOVIE_DESCRIPTION_MAX_LENGTH
+        ):
+            raise InvalidMovieDescriptionError()
 
 
 class ValidateMovieDuration:

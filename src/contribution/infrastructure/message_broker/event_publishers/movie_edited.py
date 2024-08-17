@@ -90,6 +90,10 @@ class PublishMovieEditedEvent:
             event_as_dict["eng_title"] = event.eng_title.value
         if event.original_title.is_set:
             event_as_dict["original_title"] = event.original_title.value
+        if event.summary.is_set:
+            event_as_dict["summary"] = event.summary.value
+        if event.description.is_set:
+            event_as_dict["description"] = event.description.value
         if event.release_date.is_set:
             event_as_dict[
                 "release_date"

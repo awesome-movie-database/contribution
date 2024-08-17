@@ -149,6 +149,8 @@ class AddMovieContributionMapper:
             author_id=UserId(UUID(document["author_id"])),
             eng_title=document["eng_title"],
             original_title=document["original_title"],
+            summary=document["summary"],
+            description=document["description"],
             release_date=date.fromisoformat(document["release_date"]),
             countries=document["countries"],
             genres=[Genre(genre) for genre in document["genres"]],
