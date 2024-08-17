@@ -126,8 +126,7 @@ class CommitUserCollectionChanges:
         first_write_error_code = first_write_error.get("code")
         if not first_write_error_code:
             message = (
-                "First write error of write errors "
-                "in OperationFailure details has no code"
+                "First write error in OperationFailure details has no code"
             )
             raise ValueError(message)
 
@@ -140,8 +139,8 @@ class CommitUserCollectionChanges:
         ] = first_write_error.get("keyValue")
         if not caused_error_key_value:
             message = (
-                "First write error of write errors "
-                "in OperationFailure details has no 'KeyValue' field"
+                "First write error in OperationFailure details "
+                "has no 'KeyValue' field"
             )
             raise ValueError(message)
 
