@@ -32,7 +32,7 @@ dev = [
 web_api = [
     "fastapi==0.112.*",
     "uvicorn[standart]==0.30.*",
-    "gunicorn==22.0.*",
+    "gunicorn==23.0.*",
 ]
 event_consumer = [
     "faststream==0.5.*",
