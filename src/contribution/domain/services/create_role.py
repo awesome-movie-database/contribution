@@ -13,11 +13,11 @@ from contribution.domain.entities import (
 class CreateRole:
     def __init__(
         self,
-        validate_role_character: ValidateRoleCharacter,
-        validate_role_importance: ValidateRoleImportance,
+        validate_character: ValidateRoleCharacter,
+        validate_importance: ValidateRoleImportance,
     ):
-        self._validate_role_character = validate_role_character
-        self._validate_role_importane = validate_role_importance
+        self._validate_character = validate_character
+        self._validate_importane = validate_importance
 
     def __call__(
         self,
@@ -29,8 +29,8 @@ class CreateRole:
         importance: int,
         is_spoiler: bool,
     ) -> Role:
-        self._validate_role_character(character)
-        self._validate_role_importane(importance)
+        self._validate_character(character)
+        self._validate_importane(importance)
 
         return Role(
             id=id,
