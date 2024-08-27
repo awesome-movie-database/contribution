@@ -12,11 +12,11 @@ from contribution.domain.entities import User
 class CreateUser:
     def __init__(
         self,
-        validate_user_name: ValidateUserName,
+        validate_name: ValidateUserName,
         validate_email: ValidateEmail,
         validate_telegram: ValidateTelegram,
     ):
-        self._validate_user_name = validate_user_name
+        self._validate_name = validate_name
         self._validate_email = validate_email
         self._validate_telegram = validate_telegram
 
@@ -29,7 +29,7 @@ class CreateUser:
         telegram: Optional[str],
         is_active: bool,
     ) -> User:
-        self._validate_user_name(name)
+        self._validate_name(name)
 
         if email:
             self._validate_email(email)

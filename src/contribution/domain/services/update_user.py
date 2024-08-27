@@ -12,11 +12,11 @@ from contribution.domain.maybe import Maybe
 class UpdateUser:
     def __init__(
         self,
-        validate_user_name: ValidateUserName,
+        validate_name: ValidateUserName,
         validate_email: ValidateEmail,
         validate_telegram: ValidateTelegram,
     ):
-        self._validate_user_name = validate_user_name
+        self._validate_name = validate_name
         self._validate_email = validate_email
         self._validate_telegram = validate_telegram
 
@@ -30,7 +30,7 @@ class UpdateUser:
         is_active: Maybe[bool],
     ) -> None:
         if name.is_set:
-            self._validate_user_name(name.value)
+            self._validate_name(name.value)
             user.name = name.value
         if email.is_set:
             if email.value:

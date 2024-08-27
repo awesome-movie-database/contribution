@@ -29,11 +29,11 @@ from contribution.domain.maybe import Maybe
 class EditPerson:
     def __init__(
         self,
-        validate_person_first_name: ValidatePersonFirstName,
-        validate_person_last_name: ValidatePersonLastName,
+        validate_first_name: ValidatePersonFirstName,
+        validate_last_name: ValidatePersonLastName,
     ):
-        self._validate_person_first_name = validate_person_first_name
-        self._validate_person_last_name = validate_person_last_name
+        self._validate_first_name = validate_first_name
+        self._validate_last_name = validate_last_name
 
     def __call__(
         self,
@@ -53,9 +53,9 @@ class EditPerson:
             raise UserIsNotActiveError()
 
         if first_name.is_set:
-            self._validate_person_first_name(first_name.value)
+            self._validate_first_name(first_name.value)
         if last_name.is_set:
-            self._validate_person_last_name(last_name.value)
+            self._validate_last_name(last_name.value)
 
         if (
             birth_date.is_set
