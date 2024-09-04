@@ -6,7 +6,7 @@ from contribution.domain.validators import (
     ValidateEmail,
     ValidateTelegram,
 )
-from contribution.domain.entities import User
+from contribution.domain.models import User
 
 
 class CreateUser:

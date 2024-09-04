@@ -1,6 +1,6 @@
 from contribution.domain.constants import CrewMembership
 from contribution.domain.value_objects import CrewMemberId
-from contribution.domain.entities import (
+from contribution.domain.models import (
     CrewMember,
     Movie,
     Person,

@@ -5,11 +5,7 @@ from contribution.domain.constants import (
     Genre,
     MPAA,
 )
-from contribution.domain.value_objects import (
-    MovieId,
-    Country,
-    Money,
-)
+from contribution.domain.value_objects import MovieId
 from contribution.domain.validators import (
     ValidateMovieEngTitle,
     ValidateMovieOriginalTitle,
@@ -17,7 +13,11 @@ from contribution.domain.validators import (
     ValidateMovieDescription,
     ValidateMovieDuration,
 )
-from contribution.domain.entities import Movie
+from contribution.domain.models import (
+    Country,
+    Money,
+    Movie,
+)
 
 
 class CreateMovie:

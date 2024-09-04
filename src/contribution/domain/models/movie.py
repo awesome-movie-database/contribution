@@ -6,11 +6,9 @@ from contribution.domain.constants import (
     Genre,
     MPAA,
 )
-from contribution.domain.value_objects import (
-    MovieId,
-    Country,
-    Money,
-)
+from contribution.domain.value_objects import MovieId
+from .country import Country
+from .money import Money
 
 
 @dataclass(slots=True)

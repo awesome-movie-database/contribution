@@ -7,9 +7,9 @@ from contribution.domain.value_objects import (
     EditPersonContributionId,
     UserId,
     PersonId,
-    PhotoUrl,
 )
 from contribution.domain.maybe import Maybe
+from .photo_url import PhotoUrl
 from .contribution import Contribution
 
 

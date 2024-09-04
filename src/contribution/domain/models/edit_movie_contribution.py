@@ -13,13 +13,13 @@ from contribution.domain.value_objects import (
     RoleId,
     WriterId,
     CrewMemberId,
-    MovieRole,
-    MovieWriter,
-    MovieCrewMember,
-    Country,
-    Money,
-    PhotoUrl,
 )
+from .movie_role import MovieRole
+from .movie_writer import MovieWriter
+from .movie_crew_member import MovieCrewMember
+from .country import Country
+from .money import Money
+from .photo_url import PhotoUrl
 from contribution.domain.maybe import Maybe
 from .contribution import Contribution
 

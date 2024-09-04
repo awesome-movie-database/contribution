@@ -5,10 +5,7 @@ from contribution.domain.constants import (
     ContributionStatus,
     Sex,
 )
-from contribution.domain.value_objects import (
-    AddPersonContributionId,
-    PhotoUrl,
-)
+from contribution.domain.value_objects import AddPersonContributionId
 from contribution.domain.validators import (
     ValidatePersonFirstName,
     ValidatePersonLastName,
@@ -17,7 +14,8 @@ from contribution.domain.exceptions import (
     UserIsNotActiveError,
     InvalidPersonBirthOrDeathDateError,
 )
-from contribution.domain.entities import (
+from contribution.domain.models import (
+    PhotoUrl,
     AddPersonContribution,
     User,
 )

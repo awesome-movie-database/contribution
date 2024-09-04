@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 
 from contribution.domain.constants import CrewMembership
-from .crew_member_id import CrewMemberId
-from .person_id import PersonId
+from contribution.domain.value_objects import PersonId, CrewMemberId
 
 
 @dataclass(frozen=True, slots=True)

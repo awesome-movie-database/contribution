@@ -2,7 +2,7 @@ from contribution.domain.validators import (
     ValidateRoleCharacter,
     ValidateRoleImportance,
 )
-from contribution.domain.entities import Role
+from contribution.domain.models import Role
 from contribution.domain.maybe import Maybe
 
 

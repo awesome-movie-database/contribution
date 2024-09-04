@@ -3,7 +3,7 @@ from contribution.domain.validators import (
     ValidateRoleCharacter,
     ValidateRoleImportance,
 )
-from contribution.domain.entities import (
+from contribution.domain.models import (
     Role,
     Movie,
     Person,

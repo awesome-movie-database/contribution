@@ -10,7 +10,7 @@ from contribution.domain.validators import (
 from contribution.domain.exceptions import (
     InvalidPersonBirthOrDeathDateError,
 )
-from contribution.domain.entities import Person
+from contribution.domain.models import Person
 
 
 class CreatePerson:

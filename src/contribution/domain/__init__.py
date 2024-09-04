@@ -1,5 +1,5 @@
 from .constants import *
-from .entities import *
+from .models import *
 from .exceptions import *
 from .services import *
 from .validators import *

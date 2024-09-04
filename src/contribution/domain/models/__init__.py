@@ -1,4 +1,11 @@
 __all__ = (
+    "MovieRole",
+    "MovieWriter",
+    "MovieCrewMember",
+    "Currency",
+    "Country",
+    "Money",
+    "PhotoUrl",
     "Movie",
     "User",
     "Person",
@@ -13,6 +20,13 @@ __all__ = (
     "Achievement",
 )
 
+from .movie_role import MovieRole
+from .movie_writer import MovieWriter
+from .movie_crew_member import MovieCrewMember
+from .currency import Currency
+from .country import Country
+from .money import Money
+from .photo_url import PhotoUrl
 from .movie import Movie
 from .user import User
 from .person import Person

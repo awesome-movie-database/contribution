@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 
 from contribution.domain.constants import Writing
-from .writer_id import WriterId
-from .person_id import PersonId
+from contribution.domain.value_objects import WriterId, PersonId
 
 
 @dataclass(frozen=True, slots=True)

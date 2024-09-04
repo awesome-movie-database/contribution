@@ -6,7 +6,7 @@ from contribution.domain.constants import (
     Achieved,
 )
 from contribution.domain.value_objects import AchievementId
-from contribution.domain.entities import (
+from contribution.domain.models import (
     Contribution,
     User,
     Achievement,

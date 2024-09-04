@@ -1,4 +1,4 @@
-from contribution.domain.value_objects import Currency
+from contribution.domain.models import Currency
 from .base import DomainError
 
 

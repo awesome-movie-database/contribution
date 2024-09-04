@@ -6,15 +6,7 @@ from contribution.domain.constants import (
     MPAA,
     ContributionStatus,
 )
-from contribution.domain.value_objects import (
-    AddMovieContributionId,
-    MovieRole,
-    MovieWriter,
-    MovieCrewMember,
-    Country,
-    Money,
-    PhotoUrl,
-)
+from contribution.domain.value_objects import AddMovieContributionId
 from contribution.domain.validators import (
     ValidateMovieEngTitle,
     ValidateMovieOriginalTitle,
@@ -23,7 +15,13 @@ from contribution.domain.validators import (
     ValidateMovieDuration,
 )
 from contribution.domain.exceptions import UserIsNotActiveError
-from contribution.domain.entities import (
+from contribution.domain.models import (
+    MovieRole,
+    MovieWriter,
+    MovieCrewMember,
+    Country,
+    Money,
+    PhotoUrl,
     AddMovieContribution,
     User,
 )

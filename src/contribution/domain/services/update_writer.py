@@ -1,5 +1,5 @@
 from contribution.domain.constants import Writing
-from contribution.domain.entities import Writer
+from contribution.domain.models import Writer
 from contribution.domain.maybe import Maybe
 
 

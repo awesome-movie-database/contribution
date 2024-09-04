@@ -6,8 +6,8 @@ from contribution.domain.constants import Sex
 from contribution.domain.value_objects import (
     AddPersonContributionId,
     UserId,
-    PhotoUrl,
 )
+from .photo_url import PhotoUrl
 from .contribution import Contribution
 
 

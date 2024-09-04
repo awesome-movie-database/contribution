@@ -11,12 +11,6 @@ from contribution.domain.value_objects import (
     RoleId,
     WriterId,
     CrewMemberId,
-    MovieRole,
-    MovieWriter,
-    MovieCrewMember,
-    Country,
-    Money,
-    PhotoUrl,
 )
 from contribution.domain.validators import (
     ValidateMovieEngTitle,
@@ -29,7 +23,13 @@ from contribution.domain.exceptions import (
     UserIsNotActiveError,
     ContributionDataDuplicationError,
 )
-from contribution.domain.entities import (
+from contribution.domain.models import (
+    MovieRole,
+    MovieWriter,
+    MovieCrewMember,
+    Country,
+    Money,
+    PhotoUrl,
     EditMovieContribution,
     Movie,
     User,

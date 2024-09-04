@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
-from .role_id import RoleId
-from .person_id import PersonId
+from contribution.domain.value_objects import RoleId, PersonId
 
 
 @dataclass(frozen=True, slots=True)

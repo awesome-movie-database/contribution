@@ -5,10 +5,6 @@ from contribution.domain.constants import (
     Genre,
     MPAA,
 )
-from contribution.domain.value_objects import (
-    Country,
-    Money,
-)
 from contribution.domain.validators import (
     ValidateMovieEngTitle,
     ValidateMovieOriginalTitle,
@@ -16,7 +12,11 @@ from contribution.domain.validators import (
     ValidateMovieDescription,
     ValidateMovieDuration,
 )
-from contribution.domain.entities import Movie
+from contribution.domain.models import (
+    Country,
+    Money,
+    Movie,
+)
 from contribution.domain.maybe import Maybe
 
 

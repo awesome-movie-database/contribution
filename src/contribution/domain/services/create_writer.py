@@ -1,6 +1,6 @@
 from contribution.domain.constants import Writing
 from contribution.domain.value_objects import WriterId
-from contribution.domain.entities import (
+from contribution.domain.models import (
     Writer,
     Movie,
     Person,
