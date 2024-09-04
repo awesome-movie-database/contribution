@@ -34,7 +34,7 @@ from .collection_committers import (
 )
 
 
-type AnyEntity = Union[
+type AnyModel = Union[
     Movie,
     User,
     Person,
@@ -50,14 +50,14 @@ type AnyEntity = Union[
 ]
 
 
-class CommitCollectionChanges[E: AnyEntity](Protocol):
+class CommitCollectionChanges[M: AnyModel](Protocol):
     async def __call__(
         self,
         *,
-        new: Sequence[E],
-        clean: Sequence[E],
-        dirty: Sequence[E],
-        deleted: Sequence[E],
+        new: Sequence[M],
+        clean: Sequence[M],
+        dirty: Sequence[M],
+        deleted: Sequence[M],
     ) -> None:
         raise NotImplementedError
 
@@ -91,7 +91,7 @@ class MongoDBUnitOfWork:
         session: AsyncIOMotorClientSession,
     ):
         self._collection_changes_commiters: dict[
-            type[AnyEntity],
+            type[AnyModel],
             CommitCollectionChanges,
         ] = {
             User: commit_user_collection_changes,
@@ -116,70 +116,70 @@ class MongoDBUnitOfWork:
         }
         self._session = session
 
-        self._new: dict[type[AnyEntity], dict[int, AnyEntity]] = {}
-        self._clean: dict[type[AnyEntity], dict[int, AnyEntity]] = {}
-        self._dirty: dict[type[AnyEntity], dict[int, AnyEntity]] = {}
-        self._deleted: dict[type[AnyEntity], dict[int, AnyEntity]] = {}
+        self._new: dict[type[AnyModel], dict[int, AnyModel]] = {}
+        self._clean: dict[type[AnyModel], dict[int, AnyModel]] = {}
+        self._dirty: dict[type[AnyModel], dict[int, AnyModel]] = {}
+        self._deleted: dict[type[AnyModel], dict[int, AnyModel]] = {}
 
-    def register_new(self, entity: AnyEntity) -> None:
-        entity_id = id(entity)
+    def register_new(self, model: AnyModel) -> None:
+        model_id = id(model)
 
-        new_entities = self._new.get(type(entity))
-        if not new_entities:
-            self._new[type(entity)] = {}
+        new_models = self._new.get(type(model))
+        if not new_models:
+            self._new[type(model)] = {}
 
-        self._new[type(entity)][entity_id] = entity
+        self._new[type(model)][model_id] = model
 
-    def register_clean(self, entity: AnyEntity) -> None:
-        entity_id = id(entity)
+    def register_clean(self, model: AnyModel) -> None:
+        model_id = id(model)
 
-        clean_entities = self._clean.get(type(entity))
-        if not clean_entities:
-            self._clean[type(entity)] = {}
+        clean_models = self._clean.get(type(model))
+        if not clean_models:
+            self._clean[type(model)] = {}
 
-        self._clean[type(entity)][entity_id] = copy.deepcopy(entity)
+        self._clean[type(model)][model_id] = copy.deepcopy(model)
 
-    def register_dirty(self, entity: AnyEntity) -> None:
-        entity_id = id(entity)
+    def register_dirty(self, model: AnyModel) -> None:
+        model_id = id(model)
 
-        new_entities = self._new.get(type(entity), {})
-        if entity_id in new_entities:
+        new_models = self._new.get(type(model), {})
+        if model_id in new_models:
             return
 
-        dirty_entities = self._dirty.get(type(entity))
-        if not dirty_entities:
-            self._dirty[type(entity)] = {}
+        dirty_models = self._dirty.get(type(model))
+        if not dirty_models:
+            self._dirty[type(model)] = {}
 
-        self._dirty[type(entity)][entity_id] = entity
+        self._dirty[type(model)][model_id] = model
 
-    def register_deleted(self, entity: AnyEntity) -> None:
-        entity_id = id(entity)
+    def register_deleted(self, model: AnyModel) -> None:
+        model_id = id(model)
 
-        new_entities = self._new.get(type(entity))
-        if new_entities and entity_id in new_entities:
-            self._new[type(entity)].pop(entity_id)
+        new_models = self._new.get(type(model))
+        if new_models and model_id in new_models:
+            self._new[type(model)].pop(model_id)
             return
 
-        dirty_entities = self._dirty.get(type(entity))
-        clean_entities = self._clean.get(type(entity))
+        dirty_models = self._dirty.get(type(model))
+        clean_models = self._clean.get(type(model))
 
-        if dirty_entities:
-            if not clean_entities:
-                message = f"No entities of {type(entity)} type registered"
+        if dirty_models:
+            if not clean_models:
+                message = f"No models of {type(model)} type registered"
                 raise ValueError(message)
 
-            if entity_id in dirty_entities:
-                self._dirty[type(entity)].pop(entity_id)
-                self._clean[type(entity)].pop(entity_id)
+            if model_id in dirty_models:
+                self._dirty[type(model)].pop(model_id)
+                self._clean[type(model)].pop(model_id)
 
-        deleted_entities = self._deleted.get(type(entity))
-        if not deleted_entities:
-            self._deleted[type(entity)] = {}
+        deleted_models = self._deleted.get(type(model))
+        if not deleted_models:
+            self._deleted[type(model)] = {}
 
-        self._deleted[type(entity)][entity_id] = entity
+        self._deleted[type(model)][model_id] = model
 
     async def commit(self) -> None:
-        entity_types = (
+        model_types = (
             User,
             Movie,
             Person,
@@ -192,12 +192,12 @@ class MongoDBUnitOfWork:
             EditPersonContribution,
             Achievement,
         )
-        for entity_type in entity_types:
-            await self._collection_changes_commiters[entity_type](
-                new=self._new.get(entity_type, {}).values(),
-                clean=self._clean.get(entity_type, {}).values(),
-                dirty=self._dirty.get(entity_type, {}).values(),
-                deleted=self._deleted.get(entity_type, {}).values(),
+        for model_type in model_types:
+            await self._collection_changes_commiters[model_type](
+                new=self._new.get(model_type, {}).values(),
+                clean=self._clean.get(model_type, {}).values(),
+                dirty=self._dirty.get(model_type, {}).values(),
+                deleted=self._deleted.get(model_type, {}).values(),
             )
         await self._session.commit_transaction()
 
