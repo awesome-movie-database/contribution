@@ -30,7 +30,7 @@ dev = [
     "pre-commit==3.8.*",
 ]
 web_api = [
-    "fastapi==0.113.*",
+    "fastapi==0.114.*",
     "uvicorn[standart]==0.30.*",
     "gunicorn==23.0.*",
 ]
