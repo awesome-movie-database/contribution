@@ -271,7 +271,7 @@ class AcceptMovieAddingLoggingProcessor:
                 "are do not belong to any persons",
                 extra={
                     "operation_id": self._operation_id,
-                    "non_existing_persons": error.person_ids,
+                    "non_existing_person_ids": error.person_ids,
                 },
             )
             raise error
