@@ -23,12 +23,12 @@ class PersonMap:
     def save(self, person: Person) -> None:
         """
         Saves person in identity map if person doesn't
-        exist, otherwise raises ValueError.
+        exist, otherwise raises Exception.
         """
         person_from_map = self.by_id(person.id)
         if person_from_map:
             message = "Person already exists in identity map"
-            raise ValueError(message)
+            raise Exception(message)
         unit = PersonMapUnit(person=person, is_acquired=False)
         self._units.append(unit)
 
@@ -36,7 +36,7 @@ class PersonMap:
         """
         Saves person as acquired in identity map if person
         doesn't exist or already exist and not marked as
-        acquired, otherwise raises ValueError.
+        acquired, otherwise raises Exception.
         """
         person_from_map = self.by_id(person.id)
         if not person_from_map:
@@ -50,7 +50,7 @@ class PersonMap:
                 "Person already exists in identity map and"
                 "marked as acquired"
             )
-            raise ValueError(message)
+            raise Exception(message)
 
         for unit in self._units:
             if unit.person == person:
@@ -60,10 +60,10 @@ class PersonMap:
     def is_acquired(self, person: Person) -> bool:
         """
         Returns whether person is acquired if person exists
-        in identity map, otherwise raises ValueError.
+        in identity map, otherwise raises Exception.
         """
         for unit in self._units:
             if unit.person == person:
                 return unit.is_acquired
         message = "Person doesn't exist in identity map"
-        raise ValueError(message)
+        raise Exception(message)

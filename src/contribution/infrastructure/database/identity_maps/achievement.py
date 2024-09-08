@@ -16,10 +16,10 @@ class AchievementMap:
     def save(self, achievement: Achievement) -> None:
         """
         Saves achievement in identity map if achievement doesn't
-        exist, otherwise raises ValueError.
+        exist, otherwise raises Exception.
         """
         achievement_from_map = self.by_id(achievement.id)
         if achievement_from_map:
             message = "Achievement already exists in identity map"
-            raise ValueError(message)
+            raise Exception(message)
         self._achievements.append(achievement)

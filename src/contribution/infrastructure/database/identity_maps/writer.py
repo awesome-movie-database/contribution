@@ -16,10 +16,10 @@ class WriterMap:
     def save(self, writer: Writer) -> None:
         """
         Saves writer in identity map if writer doesn't
-        exist, otherwise raises ValueError.
+        exist, otherwise raises Exception.
         """
         writer_from_map = self.by_id(writer.id)
         if writer_from_map:
             message = "Writer already exists in identity map"
-            raise ValueError(message)
+            raise Exception(message)
         self._writers.append(writer)

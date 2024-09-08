@@ -94,7 +94,7 @@ class Maybe[T]:
                 value_factory=mapping_to_location,
             )
             print(location_from_bar_dict.is_set)  # False
-            print(location_from_bar_dict.value)  # Raises ValueError
+            print(location_from_bar_dict.value)  # Raises Exception
         """
         value = mapping.get(key, Maybe[T].without_value())
         if isinstance(value, Maybe):
@@ -113,11 +113,11 @@ class Maybe[T]:
     def value(self) -> T:
         """
         Returns value if value is set, otherwise
-        raises ValueError.
+        raises Exception.
         """
         if not self.is_set:
             message = "Value is unset"
-            raise ValueError(message)
+            raise Exception(message)
         return cast(T, self._value)
 
     def __str__(self) -> str:

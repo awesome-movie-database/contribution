@@ -16,10 +16,10 @@ class CrewMemberMap:
     def save(self, crew_member: CrewMember) -> None:
         """
         Saves crew member in identity map if crew member doesn't
-        exist, otherwise raises ValueError.
+        exist, otherwise raises Exception.
         """
         crew_member_from_map = self.by_id(crew_member.id)
         if crew_member_from_map:
             message = "Crew member already exists in identity map"
-            raise ValueError(message)
+            raise Exception(message)
         self._crew_members.append(crew_member)

@@ -166,7 +166,7 @@ class MongoDBUnitOfWork:
         if dirty_models:
             if not clean_models:
                 message = f"No models of {type(model)} type registered"
-                raise ValueError(message)
+                raise Exception(message)
 
             if model_id in dirty_models:
                 self._dirty[type(model)].pop(model_id)

@@ -29,12 +29,12 @@ class AddPersonContributionMap:
     def save(self, contribution: AddPersonContribution) -> None:
         """
         Saves contribution in identity map if contribution doesn't
-        exist, otherwise raises ValueError.
+        exist, otherwise raises Exception.
         """
         contribution_from_map = self.by_id(contribution.id)
         if contribution_from_map:
             message = "Add movie contribution already exists in identity map"
-            raise ValueError(message)
+            raise Exception(message)
 
         unit = AddPersonContributionMapUnit(
             contribution=contribution,
@@ -46,7 +46,7 @@ class AddPersonContributionMap:
         """
         Saves contribution as acquired in identity map if contribution
         doesn't exist or already exist and not marked as
-        acquired, otherwise raises ValueError.
+        acquired, otherwise raises Exception.
         """
         contribution_from_map = self.by_id(contribution.id)
         if not contribution_from_map:
@@ -63,7 +63,7 @@ class AddPersonContributionMap:
                 "AddPersonContribution already exists in identity map"
                 "and marked as acquired"
             )
-            raise ValueError(message)
+            raise Exception(message)
 
         for unit in self._units:
             if unit.contribution == contribution:
@@ -73,10 +73,10 @@ class AddPersonContributionMap:
     def is_acquired(self, contribution: AddPersonContribution) -> bool:
         """
         Returns whether contribution is acquired if contribution exists
-        in identity map, otherwise raises ValueError.
+        in identity map, otherwise raises Exception.
         """
         for unit in self._units:
             if unit.contribution == contribution:
                 return unit.is_acquired
         message = "AddPersonContribution doesn't exist in identity map"
-        raise ValueError(message)
+        raise Exception(message)

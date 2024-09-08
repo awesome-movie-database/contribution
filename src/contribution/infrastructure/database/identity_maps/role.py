@@ -16,10 +16,10 @@ class RoleMap:
     def save(self, role: Role) -> None:
         """
         Saves role in identity map if role doesn't
-        exist, otherwise raises ValueError.
+        exist, otherwise raises Exception.
         """
         role_from_map = self.by_id(role.id)
         if role_from_map:
             message = "Role already exists in identity map"
-            raise ValueError(message)
+            raise Exception(message)
         self._roles.append(role)

@@ -23,12 +23,12 @@ class MovieMap:
     def save(self, movie: Movie) -> None:
         """
         Saves movie in identity map if movie doesn't
-        exist, otherwise raises ValueError.
+        exist, otherwise raises Exception.
         """
         movie_from_map = self.by_id(movie.id)
         if movie_from_map:
             message = "Movie already exists in identity map"
-            raise ValueError(message)
+            raise Exception(message)
         unit = MovieMapUnit(movie=movie, is_acquired=False)
         self._units.append(unit)
 
@@ -36,7 +36,7 @@ class MovieMap:
         """
         Saves movie as acquired in identity map if movie
         doesn't exist or already exist and not marked as
-        acquired, otherwise raises ValueError.
+        acquired, otherwise raises Exception.
         """
         movie_from_map = self.by_id(movie.id)
         if not movie_from_map:
@@ -49,7 +49,7 @@ class MovieMap:
             message = (
                 "Movie already exists in identity map and marked as acquired"
             )
-            raise ValueError(message)
+            raise Exception(message)
 
         for unit in self._units:
             if unit.movie == movie:
@@ -59,10 +59,10 @@ class MovieMap:
     def is_acquired(self, movie: Movie) -> bool:
         """
         Returns whether movie is acquired if movie exists
-        in identity map, otherwise raises ValueError.
+        in identity map, otherwise raises Exception.
         """
         for unit in self._units:
             if unit.movie == movie:
                 return unit.is_acquired
         message = "Movie doesn't exist in identity map"
-        raise ValueError(message)
+        raise Exception(message)

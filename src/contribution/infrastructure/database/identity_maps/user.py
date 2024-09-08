@@ -41,12 +41,12 @@ class UserMap:
     def save(self, user: User) -> None:
         """
         Saves user in identity map if user doesn't
-        exist, otherwise raises ValueError.
+        exist, otherwise raises Exception.
         """
         user_from_map = self.by_id(user.id)
         if user_from_map:
             message = "User already exists in identity map"
-            raise ValueError(message)
+            raise Exception(message)
 
         unit = UserMapUnit(user=user, is_acquired=False)
         self._units.append(unit)
@@ -55,7 +55,7 @@ class UserMap:
         """
         Saves user as acquired in identity map if user
         doesn't exist or already exist and not marked as
-        acquired, otherwise raises ValueError.
+        acquired, otherwise raises Exception.
         """
         user_from_map = self.by_id(user.id)
         if not user_from_map:
@@ -67,7 +67,7 @@ class UserMap:
             message = (
                 "User already exists in identity map and marked as acquired"
             )
-            raise ValueError(message)
+            raise Exception(message)
 
         for unit in self._units:
             if unit.user == user:
@@ -77,10 +77,10 @@ class UserMap:
     def is_acquired(self, user: User) -> bool:
         """
         Returns whether user is acquired if user exists
-        in identity map, otherwise raises ValueError.
+        in identity map, otherwise raises Exception.
         """
         for unit in self._units:
             if unit.user == user:
                 return unit.is_acquired
         message = "User doesn't exist in identity map"
-        raise ValueError(message)
+        raise Exception(message)
