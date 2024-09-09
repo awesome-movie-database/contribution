@@ -52,7 +52,7 @@ def run_web_api(
         Parameter("--workers", show_default=True),
     ] = "1",
 ) -> None:
-    """Runs the server with web api at specified address."""
+    """Run the server with web api at specified address."""
     from gunicorn.app.wsgiapp import run as run_gunicorn
 
     sys.argv = [
@@ -74,7 +74,7 @@ def run_event_consumer(
         Parameter("--workers", show_default=True),
     ] = "1",
 ) -> None:
-    """Runs event consumer."""
+    """Run event consumer."""
     from faststream.cli.main import cli as run_faststream
 
     sys.argv = [
@@ -98,7 +98,7 @@ async def run_tg_bot(
         Parameter("--polling-timeout", show_default=True),
     ] = 10,
 ) -> None:
-    """Runs telegram bot."""
+    """Run telegram bot."""
     from .tg_bot import create_tg_bot_app
 
     tg_bot_app = create_tg_bot_app(tg_bot_token=tg_bot_token)
