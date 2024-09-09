@@ -1,4 +1,5 @@
 import sys
+from importlib.metadata import version
 from typing import Annotated, Optional
 
 from cyclopts import App, Parameter
@@ -23,7 +24,7 @@ def main() -> None:
 def create_cli_app() -> App:
     app = App(
         name="Contribution",
-        version="0.1.0",
+        version=version("contribution"),
         help_format="rich",
     )
 

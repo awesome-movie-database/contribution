@@ -1,3 +1,5 @@
+from importlib.metadata import version
+
 from faststream import FastStream
 from dishka.integrations.faststream import setup_dishka
 
@@ -15,7 +17,7 @@ def create_event_consumer_app() -> FastStream:
     app = FastStream(
         broker=broker,
         title="Contribution",
-        version="0.1.0",
+        version=version("contribution"),
     )
     ioc_container = event_consumer_ioc_container_factory()
     setup_dishka(ioc_container, app)

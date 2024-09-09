@@ -1,3 +1,5 @@
+from importlib.metadata import version
+
 from fastapi import FastAPI
 from dishka.integrations.fastapi import setup_dishka
 
@@ -42,7 +44,7 @@ def create_web_api_app() -> FastAPI:
     app = FastAPI(
         title="Contribution",
         description=DESCRIPTION,
-        version="0.1.0",
+        version=version("contribution"),
         swagger_ui_parameters={"defaultModelsExpandDepth": -1},
     )
     ioc_container = web_api_ioc_container_factory()
