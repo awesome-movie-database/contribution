@@ -1,5 +1,5 @@
 import sys
-from typing import Annotated
+from typing import Annotated, Optional
 
 from cyclopts import App, Parameter
 
@@ -29,6 +29,7 @@ def create_cli_app() -> App:
 
     app.command(run_web_api)
     app.command(run_event_consumer)
+    app.command(run_tg_bot)
 
     app.command(create_user)
     app.command(update_user)
@@ -84,3 +85,20 @@ def run_event_consumer(
         "--factory",
     ]
     run_faststream()
+
+
+async def run_tg_bot(
+    tg_bot_token: Annotated[
+        Optional[str],
+        Parameter("--telegram-token"),
+    ] = None,
+    polling_timeout: Annotated[
+        float,
+        Parameter("--polling-timeout", show_default=True),
+    ] = 10,
+) -> None:
+    """Runs telegram bot."""
+    from .tg_bot import create_tg_bot_app
+
+    tg_bot_app = create_tg_bot_app(tg_bot_token=tg_bot_token)
+    await tg_bot_app.start(polling_timeout=polling_timeout)

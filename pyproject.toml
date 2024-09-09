@@ -40,6 +40,9 @@ event_consumer = [
 tui = [
     "textual==0.79.*",
 ]
+tg_bot = [
+    "aiogram==3.13.*",
+]
 
 [project.scripts]
 contribution = "contribution.main.cli:main"
