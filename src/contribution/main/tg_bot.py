@@ -2,7 +2,7 @@ from typing import Optional
 
 from aiogram import Bot, Dispatcher
 
-from contribution.infrastructure import env_var_by_key
+from contribution.infrastructure import env_var_by_key, setup_logging
 from contribution.presentation.tg_bot import setup_routes
 
 
@@ -23,6 +23,7 @@ def create_tg_bot_app(tg_bot_token: Optional[str] = None) -> TgBotApp:
     bot = Bot(token=tg_bot_token)
     dispatcher = Dispatcher()
 
+    setup_logging()
     setup_routes(dispatcher)
 
     return TgBotApp(
