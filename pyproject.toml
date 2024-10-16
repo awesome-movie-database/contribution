@@ -31,7 +31,7 @@ dev = [
 ]
 web_api = [
     "fastapi==0.115.*",
-    "uvicorn[standart]==0.31.*",
+    "uvicorn[standart]==0.32.*",
     "gunicorn==23.0.*",
 ]
 event_consumer = [
