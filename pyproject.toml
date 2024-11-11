@@ -41,7 +41,7 @@ tui = [
     "textual==0.85.*",
 ]
 tg_bot = [
-    "aiogram==3.13.*",
+    "aiogram==3.14.*",
 ]
 
 [project.scripts]
