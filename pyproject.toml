@@ -38,7 +38,7 @@ event_consumer = [
     "faststream==0.5.*",
 ]
 tui = [
-    "textual==0.85.*",
+    "textual==0.86.*",
 ]
 tg_bot = [
     "aiogram==3.14.*",
