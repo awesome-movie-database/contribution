@@ -16,7 +16,7 @@ dependencies = [
     "motor==3.6.*",
     "cyclopts==3.0.*",
     "adaptix==3.0.0b8",
-    "redis==5.1.*",
+    "redis==5.2.*",
 ]
 
 [project.optional-dependencies]
